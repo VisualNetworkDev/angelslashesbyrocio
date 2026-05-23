@@ -1,0 +1,129 @@
+{
+  "appName": "Angel's Lashes",
+  "appSubtitle": "By Rocio Rivero",
+  "currency": "USD",
+  "contact": {
+    "phone": "3053371330",
+    "email": "angels.lashes26@gmail.com",
+    "instagramUrl": "",
+    "showContact": false,
+    "showInstagram": false
+  },
+  "agreementText": "Confirmo que la informacion proporcionada para esta solicitud de cita es correcta. Entiendo que Angel's Lashes reserva un espacio de tiempo exclusivo para mi servicio y que debo comunicarme con anticipacion si necesito cancelar, llegar tarde o reprogramar.\n\nPOLITICA DE CANCELACION: Para cancelar o reprogramar sin penalidad, debo llamar o comunicarme con al menos 24 horas de anticipacion. Si cancelo con menos de 24 horas, no asisto o hago cambios de ultimo momento que impidan usar el espacio reservado, Angel's Lashes podra aplicar un cargo administrativo entre el 5% y el 10% del valor de la cita. Este cargo ayuda a cubrir el tiempo profesional reservado, la preparacion del servicio y la disponibilidad perdida para otra clienta.\n\nAcepto que el precio final puede variar si solicito cambios, agregados o servicios adicionales durante la cita. Reconozco que debo informar cualquier alergia, sensibilidad, condicion medica, tratamiento reciente o uso de productos que pueda afectar el servicio. Autorizo el uso de mi firma como confirmacion de este acuerdo y entiendo que esta solicitud queda pendiente hasta ser confirmada por el estudio.",
+  "agreementTexts": {
+    "es": "Confirmo que la informacion proporcionada para esta solicitud de cita es correcta. Entiendo que Angel's Lashes reserva un espacio de tiempo exclusivo para mi servicio y que debo comunicarme con anticipacion si necesito cancelar, llegar tarde o reprogramar.\n\nPOLITICA DE CANCELACION: Para cancelar o reprogramar sin penalidad, debo llamar o comunicarme con al menos 24 horas de anticipacion. Si cancelo con menos de 24 horas, no asisto o hago cambios de ultimo momento que impidan usar el espacio reservado, Angel's Lashes podra aplicar un cargo administrativo entre el 5% y el 10% del valor de la cita. Este cargo ayuda a cubrir el tiempo profesional reservado, la preparacion del servicio y la disponibilidad perdida para otra clienta.\n\nAcepto que el precio final puede variar si solicito cambios, agregados o servicios adicionales durante la cita. Reconozco que debo informar cualquier alergia, sensibilidad, condicion medica, tratamiento reciente o uso de productos que pueda afectar el servicio. Autorizo el uso de mi firma como confirmacion de este acuerdo y entiendo que esta solicitud queda pendiente hasta ser confirmada por el estudio.",
+    "en": "I confirm that the information provided for this appointment request is accurate. I understand that Angel's Lashes reserves dedicated time for my service and that I should contact the studio in advance if I need to cancel, arrive late, or reschedule.\n\nCANCELLATION POLICY: To cancel or reschedule without penalty, I must call or contact the studio at least 24 hours in advance. If I cancel with less than 24 hours' notice, do not attend, or make last-minute changes that prevent the reserved time from being used, Angel's Lashes may apply an administrative fee between 5% and 10% of the appointment value. This fee helps cover the professional time reserved, service preparation, and availability lost for another client.\n\nI accept that the final price may change if I request changes, add-ons, or additional services during the appointment. I acknowledge that I must disclose allergies, sensitivities, medical conditions, recent treatments, or product use that may affect the service. I authorize the use of my signature as confirmation of this agreement and understand that this request remains pending until confirmed by the studio."
+  },
+  "hours": {
+    "start": "09:00",
+    "end": "18:00",
+    "intervalMinutes": 30,
+    "openDays": [1, 2, 3, 4, 5, 6]
+  },
+  "blockedDates": [],
+  "beforeAfter": [],
+  "policyText": {
+    "es": "Para cancelar o reprogramar sin penalidad, comunicate con al menos 24 horas de anticipacion. Cancelaciones tardias, ausencia o cambios de ultimo momento pueden generar un cargo administrativo entre el 5% y el 10% del valor de la cita.",
+    "en": "To cancel or reschedule without penalty, please contact the studio at least 24 hours in advance. Late cancellations, no-shows, or last-minute changes may result in an administrative fee between 5% and 10% of the appointment value."
+  },
+  "categories": ["Cejas", "Pestañas", "Depilación facial", "Maquillaje"],
+  "categoryTranslations": {
+    "Cejas": { "en": "Brows" },
+    "Pestañas": { "en": "Lashes" },
+    "Depilación facial": { "en": "Facial waxing" },
+    "Maquillaje": { "en": "Makeup" }
+  },
+  "services": [
+    {
+      "id": "svc-cejas-diseno",
+      "category": "Cejas",
+      "categoryEn": "Brows",
+      "name": "Diseño de cejas",
+      "nameEn": "Brow shaping",
+      "description": "Diseño personalizado para definir la forma natural de tus cejas.",
+      "descriptionEn": "Personalized shaping to define your natural brow structure.",
+      "price": 25,
+      "duration": 45,
+      "image": "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=1400&q=80"
+    },
+    {
+      "id": "svc-cejas-tinte",
+      "category": "Cejas",
+      "categoryEn": "Brows",
+      "name": "Cejas con tinte",
+      "nameEn": "Brow tint",
+      "description": "Color suave para dar mas presencia y armonia a tus cejas.",
+      "descriptionEn": "Soft color for fuller, more balanced brows.",
+      "price": 35,
+      "duration": 60,
+      "image": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1400&q=80"
+    },
+    {
+      "id": "svc-pestanas-lifting",
+      "category": "Pestañas",
+      "categoryEn": "Lashes",
+      "name": "Lifting de pestañas",
+      "nameEn": "Lash lift",
+      "description": "Curvatura natural para abrir la mirada con un acabado delicado.",
+      "descriptionEn": "A natural curl that opens the eyes with a delicate finish.",
+      "price": 65,
+      "duration": 75,
+      "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80"
+    },
+    {
+      "id": "svc-pestanas-clasicas",
+      "category": "Pestañas",
+      "categoryEn": "Lashes",
+      "name": "Extensiones clasicas",
+      "nameEn": "Classic extensions",
+      "description": "Volumen elegante y natural para el dia a dia.",
+      "descriptionEn": "Elegant, natural volume for everyday wear.",
+      "price": 95,
+      "duration": 120,
+      "image": "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=1400&q=80"
+    },
+    {
+      "id": "svc-depilacion-facial",
+      "category": "Depilación facial",
+      "categoryEn": "Facial waxing",
+      "name": "Depilación facial",
+      "nameEn": "Facial waxing",
+      "description": "Limpieza precisa para un rostro suave y cuidado.",
+      "descriptionEn": "Precise hair removal for a smooth, polished face.",
+      "price": 40,
+      "duration": 45,
+      "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1400&q=80"
+    },
+    {
+      "id": "svc-maquillaje-social",
+      "category": "Maquillaje",
+      "categoryEn": "Makeup",
+      "name": "Maquillaje social",
+      "nameEn": "Event makeup",
+      "description": "Piel luminosa y tonos elegantes para eventos y sesiones.",
+      "descriptionEn": "Glowing skin and elegant tones for events and photos.",
+      "price": 85,
+      "duration": 90,
+      "image": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1400&q=80"
+    }
+  ],
+  "photos": {
+    "Cejas": [
+      "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1400&q=80"
+    ],
+    "Pestañas": [
+      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=1400&q=80"
+    ],
+    "Depilación facial": [
+      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1400&q=80"
+    ],
+    "Maquillaje": [
+      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1583241800967-80b926d91a8e?auto=format&fit=crop&w=1400&q=80"
+    ]
+  },
+  "publicDiscounts": [],
+  "today": ""
+}
