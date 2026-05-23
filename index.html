@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://unpkg.com">
+    <script src="assets/admin-config.js"></script>
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <style>
       :root {
-        --ink: #2b2226;
-        --muted: #7c6b70;
+        --ink: #2c2528;
+        --muted: #76696e;
+        --line: #eadde1;
+        --paper: #fffaf7;
+        --panel: #ffffff;
         --rose: #b76e79;
-        --rose-dark: #78364b;
         --plum: #432233;
-        --champagne: #f4d8bf;
-        --blush: #fff4f1;
-        --cream: #fffaf7;
-        --sage: #8b9a83;
-        --line: rgba(67, 34, 51, 0.14);
-        --shadow: 0 18px 50px rgba(67, 34, 51, 0.14);
+        --sage: #7f9277;
+        --gold: #c28d55;
+        --danger: #ad3f4b;
+        --shadow: 0 18px 44px rgba(67, 34, 51, 0.12);
         --radius: 8px;
       }
 
@@ -26,15 +26,11 @@
         box-sizing: border-box;
       }
 
-      html {
-        scroll-behavior: smooth;
-      }
-
       body {
         margin: 0;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         color: var(--ink);
-        background: var(--cream);
+        background: var(--paper);
       }
 
       button,
@@ -48,220 +44,118 @@
         cursor: pointer;
       }
 
-      img {
-        display: block;
-        max-width: 100%;
-      }
-
       .shell {
-        width: min(1180px, calc(100% - 32px));
+        width: min(1280px, calc(100% - 28px));
         margin: 0 auto;
       }
 
       .topbar {
         position: sticky;
-        z-index: 30;
         top: 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-        background: rgba(255, 250, 247, 0.86);
-        backdrop-filter: blur(18px);
+        z-index: 10;
+        background: rgba(255, 250, 247, 0.92);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(16px);
       }
 
       .topbar-inner {
-        min-height: 72px;
+        min-height: 66px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 18px;
+        gap: 14px;
       }
 
       .brand {
-        display: inline-flex;
+        display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
         color: var(--plum);
-        text-decoration: none;
-        font-weight: 800;
-        letter-spacing: 0;
-      }
-
-      .brand-text {
-        display: grid;
-        gap: 1px;
-      }
-
-      .brand-subtitle {
-        color: var(--rose-dark);
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 12px;
-        font-style: italic;
-        font-weight: 700;
-        line-height: 1;
-      }
-
-      .brand-heart {
-        color: var(--rose);
-        font-size: 10px;
-        margin-left: 4px;
+        font-weight: 850;
       }
 
       .brand-mark {
-        width: 36px;
-        height: 36px;
+        width: 34px;
+        height: 34px;
         border-radius: 50%;
         display: grid;
         place-items: center;
-        background: linear-gradient(135deg, var(--rose), var(--champagne));
         color: #fff;
-        box-shadow: 0 10px 28px rgba(183, 110, 121, 0.32);
+        background: linear-gradient(135deg, var(--plum), var(--rose));
       }
 
-      .nav {
+      .top-actions {
         display: flex;
         align-items: center;
-        gap: 6px;
-        overflow-x: auto;
-        scrollbar-width: none;
+        gap: 8px;
+        flex-wrap: wrap;
       }
 
-      .nav::-webkit-scrollbar {
-        display: none;
-      }
-
-      .nav a {
-        color: var(--muted);
-        text-decoration: none;
-        border-radius: 999px;
-        padding: 10px 13px;
-        font-size: 14px;
-        white-space: nowrap;
-      }
-
-      .nav a:hover {
-        background: rgba(183, 110, 121, 0.12);
-        color: var(--rose-dark);
-      }
-
-      .language-switch {
+      .btn {
+        min-height: 40px;
+        border: 0;
+        border-radius: var(--radius);
         display: inline-flex;
         align-items: center;
-        gap: 4px;
-        padding: 4px;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.74);
-      }
-
-      .language-switch button {
-        border: 0;
-        border-radius: 999px;
-        background: transparent;
-        color: var(--muted);
-        font-size: 13px;
-        font-weight: 800;
-        padding: 8px 10px;
-      }
-
-      .language-switch button.active {
+        justify-content: center;
+        gap: 8px;
+        padding: 9px 13px;
         background: var(--plum);
         color: #fff;
+        text-decoration: none;
+        font-weight: 800;
       }
 
-      .hero {
-        min-height: calc(100vh - 72px);
-        display: grid;
-        align-items: center;
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        padding: 70px 0 92px;
-      }
-
-      .hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        z-index: -2;
-        background:
-          linear-gradient(115deg, rgba(67, 34, 51, 0.96) 0%, rgba(120, 54, 75, 0.78) 38%, rgba(183, 110, 121, 0.56) 68%, rgba(255, 250, 247, 0.92) 100%),
-          repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0 1px, transparent 1px 18px);
-      }
-
-      .hero::after {
-        content: "";
-        position: absolute;
-        inset: auto 0 0 0;
-        height: 28%;
-        z-index: -1;
-        background: linear-gradient(180deg, transparent, var(--cream));
-      }
-
-      .hero-layout {
-        display: grid;
-        grid-template-columns: minmax(0, 1.02fr) minmax(320px, 430px);
-        gap: 40px;
-        align-items: center;
-      }
-
-      .hero-copy {
-        color: #fff;
-        padding: 24px 0;
-      }
-
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 18px;
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: #ffe8dc;
-      }
-
-      .hero h1 {
-        margin: 0;
-        max-width: 760px;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(44px, 8vw, 94px);
-        line-height: 0.9;
-        letter-spacing: 0;
-      }
-
-      .hero p {
-        max-width: 590px;
-        margin: 22px 0 0;
-        color: rgba(255, 255, 255, 0.84);
-        font-size: 18px;
-        line-height: 1.65;
-      }
-
-      .hero-subtitle {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        margin-top: 14px;
-        color: #ffe8dc;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(22px, 3vw, 34px);
-        font-style: italic;
-        font-weight: 700;
-      }
-
-      .quick-book {
-        border: 1px solid rgba(255, 255, 255, 0.36);
-        border-radius: var(--radius);
-        background: rgba(255, 250, 247, 0.9);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(20px);
-        padding: 18px;
-      }
-
-      .quick-book h2 {
-        margin: 0 0 14px;
+      .btn.secondary {
+        background: #fff;
         color: var(--plum);
-        font-size: 18px;
+        border: 1px solid var(--line);
+      }
+
+      .btn.soft {
+        background: rgba(183, 110, 121, 0.13);
+        color: var(--plum);
+      }
+
+      .btn.danger {
+        background: rgba(173, 63, 75, 0.11);
+        color: var(--danger);
+      }
+
+      .btn:disabled {
+        opacity: 0.56;
+        cursor: not-allowed;
+      }
+
+      .login {
+        min-height: calc(100vh - 66px);
+        display: grid;
+        place-items: center;
+        padding: 40px 0;
+      }
+
+      .login-card,
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .login-card {
+        width: min(420px, 100%);
+        padding: 24px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        color: var(--plum);
+      }
+
+      .muted {
+        color: var(--muted);
       }
 
       .field {
@@ -273,7 +167,7 @@
       label {
         color: var(--muted);
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 800;
       }
 
       input,
@@ -282,811 +176,428 @@
         width: 100%;
         border: 1px solid var(--line);
         border-radius: var(--radius);
-        background: rgba(255, 255, 255, 0.82);
+        background: #fff;
         color: var(--ink);
-        padding: 12px 13px;
+        padding: 10px 11px;
         outline: none;
       }
 
       textarea {
+        min-height: 76px;
         resize: vertical;
-        min-height: 84px;
       }
 
       input:focus,
       select:focus,
       textarea:focus {
-        border-color: rgba(183, 110, 121, 0.75);
-        box-shadow: 0 0 0 4px rgba(183, 110, 121, 0.14);
+        border-color: var(--rose);
+        box-shadow: 0 0 0 4px rgba(183, 110, 121, 0.13);
       }
 
-      .btn {
-        min-height: 46px;
-        border: 0;
-        border-radius: var(--radius);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 9px;
-        padding: 12px 16px;
+      .admin {
+        display: none;
+        padding: 22px 0 60px;
+      }
+
+      .admin.open,
+      .login.hidden {
+        display: none;
+      }
+
+      .admin.open {
+        display: block;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 8px 0 18px;
+      }
+
+      .tab {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--muted);
+        padding: 10px 14px;
+        font-weight: 850;
+        white-space: nowrap;
+      }
+
+      .tab.active {
+        background: var(--plum);
         color: #fff;
-        background: linear-gradient(135deg, var(--rose-dark), var(--rose));
-        font-weight: 800;
-        text-decoration: none;
-        box-shadow: 0 14px 30px rgba(120, 54, 75, 0.24);
+        border-color: var(--plum);
       }
 
-      .btn:hover {
-        transform: translateY(-1px);
-      }
-
-      .btn:disabled {
-        opacity: 0.55;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      .btn.secondary {
-        color: var(--plum);
-        background: #fff;
-        border: 1px solid var(--line);
-        box-shadow: none;
-      }
-
-      .btn.ghost {
-        color: var(--rose-dark);
-        background: rgba(183, 110, 121, 0.12);
-        box-shadow: none;
-      }
-
-      .btn.icon {
-        width: 42px;
-        min-height: 42px;
-        padding: 0;
-      }
-
-      .section {
-        padding: 82px 0;
-      }
-
-      .section-head {
-        display: flex;
-        align-items: end;
-        justify-content: space-between;
-        gap: 24px;
-        margin-bottom: 28px;
-      }
-
-      .section-title {
-        margin: 0;
-        font-family: Georgia, "Times New Roman", serif;
-        color: var(--plum);
-        font-size: clamp(32px, 4vw, 56px);
-        line-height: 1;
-      }
-
-      .section-copy {
-        max-width: 520px;
-        color: var(--muted);
-        line-height: 1.7;
-        margin: 10px 0 0;
-      }
-
-      .discounts {
-        padding: 34px 0 0;
-      }
-
-      .trust-band {
-        padding: 42px 0 18px;
-      }
-
-      .trust-grid {
+      .grid {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .trust-item {
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        background: #fff;
-        padding: 16px;
-        min-height: 128px;
-      }
-
-      .trust-item i {
-        color: var(--rose-dark);
-      }
-
-      .trust-item h3 {
-        margin: 10px 0 6px;
-        color: var(--plum);
-        font-size: 16px;
-      }
-
-      .trust-item p {
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.5;
-        font-size: 14px;
-      }
-
-      .discount-track {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 12px;
-      }
-
-      .discount {
-        border: 1px solid rgba(183, 110, 121, 0.22);
-        border-radius: var(--radius);
-        background: #fff;
-        padding: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 14px;
-      }
-
-      .discount strong {
-        color: var(--rose-dark);
-      }
-
-      .discount span {
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .category-section {
-        border-top: 1px solid var(--line);
-      }
-
-      .category-layout {
-        display: grid;
-        grid-template-columns: minmax(280px, 0.86fr) minmax(0, 1.14fr);
-        gap: 32px;
+        grid-template-columns: 390px minmax(0, 1fr);
+        gap: 16px;
         align-items: start;
       }
 
-      .photo-grid {
+      .before-after-admin {
+        margin-top: 16px;
+      }
+
+      .dashboard-grid {
         display: grid;
-        grid-template-columns: 1fr 0.82fr;
-        gap: 12px;
-        min-height: 430px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
       }
 
-      .photo-grid img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: var(--radius);
-        box-shadow: 0 16px 36px rgba(67, 34, 51, 0.12);
-        opacity: 0;
-        transition: transform 600ms ease, filter 600ms ease;
-      }
-
-      .photo-grid img:first-child {
-        grid-row: span 2;
-      }
-
-      .photo-grid img:hover {
-        transform: scale(1.018);
-        filter: saturate(1.08);
-      }
-
-      .photo-grid.visible img.motion-left {
-        animation: photoFromLeft 900ms cubic-bezier(0.2, 0.72, 0.18, 1) forwards;
-      }
-
-      .photo-grid.visible img.motion-right {
-        animation: photoFromRight 920ms cubic-bezier(0.2, 0.72, 0.18, 1) 120ms forwards;
-      }
-
-      .photo-grid.visible img.motion-rise {
-        animation: photoRise 940ms cubic-bezier(0.2, 0.72, 0.18, 1) 220ms forwards;
-      }
-
-      .photo-grid.visible img.motion-depth {
-        animation: photoDepth 1000ms cubic-bezier(0.2, 0.72, 0.18, 1) 180ms forwards;
-      }
-
-      @keyframes photoFromLeft {
-        from {
-          opacity: 0;
-          transform: translateX(-46px) rotate(-1.8deg) scale(0.96);
-          filter: blur(8px) saturate(0.92);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0) rotate(0) scale(1);
-          filter: blur(0) saturate(1);
-        }
-      }
-
-      @keyframes photoFromRight {
-        from {
-          opacity: 0;
-          transform: translateX(46px) rotate(1.8deg) scale(0.96);
-          filter: blur(8px) saturate(0.92);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0) rotate(0) scale(1);
-          filter: blur(0) saturate(1);
-        }
-      }
-
-      @keyframes photoRise {
-        from {
-          opacity: 0;
-          transform: translateY(54px) scale(0.97);
-          filter: blur(8px) saturate(0.9);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-          filter: blur(0) saturate(1);
-        }
-      }
-
-      @keyframes photoDepth {
-        from {
-          opacity: 0;
-          transform: perspective(900px) translateZ(-120px) translateY(34px) scale(0.9);
-          filter: blur(10px) saturate(0.86);
-        }
-        to {
-          opacity: 1;
-          transform: perspective(900px) translateZ(0) translateY(0) scale(1);
-          filter: blur(0) saturate(1);
-        }
-      }
-
-      .photo-grid.empty-gallery {
-        grid-template-columns: 1fr;
-      }
-
-      .photo-placeholder {
-        min-height: 430px;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        background:
-          linear-gradient(135deg, rgba(255, 244, 241, 0.98), rgba(244, 216, 191, 0.46) 48%, rgba(139, 154, 131, 0.24));
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        position: relative;
-        box-shadow: 0 16px 36px rgba(67, 34, 51, 0.12);
-        opacity: 0;
-      }
-
-      .photo-placeholder::before,
-      .photo-placeholder::after {
-        content: "";
-        position: absolute;
-        inset: 28px;
-        border: 1px solid rgba(120, 54, 75, 0.16);
-        border-radius: var(--radius);
-      }
-
-      .photo-placeholder::after {
-        inset: 52px;
-        border-color: rgba(139, 154, 131, 0.22);
-      }
-
-      .photo-placeholder-icon {
-        width: 74px;
-        height: 74px;
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        color: #fff;
-        background: linear-gradient(135deg, var(--rose-dark), var(--rose));
-        box-shadow: 0 18px 40px rgba(120, 54, 75, 0.24);
-        z-index: 1;
-      }
-
-      .photo-grid.visible .photo-placeholder {
-        animation: photoDepth 850ms cubic-bezier(0.2, 0.72, 0.18, 1) forwards;
-      }
-
-      .services {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .service-card {
+      .metric-card {
         border: 1px solid var(--line);
         border-radius: var(--radius);
         background: #fff;
-        min-height: 224px;
-        padding: 18px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        box-shadow: 0 12px 30px rgba(67, 34, 51, 0.08);
+        padding: 13px;
       }
 
-      .service-card h3 {
-        margin: 0;
-        color: var(--plum);
-        font-size: 20px;
-      }
-
-      .service-card p {
+      .metric-card span {
+        display: block;
         color: var(--muted);
-        line-height: 1.6;
-        margin: 0;
+        font-size: 12px;
+        font-weight: 850;
+        text-transform: uppercase;
       }
 
-      .service-meta {
-        margin-top: auto;
+      .metric-card strong {
+        display: block;
+        margin-top: 6px;
+        color: var(--plum);
+        font-size: 24px;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .panel-head {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        color: var(--rose-dark);
-        font-weight: 800;
-      }
-
-      .duration {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        color: var(--sage);
-        font-weight: 800;
-        font-size: 13px;
-      }
-
-      .loading {
-        min-height: 50vh;
-        display: grid;
-        place-items: center;
-        color: var(--muted);
-      }
-
-      .empty {
-        border: 1px dashed rgba(183, 110, 121, 0.36);
-        border-radius: var(--radius);
-        padding: 28px;
-        color: var(--muted);
-        background: rgba(255, 244, 241, 0.7);
-      }
-
-      .modal {
-        position: fixed;
-        inset: 0;
-        z-index: 80;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 18px;
-        background: rgba(43, 34, 38, 0.58);
-      }
-
-      .modal.open {
-        display: flex;
-      }
-
-      .dialog {
-        width: min(900px, 100%);
-        max-height: min(92vh, 980px);
-        overflow: auto;
-        border-radius: var(--radius);
-        background: var(--cream);
-        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.24);
-      }
-
-      .dialog-head {
-        position: sticky;
-        top: 0;
-        z-index: 2;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 14px;
-        padding: 18px 20px;
-        border-bottom: 1px solid var(--line);
-        background: rgba(255, 250, 247, 0.94);
-        backdrop-filter: blur(14px);
-      }
-
-      .dialog-title {
-        margin: 0;
-        color: var(--plum);
-        font-size: 22px;
-      }
-
-      .dialog-body {
-        padding: 20px;
+        gap: 10px;
+        margin-bottom: 14px;
       }
 
       .form-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
+        gap: 10px;
       }
 
       .full {
         grid-column: 1 / -1;
       }
 
-      .slot-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+      .check {
+        display: flex;
+        align-items: center;
         gap: 9px;
+        min-height: 40px;
+        color: var(--ink);
+        font-weight: 700;
       }
 
-      .calendar {
+      .check input {
+        width: 18px;
+        height: 18px;
+      }
+
+      .table-wrap {
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 760px;
+        background: #fff;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+        font-size: 14px;
+      }
+
+      th {
+        color: var(--muted);
+        background: #fff4f1;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 5px 9px;
+        font-size: 12px;
+        font-weight: 900;
+        background: rgba(194, 141, 85, 0.14);
+        color: #8b5b23;
+      }
+
+      .status.confirmada {
+        background: rgba(127, 146, 119, 0.18);
+        color: #4c6846;
+      }
+
+      .status.cancelada {
+        background: rgba(173, 63, 75, 0.13);
+        color: var(--danger);
+      }
+
+      .row-actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .note-box {
+        min-width: 220px;
+        min-height: 70px;
+        margin-top: 8px;
+      }
+
+      .history-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .history-card,
+      .blocked-card {
         border: 1px solid var(--line);
         border-radius: var(--radius);
         background: #fff;
         padding: 12px;
       }
 
-      .calendar-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        margin-bottom: 10px;
-      }
-
-      .calendar-title {
+      .history-card strong,
+      .blocked-card strong {
         color: var(--plum);
-        font-weight: 900;
       }
 
-      .calendar-grid {
+      .help-grid {
         display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 6px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
       }
 
-      .calendar-weekday {
-        color: var(--muted);
-        font-size: 11px;
-        font-weight: 900;
-        text-align: center;
-        text-transform: uppercase;
-      }
-
-      .calendar-day {
-        min-height: 38px;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        background: #fff;
-        color: var(--plum);
-        font-weight: 800;
-      }
-
-      .calendar-day.outside {
-        opacity: 0.24;
-      }
-
-      .calendar-day.unavailable {
-        color: #b8aeb2;
-        background: #faf4f2;
-        text-decoration: line-through;
-        cursor: not-allowed;
-      }
-
-      .calendar-day.selected {
-        color: #fff;
-        background: var(--rose-dark);
-        border-color: var(--rose-dark);
-      }
-
-      .slot {
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        padding: 10px;
-        background: #fff;
-        color: var(--plum);
-        font-weight: 800;
-      }
-
-      .slot.selected {
-        color: #fff;
-        background: var(--rose-dark);
-        border-color: var(--rose-dark);
-      }
-
-      .agreement {
+      .help-card {
         border: 1px solid var(--line);
         border-radius: var(--radius);
         background: #fff;
         padding: 14px;
+      }
+
+      .help-card h3 {
+        margin-bottom: 8px;
+      }
+
+      .help-card ol {
+        margin: 0;
+        padding-left: 20px;
         color: var(--muted);
         line-height: 1.55;
       }
 
-      .agreement p {
-        white-space: pre-line;
+      .drag-row {
+        cursor: grab;
       }
 
-      .agreement .cancel-policy {
-        display: block;
-        margin: 12px 0;
-        padding: 12px;
-        border-left: 4px solid var(--rose);
+      .drag-row.dragging {
+        opacity: 0.45;
+      }
+
+      .drag-handle {
+        color: var(--muted);
+        font-weight: 900;
+        letter-spacing: 0.08em;
+      }
+
+      .mini {
+        min-height: 32px;
+        padding: 6px 9px;
+        font-size: 12px;
+      }
+
+      .thumb {
+        width: 72px;
+        height: 72px;
         border-radius: var(--radius);
-        background: rgba(183, 110, 121, 0.1);
-        color: var(--rose-dark);
+        object-fit: cover;
+        border: 1px solid var(--line);
+        background: #fff4f1;
+      }
+
+      .preview {
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff4f1;
+        object-fit: cover;
+        display: none;
+      }
+
+      .preview.show {
+        display: block;
+      }
+
+      .range-pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .day-checks {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .compact-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .before-after-preview {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .before-after-preview img {
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        object-fit: cover;
+        background: #fff4f1;
+      }
+
+      .before-after-preview img[src=""] {
+        display: none;
+      }
+
+      input[type="range"] {
+        padding: 0;
+        accent-color: var(--rose);
+      }
+
+      .developer-only {
+        display: none;
+      }
+
+      .developer-mode .developer-only {
+        display: block;
+      }
+
+      .role-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 7px 10px;
+        color: var(--plum);
+        background: rgba(183, 110, 121, 0.13);
+        font-size: 12px;
         font-weight: 900;
       }
 
-      .check-row {
-        display: flex;
+      .filters {
+        display: grid;
+        grid-template-columns: minmax(180px, 1fr) 150px 150px 160px;
         gap: 10px;
-        align-items: flex-start;
-        color: var(--ink);
+        margin-bottom: 12px;
       }
 
-      .check-row input {
-        width: 18px;
-        min-width: 18px;
-        height: 18px;
-        margin-top: 2px;
-      }
-
-      .signature-box {
-        border: 1px solid var(--line);
+      .empty {
+        border: 1px dashed var(--line);
         border-radius: var(--radius);
+        padding: 20px;
+        color: var(--muted);
         background: #fff;
-        overflow: hidden;
-      }
-
-      canvas {
-        width: 100%;
-        height: 160px;
-        display: block;
-        touch-action: none;
-        background:
-          linear-gradient(transparent 94%, rgba(183, 110, 121, 0.22) 95%),
-          #fff;
-      }
-
-      .dialog-actions {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 18px;
-        flex-wrap: wrap;
       }
 
       .toast {
         position: fixed;
+        z-index: 30;
         left: 50%;
-        bottom: 22px;
-        z-index: 100;
+        bottom: 18px;
         transform: translateX(-50%) translateY(140%);
-        max-width: min(520px, calc(100% - 24px));
+        max-width: min(560px, calc(100% - 24px));
         border-radius: var(--radius);
         background: var(--plum);
         color: #fff;
-        padding: 13px 16px;
+        padding: 12px 14px;
         box-shadow: var(--shadow);
-        transition: transform 240ms ease;
+        transition: transform 180ms ease;
       }
 
       .toast.show {
         transform: translateX(-50%) translateY(0);
       }
 
-      .contact-section {
-        border-top: 1px solid var(--line);
-        padding: 54px 0 70px;
-        background: #fff;
+      @media (max-width: 980px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-grid,
+        .history-grid,
+        .help-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
       }
 
-      .before-after-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 14px;
-      }
-
-      .before-after-card {
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 12px 30px rgba(67, 34, 51, 0.08);
-      }
-
-      .comparison {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .comparison figure {
-        margin: 0;
-        position: relative;
-        min-height: 220px;
-      }
-
-      .comparison img {
-        width: 100%;
-        height: 100%;
-        min-height: 220px;
-        object-fit: cover;
-      }
-
-      .comparison figcaption {
-        position: absolute;
-        left: 8px;
-        bottom: 8px;
-        border-radius: 999px;
-        background: rgba(67, 34, 51, 0.78);
-        color: #fff;
-        padding: 5px 8px;
-        font-size: 12px;
-        font-weight: 900;
-      }
-
-      .before-after-card h3 {
-        margin: 0;
-        padding: 13px;
-        color: var(--plum);
-      }
-
-      .policy-section {
-        border-top: 1px solid var(--line);
-        background: #fff4f1;
-      }
-
-      .policy-panel {
-        border-left: 5px solid var(--rose);
-        padding: 22px;
-        background: #fff;
-        border-radius: var(--radius);
-        color: var(--muted);
-        line-height: 1.7;
-      }
-
-      .receipt-success {
-        display: grid;
-        gap: 14px;
-      }
-
-      .success-hero {
-        border-radius: var(--radius);
-        padding: 24px;
-        color: #fff;
-        background: linear-gradient(135deg, var(--plum), var(--rose));
-      }
-
-      .success-hero h3 {
-        margin: 0 0 8px;
-        font-size: 28px;
-      }
-
-      .receipt-summary {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .receipt-summary div {
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        background: #fff;
-        padding: 12px;
-      }
-
-      .receipt-summary span {
-        display: block;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 900;
-        text-transform: uppercase;
-      }
-
-      .receipt-summary strong {
-        color: var(--plum);
-      }
-
-      .contact-card {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 18px;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        padding: 20px;
-        background: var(--cream);
-      }
-
-      .contact-links {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      .reveal {
-        opacity: 0;
-        transform: translateY(22px);
-        transition: opacity 700ms ease, transform 700ms ease;
-      }
-
-      .reveal.visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      @media (max-width: 860px) {
+      @media (max-width: 620px) {
         .topbar-inner {
           align-items: flex-start;
           flex-direction: column;
-          padding: 14px 0;
+          padding: 12px 0;
         }
 
-        .hero {
-          padding: 42px 0 76px;
-        }
-
-        .hero-layout,
-        .category-layout {
-          grid-template-columns: 1fr;
-        }
-
-        .photo-grid {
-          min-height: 300px;
-        }
-
-        .services,
         .form-grid,
-        .trust-grid,
-        .receipt-summary {
+        .filters,
+        .range-pair,
+        .dashboard-grid,
+        .history-grid,
+        .help-grid,
+        .day-checks,
+        .before-after-preview {
           grid-template-columns: 1fr;
         }
 
-        .section {
-          padding: 60px 0;
-        }
-      }
-
-      @media (max-width: 540px) {
-        .shell {
-          width: min(100% - 22px, 1180px);
-        }
-
-        .hero h1 {
-          font-size: 43px;
+        .tabs {
+          position: sticky;
+          top: 66px;
+          z-index: 8;
+          margin: 0 -14px;
+          padding: 10px 14px;
+          background: rgba(255, 250, 247, 0.95);
+          backdrop-filter: blur(12px);
         }
 
-        .section-head {
-          display: block;
-        }
-
-        .contact-card {
-          align-items: stretch;
-          flex-direction: column;
-        }
-
-        .photo-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .photo-grid img:first-child {
-          grid-row: auto;
-        }
-
-        .dialog-body {
-          padding: 16px;
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .photo-grid img,
-        .photo-placeholder,
-        .reveal {
-          animation: none !important;
-          opacity: 1 !important;
-          transform: none !important;
-          transition: none !important;
+        .panel {
+          padding: 13px;
         }
       }
     </style>
@@ -1094,228 +605,524 @@
   <body>
     <header class="topbar">
       <div class="shell topbar-inner">
-        <a href="#inicio" class="brand" aria-label="Inicio" data-i18n-aria="home">
+        <div class="brand">
           <span class="brand-mark"><i data-lucide="sparkles" aria-hidden="true"></i></span>
-          <span class="brand-text">
-            <span id="brandName">Angel's Lashes</span>
-            <span class="brand-subtitle"><span id="brandSubtitle">By Rocio Rivero</span><span class="brand-heart">&hearts;</span></span>
-          </span>
-        </a>
-        <nav id="nav" class="nav" aria-label="Secciones" data-i18n-aria="sections"></nav>
-        <div class="language-switch" aria-label="Language" data-i18n-aria="languageLabel">
-          <button type="button" data-lang="es" class="active">ES</button>
-          <button type="button" data-lang="en">EN</button>
+          <span id="brandName">Angel's Lashes Admin</span>
+        </div>
+        <div class="top-actions">
+          <a id="publicLink" class="btn secondary" href="?" target="_blank" rel="noopener"><i data-lucide="external-link" aria-hidden="true"></i>Vista clientas</a>
+          <button id="refreshBtn" class="btn secondary" type="button"><i data-lucide="refresh-cw" aria-hidden="true"></i>Actualizar</button>
+          <button id="logoutBtn" class="btn secondary" type="button" hidden><i data-lucide="log-out" aria-hidden="true"></i>Cerrar sesion</button>
         </div>
       </div>
     </header>
 
-    <main id="app">
-      <section id="inicio" class="hero">
-        <div class="shell hero-layout">
-          <div class="hero-copy reveal">
-            <div class="eyebrow"><i data-lucide="flower-2" aria-hidden="true"></i><span data-i18n="eyebrow">Cejas, pestañas y maquillaje</span></div>
-            <h1 id="heroTitle">Angel's Lashes</h1>
-            <div class="hero-subtitle"><span id="heroSubtitle">By Rocio Rivero</span><span class="brand-heart">&hearts;</span></div>
-            <p data-i18n="heroCopy">Servicios de belleza con un acabado delicado, moderno y pensado para resaltar tu estilo natural.</p>
+    <main>
+      <section id="login" class="login">
+        <form id="loginForm" class="login-card">
+          <h1>Admin</h1>
+          <p class="muted">Angel's Lashes</p>
+          <div class="field">
+            <label for="secret">Contrasena</label>
+            <input id="secret" type="password" autocomplete="current-password" required>
           </div>
+          <button class="btn" type="submit"><i data-lucide="lock-keyhole" aria-hidden="true"></i>Entrar</button>
+        </form>
+      </section>
 
-          <form id="quickBook" class="quick-book reveal">
-            <h2 data-i18n="quickBook">Reserva rápida</h2>
-            <div class="field">
-              <label for="quickCategory" data-i18n="category">Categoría</label>
-              <select id="quickCategory" required></select>
+      <section id="admin" class="admin shell">
+        <nav class="tabs" aria-label="Admin">
+          <button class="tab active" type="button" data-tab="reservations">Reservas</button>
+          <button class="tab" type="button" data-tab="services">Servicios</button>
+          <button class="tab" type="button" data-tab="photos">Fotos</button>
+          <button class="tab" type="button" data-tab="discounts">Descuentos</button>
+          <button class="tab" type="button" data-tab="settings">Ajustes</button>
+          <button class="tab" type="button" data-tab="help">Ayuda</button>
+        </nav>
+
+        <section id="reservations" class="tab-panel">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Reservas</h2>
+                <div class="muted" id="reservationCount"></div>
+              </div>
             </div>
-            <div class="field">
-              <label for="quickService" data-i18n="service">Servicio</label>
-              <select id="quickService" required></select>
+            <div id="dashboardGrid" class="dashboard-grid"></div>
+            <div class="filters">
+              <input id="reservationSearch" placeholder="Buscar cliente, servicio, telefono o email">
+              <select id="reservationStatus">
+                <option value="">Todos los estados</option>
+                <option>Pendiente</option>
+                <option>Confirmada</option>
+                <option>Cancelada</option>
+              </select>
+              <input id="reservationFrom" type="date" aria-label="Desde">
+              <input id="reservationTo" type="date" aria-label="Hasta">
             </div>
-            <button class="btn" type="submit">
-              <i data-lucide="calendar-plus" aria-hidden="true"></i>
-              <span data-i18n="book">Reservar</span>
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <section class="trust-band shell">
-        <div class="trust-grid">
-          <article class="trust-item reveal">
-            <i data-lucide="sparkles" aria-hidden="true"></i>
-            <h3 data-i18n="trustPersonal">Atencion personalizada</h3>
-            <p data-i18n="trustPersonalCopy">Cada servicio se adapta a tu estilo y rasgos naturales.</p>
-          </article>
-          <article class="trust-item reveal">
-            <i data-lucide="calendar-check" aria-hidden="true"></i>
-            <h3 data-i18n="trustAppointment">Servicios por cita</h3>
-            <p data-i18n="trustAppointmentCopy">Tu espacio se reserva con tiempo y cuidado.</p>
-          </article>
-          <article class="trust-item reveal">
-            <i data-lucide="shield-check" aria-hidden="true"></i>
-            <h3 data-i18n="trustClean">Ambiente profesional</h3>
-            <p data-i18n="trustCleanCopy">Detalles limpios, delicados y organizados.</p>
-          </article>
-          <article class="trust-item reveal">
-            <i data-lucide="heart" aria-hidden="true"></i>
-            <h3 data-i18n="trustNatural">Resultados naturales</h3>
-            <p data-i18n="trustNaturalCopy">Acabados femeninos, elegantes y pensados para ti.</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="discountSection" class="discounts shell" hidden>
-        <div class="section-head">
-          <div>
-            <h2 class="section-title" data-i18n="activePromos">Promos activas</h2>
-            <p class="section-copy" data-i18n="promosCopy">Cupones disponibles para reservas elegibles.</p>
+            <div id="reservationTable"></div>
+            <div id="clientHistory"></div>
           </div>
-        </div>
-        <div id="discountTrack" class="discount-track"></div>
-      </section>
+        </section>
 
-      <div id="content" class="loading" data-i18n="loadingServices">Cargando servicios...</div>
-
-      <section id="beforeAfterSection" class="section category-section" hidden>
-        <div class="shell">
-          <div class="section-head reveal">
-            <div>
-              <h2 class="section-title" data-i18n="beforeAfterTitle">Antes y despues</h2>
-              <p class="section-copy" data-i18n="beforeAfterCopy">Resultados reales compartidos desde el estudio.</p>
+        <section id="services" class="tab-panel" hidden>
+          <div class="grid">
+            <form id="serviceForm" class="panel">
+              <div class="panel-head">
+                <h2>Servicio</h2>
+                <button class="btn secondary mini" type="button" id="newServiceBtn"><i data-lucide="plus" aria-hidden="true"></i>Nuevo</button>
+              </div>
+              <input type="hidden" id="serviceRow">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="serviceCategory">Categoria</label>
+                  <input id="serviceCategory" list="categoryList" required>
+                </div>
+                <div class="field">
+                  <label for="serviceCategoryEn">Categoria EN</label>
+                  <input id="serviceCategoryEn">
+                </div>
+                <div class="field">
+                  <label for="serviceName">Servicio</label>
+                  <input id="serviceName" required>
+                </div>
+                <div class="field">
+                  <label for="serviceNameEn">Servicio EN</label>
+                  <input id="serviceNameEn">
+                </div>
+                <div class="field full">
+                  <label for="serviceDescription">Descripcion</label>
+                  <textarea id="serviceDescription"></textarea>
+                </div>
+                <div class="field full">
+                  <label for="serviceDescriptionEn">Descripcion EN</label>
+                  <textarea id="serviceDescriptionEn"></textarea>
+                </div>
+                <div class="field">
+                  <label for="servicePrice">Precio</label>
+                  <input id="servicePrice" type="number" min="0" step="0.01" required>
+                </div>
+                <div class="field">
+                  <label for="serviceDuration">Duracion min</label>
+                  <input id="serviceDuration" type="number" min="15" step="5" value="60">
+                </div>
+                <div class="field">
+                  <label for="serviceOrder">Orden</label>
+                  <input id="serviceOrder" type="number" min="1" step="1" value="1">
+                </div>
+                <label class="check">
+                  <input id="serviceVisible" type="checkbox" checked>
+                  Visible
+                </label>
+                <div class="field full">
+                  <label for="serviceImage">Imagen principal</label>
+                  <input id="serviceImage">
+                </div>
+              </div>
+              <button class="btn" type="submit"><i data-lucide="save" aria-hidden="true"></i>Guardar servicio</button>
+            </form>
+            <div class="panel">
+              <div class="panel-head">
+                <h2>Lista</h2>
+              </div>
+              <div id="serviceTable"></div>
             </div>
           </div>
-          <div id="beforeAfterGrid" class="before-after-grid"></div>
-        </div>
-      </section>
+        </section>
 
-      <section class="section policy-section">
-        <div class="shell">
-          <div class="section-head reveal">
-            <div>
-              <h2 class="section-title" data-i18n="policyTitle">Politica de citas</h2>
+        <section id="photos" class="tab-panel" hidden>
+          <div class="grid">
+            <form id="photoForm" class="panel">
+              <div class="panel-head">
+                <h2>Foto</h2>
+                <button class="btn secondary mini" type="button" id="newPhotoBtn"><i data-lucide="plus" aria-hidden="true"></i>Nueva</button>
+              </div>
+              <input type="hidden" id="photoRow">
+              <input type="hidden" id="photoId">
+              <input type="hidden" id="photoDriveId">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="photoCategory">Categoria</label>
+                  <input id="photoCategory" list="categoryList" required>
+                </div>
+                <div class="field">
+                  <label for="photoOrder">Orden</label>
+                  <input id="photoOrder" type="number" min="1" step="1" value="1">
+                </div>
+                <div class="field">
+                  <label for="photoTitle">Titulo</label>
+                  <input id="photoTitle">
+                </div>
+                <div class="field">
+                  <label for="photoTitleEn">Titulo EN</label>
+                  <input id="photoTitleEn">
+                </div>
+                <label class="check">
+                  <input id="photoVisible" type="checkbox" checked>
+                  Visible
+                </label>
+                <div class="field full">
+                  <label for="photoFile">Subir desde galeria</label>
+                  <input id="photoFile" type="file" accept="image/*">
+                </div>
+                <div class="field">
+                  <label for="photoAspect">Recorte</label>
+                  <select id="photoAspect">
+                    <option value="4:5">Retrato 4:5</option>
+                    <option value="3:2">Galeria 3:2</option>
+                    <option value="1:1">Cuadrada 1:1</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="photoFocus">Enfoque</label>
+                  <select id="photoFocus">
+                    <option value="center">Centro</option>
+                    <option value="top">Arriba</option>
+                    <option value="bottom">Abajo</option>
+                  </select>
+                </div>
+                <div class="field full">
+                  <label>Ajuste libre</label>
+                  <div class="range-pair">
+                    <div>
+                      <label for="photoOffsetX">Horizontal</label>
+                      <input id="photoOffsetX" type="range" min="0" max="100" value="50">
+                    </div>
+                    <div>
+                      <label for="photoOffsetY">Vertical</label>
+                      <input id="photoOffsetY" type="range" min="0" max="100" value="50">
+                    </div>
+                  </div>
+                </div>
+                <div class="field full">
+                  <img id="photoPreview" class="preview" alt="">
+                </div>
+                <div class="field full">
+                  <label for="photoUrl">Url existente opcional</label>
+                  <input id="photoUrl">
+                </div>
+              </div>
+              <button class="btn" type="submit"><i data-lucide="image-up" aria-hidden="true"></i>Guardar foto</button>
+            </form>
+            <div class="panel">
+              <div class="panel-head">
+                <h2>Galeria</h2>
+              </div>
+              <div id="photoTable"></div>
             </div>
           </div>
-          <div id="policyPanel" class="policy-panel reveal"></div>
-        </div>
-      </section>
+          <div class="grid before-after-admin">
+            <form id="beforeAfterForm" class="panel">
+              <div class="panel-head">
+                <h2>Antes / Despues</h2>
+                <button class="btn secondary mini" type="button" id="newBeforeAfterBtn"><i data-lucide="plus" aria-hidden="true"></i>Nuevo</button>
+              </div>
+              <input type="hidden" id="beforeAfterRow">
+              <input type="hidden" id="beforeAfterId">
+              <input type="hidden" id="beforeDriveId">
+              <input type="hidden" id="afterDriveId">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="beforeAfterTitle">Titulo</label>
+                  <input id="beforeAfterTitle" required>
+                </div>
+                <div class="field">
+                  <label for="beforeAfterTitleEn">Titulo EN</label>
+                  <input id="beforeAfterTitleEn">
+                </div>
+                <div class="field">
+                  <label for="beforeAfterOrder">Orden</label>
+                  <input id="beforeAfterOrder" type="number" min="1" step="1" value="1">
+                </div>
+                <label class="check">
+                  <input id="beforeAfterVisible" type="checkbox" checked>
+                  Visible
+                </label>
+                <div class="field">
+                  <label for="beforeFile">Foto antes</label>
+                  <input id="beforeFile" type="file" accept="image/*">
+                </div>
+                <div class="field">
+                  <label for="afterFile">Foto despues</label>
+                  <input id="afterFile" type="file" accept="image/*">
+                </div>
+                <div class="field full before-after-preview">
+                  <img id="beforePreview" alt="">
+                  <img id="afterPreview" alt="">
+                </div>
+                <div class="field">
+                  <label for="beforeUrl">Url antes opcional</label>
+                  <input id="beforeUrl">
+                </div>
+                <div class="field">
+                  <label for="afterUrl">Url despues opcional</label>
+                  <input id="afterUrl">
+                </div>
+              </div>
+              <button class="btn" type="submit"><i data-lucide="images" aria-hidden="true"></i>Guardar antes/despues</button>
+            </form>
+            <div class="panel">
+              <div class="panel-head">
+                <h2>Resultados</h2>
+              </div>
+              <div id="beforeAfterTable"></div>
+            </div>
+          </div>
+        </section>
 
-      <section id="contactSection" class="contact-section" hidden>
-        <div class="shell contact-card">
-          <div>
-            <h2 class="section-title" data-i18n="contactTitle">Contactame</h2>
-            <p class="section-copy" data-i18n="contactCopy">Para preguntas o ayuda con tu cita.</p>
+        <section id="discounts" class="tab-panel" hidden>
+          <div class="grid">
+            <form id="discountForm" class="panel">
+              <div class="panel-head">
+                <h2>Cupon</h2>
+                <button class="btn secondary mini" type="button" id="newDiscountBtn"><i data-lucide="plus" aria-hidden="true"></i>Nuevo</button>
+              </div>
+              <input type="hidden" id="discountRow">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="discountCoupon">Cupon</label>
+                  <input id="discountCoupon" required>
+                </div>
+                <div class="field">
+                  <label for="discountValue">Valor</label>
+                  <input id="discountValue" type="number" min="0" step="0.01" value="0">
+                </div>
+                <div class="field">
+                  <label for="discountCategory">Categoria</label>
+                  <input id="discountCategory" list="categoryList" value="Todas">
+                </div>
+                <div class="field">
+                  <label for="discountCategoryEn">Categoria EN</label>
+                  <input id="discountCategoryEn" value="All">
+                </div>
+                <div class="field">
+                  <label for="discountDays">Dias</label>
+                  <input id="discountDays" value="Todos">
+                </div>
+                <div class="field">
+                  <label for="discountDaysEn">Dias EN</label>
+                  <input id="discountDaysEn" value="Every day">
+                </div>
+                <label class="check">
+                  <input id="discountAvailable" type="checkbox" checked>
+                  Disponible
+                </label>
+                <label class="check">
+                  <input id="discountVisible" type="checkbox">
+                  Publico
+                </label>
+              </div>
+              <button class="btn" type="submit"><i data-lucide="ticket-percent" aria-hidden="true"></i>Guardar cupon</button>
+            </form>
+            <div class="panel">
+              <div class="panel-head">
+                <h2>Descuentos</h2>
+              </div>
+              <div id="discountTable"></div>
+            </div>
           </div>
-          <div class="contact-links">
-            <a id="phoneLink" class="btn secondary" href="#"><i data-lucide="phone" aria-hidden="true"></i><span id="contactPhoneText"></span></a>
-            <a id="emailLink" class="btn secondary" href="#"><i data-lucide="mail" aria-hidden="true"></i><span id="contactEmailText"></span></a>
-            <a id="instagramLink" class="btn" href="#" target="_blank" rel="noopener" hidden><i data-lucide="instagram" aria-hidden="true"></i>Instagram</a>
+        </section>
+
+        <section id="settings" class="tab-panel" hidden>
+          <div class="grid">
+            <form id="settingsForm" class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Ajustes</h2>
+                  <div id="rolePill" class="role-pill"></div>
+                </div>
+              </div>
+              <div class="form-grid">
+                <label class="check full">
+                  <input id="contactVisible" type="checkbox">
+                  Mostrar seccion Contactame
+                </label>
+                <div class="field">
+                  <label for="contactPhone">Telefono</label>
+                  <input id="contactPhone">
+                </div>
+                <div class="field">
+                  <label for="contactEmail">Email</label>
+                  <input id="contactEmail" type="email">
+                </div>
+                <label class="check full">
+                  <input id="instagramVisible" type="checkbox">
+                  Mostrar boton de Instagram
+                </label>
+                <div class="field full">
+                  <label for="instagramUrl">Instagram URL</label>
+                  <input id="instagramUrl" placeholder="https://instagram.com/...">
+                </div>
+                <div class="field">
+                  <label for="businessStart">Hora de inicio</label>
+                  <input id="businessStart" type="time">
+                </div>
+                <div class="field">
+                  <label for="businessEnd">Hora de cierre</label>
+                  <input id="businessEnd" type="time">
+                </div>
+                <div class="field">
+                  <label for="businessInterval">Intervalo min</label>
+                  <input id="businessInterval" type="number" min="15" step="5">
+                </div>
+                <label class="check">
+                  <input id="remindersEnabled" type="checkbox">
+                  Recordatorios por email
+                </label>
+                <div class="field full">
+                  <label>Dias abiertos</label>
+                  <div id="openDays" class="day-checks"></div>
+                </div>
+                <div class="field">
+                  <label for="reminderHours">Enviar recordatorio antes de</label>
+                  <input id="reminderHours" type="number" min="1" step="1">
+                </div>
+                <div class="field full">
+                  <label for="maintenanceMessage">Mensaje de mantenimiento</label>
+                  <textarea id="maintenanceMessage"></textarea>
+                </div>
+                <div class="developer-only full">
+                  <h3>Developer</h3>
+                  <label class="check">
+                    <input id="publicEnabled" type="checkbox">
+                    Pagina de clientas activa
+                  </label>
+                  <label class="check">
+                    <input id="adminEnabled" type="checkbox">
+                    Acceso admin activo
+                  </label>
+                </div>
+              </div>
+              <div class="row-actions">
+                <button class="btn" type="submit"><i data-lucide="settings" aria-hidden="true"></i>Guardar ajustes</button>
+                <button class="btn secondary" type="button" id="sendRemindersBtn"><i data-lucide="bell-ring" aria-hidden="true"></i>Enviar recordatorios ahora</button>
+                <button class="btn secondary" type="button" id="clearPublicCacheBtn"><i data-lucide="rotate-cw" aria-hidden="true"></i>Actualizar pagina clientas</button>
+              </div>
+            </form>
+
+            <div class="panel">
+              <div class="panel-head">
+                <h2>Seguridad</h2>
+              </div>
+              <form id="passwordForm">
+                <p id="passwordLimitText" class="muted"></p>
+                <div class="field" id="currentPasswordField">
+                  <label for="currentPassword">Contrasena actual</label>
+                  <input id="currentPassword" type="password" autocomplete="current-password">
+                </div>
+                <div class="field">
+                  <label for="newPassword">Nueva contrasena admin</label>
+                  <input id="newPassword" type="password" autocomplete="new-password">
+                </div>
+                <button class="btn" type="submit"><i data-lucide="key-round" aria-hidden="true"></i>Cambiar contrasena</button>
+              </form>
+
+              <form id="developerPinForm" class="developer-only" style="margin-top: 18px;">
+                <div class="field">
+                  <label for="newDeveloperPin">Nuevo PIN developer</label>
+                  <input id="newDeveloperPin" type="password">
+                </div>
+                <button class="btn secondary" type="submit"><i data-lucide="shield" aria-hidden="true"></i>Cambiar PIN developer</button>
+              </form>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <h2>Dias bloqueados</h2>
+              </div>
+              <form id="blockedDayForm">
+                <input type="hidden" id="blockedRow">
+                <div class="field">
+                  <label for="blockedDate">Fecha</label>
+                  <input id="blockedDate" type="date" required>
+                </div>
+                <div class="field">
+                  <label for="blockedReason">Motivo interno</label>
+                  <input id="blockedReason" placeholder="Ej. Vacaciones, evento, cerrado">
+                </div>
+                <label class="check">
+                  <input id="blockedActive" type="checkbox" checked>
+                  Bloqueo activo
+                </label>
+                <div class="row-actions">
+                  <button class="btn" type="submit"><i data-lucide="calendar-x" aria-hidden="true"></i>Guardar bloqueo</button>
+                  <button class="btn secondary" id="newBlockedDayBtn" type="button">Nuevo</button>
+                </div>
+              </form>
+              <div id="blockedDaysList" class="compact-list" style="margin-top: 14px;"></div>
+            </div>
           </div>
-        </div>
+        </section>
+
+        <section id="help" class="tab-panel" hidden>
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Guia rapida para Rocio</h2>
+                <div class="muted">Pasos cortos para mantener Angel's Lashes actualizada desde el telefono.</div>
+              </div>
+            </div>
+            <div class="help-grid">
+              <article class="help-card">
+                <h3>Reservas</h3>
+                <ol>
+                  <li>Busca por nombre, telefono, email o servicio.</li>
+                  <li>Usa Confirmar, Cancelar o Pendiente para cambiar el estado.</li>
+                  <li>Guarda notas internas si necesitas recordar detalles de la clienta.</li>
+                  <li>Abre PDF para ver o compartir el recibo.</li>
+                </ol>
+              </article>
+              <article class="help-card">
+                <h3>Servicios</h3>
+                <ol>
+                  <li>Agrega categoria, nombre, descripcion, precio y duracion.</li>
+                  <li>Marca Visible para que aparezca en la pagina de clientas.</li>
+                  <li>Usa Orden para controlar como se muestra cada servicio.</li>
+                </ol>
+              </article>
+              <article class="help-card">
+                <h3>Fotos</h3>
+                <ol>
+                  <li>Selecciona una foto desde la galeria del telefono.</li>
+                  <li>Elige recorte y ajusta la posicion antes de guardar.</li>
+                  <li>Arrastra filas para cambiar el orden.</li>
+                  <li>Borra fotos que ya no quieras mostrar.</li>
+                </ol>
+              </article>
+              <article class="help-card">
+                <h3>Ajustes</h3>
+                <ol>
+                  <li>Cambia telefono, email, Instagram y horario.</li>
+                  <li>Bloquea dias cerrados o vacaciones.</li>
+                  <li>Usa Actualizar pagina clientas despues de editar fotos o servicios.</li>
+                  <li>Usa Cerrar sesion cuando termines.</li>
+                </ol>
+              </article>
+            </div>
+          </div>
+        </section>
       </section>
     </main>
 
-    <section id="bookingModal" class="modal" aria-hidden="true">
-      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
-        <div class="dialog-head">
-          <h2 id="bookingTitle" class="dialog-title" data-i18n="newBooking">Nueva reserva</h2>
-          <button class="btn secondary icon" type="button" id="closeBooking" aria-label="Cerrar" data-i18n-aria="close">
-            <i data-lucide="x" aria-hidden="true"></i>
-          </button>
-        </div>
-        <form id="bookingForm" class="dialog-body">
-          <div class="form-grid">
-            <div class="field">
-              <label for="modalCategory" data-i18n="category">Categoría</label>
-              <select id="modalCategory" required></select>
-            </div>
-            <div class="field">
-              <label for="modalService" data-i18n="service">Servicio</label>
-              <select id="modalService" required></select>
-            </div>
-            <div class="field">
-              <label for="clientName" data-i18n="name">Nombre</label>
-              <input id="clientName" autocomplete="name" required>
-            </div>
-            <div class="field">
-              <label for="phone" data-i18n="phone">Teléfono</label>
-              <input id="phone" autocomplete="tel" required>
-            </div>
-            <div class="field">
-              <label for="email">Email</label>
-              <input id="email" type="email" autocomplete="email">
-            </div>
-            <div class="field">
-              <label for="date" data-i18n="date">Fecha</label>
-              <input id="date" type="date" required hidden>
-              <div id="calendar" class="calendar"></div>
-            </div>
-            <div class="field full">
-              <label data-i18n="time">Hora</label>
-              <div id="slotGrid" class="slot-grid"></div>
-            </div>
-            <div class="field">
-              <label for="coupon" data-i18n="coupon">Cupón</label>
-              <input id="coupon" autocomplete="off" placeholder="Opcional" data-i18n-placeholder="optional">
-            </div>
-            <label class="check-row">
-              <input id="firstVisit" type="checkbox">
-              <span data-i18n="firstVisit">Es mi primera cita</span>
-            </label>
-            <div class="field full">
-              <label for="notes" data-i18n="notes">Notas</label>
-              <textarea id="notes" placeholder="Preferencias, alergias o detalles importantes" data-i18n-placeholder="notesPlaceholder"></textarea>
-            </div>
-            <div class="field full">
-              <label data-i18n="agreement">Acuerdo</label>
-              <div class="agreement">
-                <p id="agreementText"></p>
-                <label class="check-row">
-                  <input id="agreementAccepted" type="checkbox" required>
-                  <span data-i18n="acceptAgreement">Acepto el acuerdo de servicio</span>
-                </label>
-              </div>
-            </div>
-            <div class="field full">
-              <label data-i18n="signature">Firma</label>
-              <div class="signature-box">
-                <canvas id="signatureCanvas"></canvas>
-              </div>
-              <button class="btn ghost" type="button" id="clearSignature">
-                <i data-lucide="eraser" aria-hidden="true"></i>
-                <span data-i18n="clearSignature">Limpiar firma</span>
-              </button>
-            </div>
-          </div>
-          <div class="dialog-actions">
-            <button class="btn secondary" type="button" id="cancelBooking" data-i18n="cancel">Cancelar</button>
-            <button class="btn" type="submit" id="submitBooking">
-              <i data-lucide="send" aria-hidden="true"></i>
-              <span data-i18n="createBooking">Crear reserva</span>
-            </button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <section id="receiptModal" class="modal" aria-hidden="true">
-      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
-        <div class="dialog-head">
-          <h2 id="receiptTitle" class="dialog-title" data-i18n="bookingReceived">Reserva recibida</h2>
-          <button class="btn secondary icon" type="button" id="closeReceipt" aria-label="Cerrar" data-i18n-aria="close">
-            <i data-lucide="x" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div id="receiptBody" class="dialog-body"></div>
-      </div>
-    </section>
-
+    <datalist id="categoryList"></datalist>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
-    <script id="initialAppData" type="application/json"><?!= typeof initialAppDataJson !== 'undefined' ? initialAppDataJson : 'null' ?></script>
 
     <script>
       const $ = selector => document.querySelector(selector);
+      const $$ = selector => Array.prototype.slice.call(document.querySelectorAll(selector));
+      const ADMIN_CONFIG = Object.assign({
+        apiBaseUrl: '',
+        publicUrl: './'
+      }, window.ANGELS_ADMIN_CONFIG || {});
+      const PUBLIC_APP_URL = ADMIN_CONFIG.publicUrl || './';
 
-      if (window.NodeList && !NodeList.prototype.forEach) {
-        NodeList.prototype.forEach = Array.prototype.forEach;
+      function readJsonElement(id, fallback) {
+        try {
+          const element = document.getElementById(id);
+          return element ? JSON.parse(element.textContent || 'null') : fallback;
+        } catch (error) {
+          return fallback;
+        }
       }
 
       function storageGet(type, key, fallback) {
@@ -1336,946 +1143,1103 @@
         }
       }
 
-      function readJsonElement(id, fallback) {
+      function storageRemove(type, key) {
         try {
-          const element = document.getElementById(id);
-          return element ? JSON.parse(element.textContent || 'null') : fallback;
+          const storage = window[type];
+          if (storage) storage.removeItem(key);
         } catch (error) {
-          return fallback;
+          console.warn('Storage no disponible:', key);
         }
       }
 
-      const INITIAL_APP_DATA = readJsonElement('initialAppData', null);
-
       const state = {
+        secret: storageGet('sessionStorage', 'angels_admin_secret', ''),
         data: null,
-        selectedTime: '',
-        signatureDrawn: false,
-        language: storageGet('localStorage', 'lumina_language', 'es'),
-        calendarDate: new Date()
-      };
-
-      const I18N = {
-        es: {
-          eyebrow: 'Cejas, pestañas y maquillaje',
-          heroCopy: 'Servicios de belleza con un acabado delicado, moderno y pensado para resaltar tu estilo natural.',
-          quickBook: 'Reserva rápida',
-          category: 'Categoría',
-          service: 'Servicio',
-          book: 'Reservar',
-          activePromos: 'Promos activas',
-          promosCopy: 'Cupones disponibles para reservas elegibles.',
-          loadingServices: 'Cargando servicios...',
-          newBooking: 'Nueva reserva',
-          close: 'Cerrar',
-          name: 'Nombre',
-          phone: 'Teléfono',
-          date: 'Fecha',
-          time: 'Hora',
-          coupon: 'Cupón',
-          optional: 'Opcional',
-          firstVisit: 'Es mi primera cita',
-          notes: 'Notas',
-          notesPlaceholder: 'Preferencias, alergias o detalles importantes',
-          agreement: 'Acuerdo',
-          acceptAgreement: 'Acepto el acuerdo de servicio',
-          signature: 'Firma',
-          clearSignature: 'Limpiar firma',
-          cancel: 'Cancelar',
-          createBooking: 'Crear reserva',
-          bookingReceived: 'Reserva recibida',
-          home: 'Inicio',
-          sections: 'Secciones',
-          languageLabel: 'Idioma',
-          contactTitle: 'Contactame',
-          contactCopy: 'Para preguntas o ayuda con tu cita.',
-          trustPersonal: 'Atencion personalizada',
-          trustPersonalCopy: 'Cada servicio se adapta a tu estilo y rasgos naturales.',
-          trustAppointment: 'Servicios por cita',
-          trustAppointmentCopy: 'Tu espacio se reserva con tiempo y cuidado.',
-          trustClean: 'Ambiente profesional',
-          trustCleanCopy: 'Detalles limpios, delicados y organizados.',
-          trustNatural: 'Resultados naturales',
-          trustNaturalCopy: 'Acabados femeninos, elegantes y pensados para ti.',
-          beforeAfterTitle: 'Antes y despues',
-          beforeAfterCopy: 'Resultados reales compartidos desde el estudio.',
-          policyTitle: 'Politica de citas',
-          before: 'Antes',
-          after: 'Despues',
-          prevMonth: 'Mes anterior',
-          nextMonth: 'Mes siguiente',
-          successTitle: 'Solicitud recibida',
-          successCopy: "Gracias por reservar. Tu cita queda pendiente hasta ser confirmada por Angel's Lashes.",
-          emptyServices: 'Todavía no hay servicios visibles. Agrega servicios en la hoja Servicios y marca Visible como TRUE.',
-          bookCategory: 'Reservar {category}',
-          customService: 'Servicio personalizado.',
-          noServicesInCategory: 'No hay servicios disponibles en esta categoría.',
-          chooseServiceDate: 'Selecciona servicio y fecha.',
-          searchingSlots: 'Buscando horarios...',
-          noSlots: 'No hay horarios disponibles para esa fecha.',
-          chooseTime: 'Selecciona una hora disponible.',
-          missingSignature: 'Falta tu firma.',
-          creating: 'Creando...',
-          receiptService: 'Servicio',
-          receiptDate: 'Fecha',
-          receiptPrice: 'Precio',
-          receiptDiscount: 'Descuento',
-          receiptTotal: 'Total',
-          receiptStatus: 'Estado',
-          at: 'a las',
-          viewPdf: 'Ver PDF',
-          categories: {
-            todas: 'Todas',
-            todos: 'Todos',
-            cejas: 'Cejas',
-            pestanas: 'Pestañas',
-            'depilacion-facial': 'Depilación facial',
-            maquillaje: 'Maquillaje'
-          },
-          statuses: {
-            pendiente: 'Pendiente',
-            confirmada: 'Confirmada',
-            cancelada: 'Cancelada'
-          },
-          sectionCopy: {
-            cejas: 'Definición, simetría y acabado suave para enmarcar tu rostro.',
-            pestanas: 'Looks delicados o más expresivos, según tu estilo y tu rutina.',
-            'depilacion-facial': 'Rostro limpio, piel cuidada y detalles precisos.',
-            maquillaje: 'Piel luminosa, tonos elegantes y maquillaje listo para tu evento.'
-          },
-          defaultSectionCopy: 'Servicios personalizados con detalle y acabado elegante.'
-        },
-        en: {
-          eyebrow: 'Brows, lashes and makeup',
-          heroCopy: 'Beauty services with a delicate, modern finish designed to enhance your natural style.',
-          quickBook: 'Quick booking',
-          category: 'Category',
-          service: 'Service',
-          book: 'Book',
-          activePromos: 'Active promos',
-          promosCopy: 'Coupons available for eligible bookings.',
-          loadingServices: 'Loading services...',
-          newBooking: 'New booking',
-          close: 'Close',
-          name: 'Name',
-          phone: 'Phone',
-          date: 'Date',
-          time: 'Time',
-          coupon: 'Coupon',
-          optional: 'Optional',
-          firstVisit: 'This is my first visit',
-          notes: 'Notes',
-          notesPlaceholder: 'Preferences, allergies or important details',
-          agreement: 'Agreement',
-          acceptAgreement: 'I accept the service agreement',
-          signature: 'Signature',
-          clearSignature: 'Clear signature',
-          cancel: 'Cancel',
-          createBooking: 'Create booking',
-          bookingReceived: 'Booking received',
-          home: 'Home',
-          sections: 'Sections',
-          languageLabel: 'Language',
-          contactTitle: 'Contact me',
-          contactCopy: 'For questions or help with your appointment.',
-          trustPersonal: 'Personalized care',
-          trustPersonalCopy: 'Each service is adapted to your style and natural features.',
-          trustAppointment: 'Appointment based',
-          trustAppointmentCopy: 'Your time is reserved with care and attention.',
-          trustClean: 'Professional space',
-          trustCleanCopy: 'Clean, delicate and organized details.',
-          trustNatural: 'Natural results',
-          trustNaturalCopy: 'Feminine, elegant finishes designed for you.',
-          beforeAfterTitle: 'Before and after',
-          beforeAfterCopy: 'Real results shared from the studio.',
-          policyTitle: 'Appointment policy',
-          before: 'Before',
-          after: 'After',
-          prevMonth: 'Previous month',
-          nextMonth: 'Next month',
-          successTitle: 'Request received',
-          successCopy: "Thank you for booking. Your appointment remains pending until confirmed by Angel's Lashes.",
-          emptyServices: 'There are no visible services yet. Add services in the Servicios sheet and mark Visible as TRUE.',
-          bookCategory: 'Book {category}',
-          customService: 'Personalized service.',
-          noServicesInCategory: 'There are no services available in this category.',
-          chooseServiceDate: 'Select a service and date.',
-          searchingSlots: 'Searching available times...',
-          noSlots: 'No available times for that date.',
-          chooseTime: 'Select an available time.',
-          missingSignature: 'Your signature is missing.',
-          creating: 'Creating...',
-          receiptService: 'Service',
-          receiptDate: 'Date',
-          receiptPrice: 'Price',
-          receiptDiscount: 'Discount',
-          receiptTotal: 'Total',
-          receiptStatus: 'Status',
-          at: 'at',
-          viewPdf: 'View PDF',
-          categories: {
-            todas: 'All',
-            todos: 'All',
-            cejas: 'Brows',
-            pestanas: 'Lashes',
-            'depilacion-facial': 'Facial waxing',
-            maquillaje: 'Makeup'
-          },
-          statuses: {
-            pendiente: 'Pending',
-            confirmada: 'Confirmed',
-            cancelada: 'Cancelled'
-          },
-          sectionCopy: {
-            cejas: 'Definition, symmetry and a soft finish to frame your face.',
-            pestanas: 'Delicate or more expressive looks, shaped around your style and routine.',
-            'depilacion-facial': 'A clean face, cared-for skin and precise details.',
-            maquillaje: 'Glowing skin, elegant tones and makeup ready for your event.'
-          },
-          defaultSectionCopy: 'Personalized services with detail and an elegant finish.'
-        }
+        tab: 'reservations',
+        photoFile: null,
+        beforeFile: null,
+        afterFile: null
       };
 
       document.addEventListener('DOMContentLoaded', init);
 
-      async function init() {
+      function init() {
         bindEvents();
-        applyTranslations();
-        setupReveal();
-        try {
-          const initialData = INITIAL_APP_DATA && typeof INITIAL_APP_DATA === 'object' ? INITIAL_APP_DATA : null;
-          state.data = normalizeAppData(hasUsableAppData(initialData) ? initialData : await gas('getAppData'));
-          renderApp();
-        } catch (error) {
-          $('#content').innerHTML = `<div class="shell empty">${escapeHtml(error.message || error)}</div>`;
-        }
-      }
-
-      function hasUsableAppData(data) {
-        return Boolean(data && typeof data === 'object' && (data.appName || data.today || Array.isArray(data.categories) || Array.isArray(data.services)));
-      }
-
-      function normalizeAppData(data) {
-        data = data && typeof data === 'object' ? data : {};
-        data.appName = data.appName || "Angel's Lashes";
-        data.appSubtitle = data.appSubtitle || 'By Rocio Rivero';
-        data.currency = data.currency || 'USD';
-        data.contact = data.contact && typeof data.contact === 'object' ? data.contact : {};
-        data.agreementText = data.agreementText || '';
-        data.agreementTexts = data.agreementTexts && typeof data.agreementTexts === 'object' ? data.agreementTexts : {};
-        data.hours = data.hours && typeof data.hours === 'object' ? data.hours : {};
-        data.blockedDates = Array.isArray(data.blockedDates) ? data.blockedDates : [];
-        data.beforeAfter = Array.isArray(data.beforeAfter) ? data.beforeAfter : [];
-        data.policyText = data.policyText && typeof data.policyText === 'object' ? data.policyText : {};
-        data.categories = Array.isArray(data.categories) ? data.categories : [];
-        data.categoryTranslations = data.categoryTranslations && typeof data.categoryTranslations === 'object' ? data.categoryTranslations : {};
-        data.services = Array.isArray(data.services) ? data.services : [];
-        data.photos = data.photos && typeof data.photos === 'object' ? data.photos : {};
-        data.publicDiscounts = Array.isArray(data.publicDiscounts) ? data.publicDiscounts : [];
-        data.today = data.today || toIsoDate(new Date());
-        return data;
+        setPublicLink();
+        refreshIcons();
+        if (state.secret) loadAdminData();
       }
 
       function bindEvents() {
-        $('#quickBook').addEventListener('submit', event => {
+        $('#loginForm').addEventListener('submit', event => {
           event.preventDefault();
-          openBooking(getSelectedQuickService());
+          state.secret = $('#secret').value.trim();
+          storageSet('sessionStorage', 'angels_admin_secret', state.secret);
+          loadAdminData();
         });
-        $('#quickCategory').addEventListener('change', () => fillServiceSelect($('#quickService'), $('#quickCategory').value));
-        $('#modalCategory').addEventListener('change', () => {
-          fillServiceSelect($('#modalService'), $('#modalCategory').value);
-          loadSlots();
+        $('#publicLink').addEventListener('click', event => {
+          if ($('#publicLink').dataset.missing === 'true') {
+            event.preventDefault();
+            showToast('Pega el link del deploy en PUBLIC_APP_URL dentro de Code.gs.');
+          }
         });
-        $('#modalService').addEventListener('change', loadSlots);
-        $('#date').addEventListener('change', () => {
-          renderCalendar();
-          loadSlots();
-        });
-        $('#bookingForm').addEventListener('submit', submitReservation);
-        $('#closeBooking').addEventListener('click', closeBooking);
-        $('#cancelBooking').addEventListener('click', closeBooking);
-        $('#closeReceipt').addEventListener('click', closeReceipt);
-        $('#clearSignature').addEventListener('click', clearSignature);
-        document.addEventListener('click', handleInternalNav);
-        document.querySelectorAll('[data-lang]').forEach(button => {
-          button.addEventListener('click', () => setLanguage(button.dataset.lang));
-        });
-        window.addEventListener('resize', debounce(resizeSignatureCanvas, 180));
+        $('#refreshBtn').addEventListener('click', loadAdminData);
+        $('#logoutBtn').addEventListener('click', logoutAdmin);
+        $$('.tab').forEach(tab => tab.addEventListener('click', () => setTab(tab.dataset.tab)));
+        $('#reservationSearch').addEventListener('input', renderReservations);
+        $('#reservationStatus').addEventListener('change', renderReservations);
+        $('#reservationFrom').addEventListener('change', renderReservations);
+        $('#reservationTo').addEventListener('change', renderReservations);
+        $('#serviceForm').addEventListener('submit', saveService);
+        $('#discountForm').addEventListener('submit', saveDiscount);
+        $('#photoForm').addEventListener('submit', savePhoto);
+        $('#beforeAfterForm').addEventListener('submit', saveBeforeAfter);
+        $('#settingsForm').addEventListener('submit', saveSettings);
+        $('#blockedDayForm').addEventListener('submit', saveBlockedDay);
+        $('#passwordForm').addEventListener('submit', changePassword);
+        $('#developerPinForm').addEventListener('submit', changeDeveloperPin);
+        $('#newServiceBtn').addEventListener('click', resetServiceForm);
+        $('#newDiscountBtn').addEventListener('click', resetDiscountForm);
+        $('#newPhotoBtn').addEventListener('click', resetPhotoForm);
+        $('#newBeforeAfterBtn').addEventListener('click', resetBeforeAfterForm);
+        $('#newBlockedDayBtn').addEventListener('click', resetBlockedDayForm);
+        $('#sendRemindersBtn').addEventListener('click', runReminders);
+        $('#clearPublicCacheBtn').addEventListener('click', clearPublicPageCache);
+        $('#photoFile').addEventListener('change', handlePhotoFile);
+        $('#beforeFile').addEventListener('change', event => handleBeforeAfterFile(event, 'before'));
+        $('#afterFile').addEventListener('change', event => handleBeforeAfterFile(event, 'after'));
+        $('#photoAspect').addEventListener('change', updatePreviewAspect);
+        $('#photoFocus').addEventListener('change', syncFocusSliders);
+        $('#photoOffsetX').addEventListener('input', updatePreviewPosition);
+        $('#photoOffsetY').addEventListener('input', updatePreviewPosition);
       }
 
-      function handleInternalNav(event) {
-        let link = event.target;
-        while (link && link !== document && (!link.matches || !link.matches('a[href^="#"]'))) {
-          link = link.parentNode;
+      function setPublicLink() {
+        const candidates = [PUBLIC_APP_URL, document.referrer, window.location.href];
+        let publicUrl = '';
+        candidates.some(candidate => {
+          publicUrl = getCleanPublicUrl(candidate);
+          return Boolean(publicUrl);
+        });
+        $('#publicLink').href = publicUrl || '#';
+        $('#publicLink').dataset.missing = publicUrl ? 'false' : 'true';
+      }
+
+      function getCleanPublicUrl(value) {
+        const url = String(value || '').trim();
+        if (url === './' || url === '/' || /^\.{0,2}\//.test(url)) return url;
+        if (!url || url.indexOf('script.google.com/macros/s/') === -1 || url.indexOf('/exec') === -1) return '';
+        return url.split('#')[0].split('?')[0];
+      }
+
+      async function loadAdminData() {
+        if (!state.secret) return;
+        setBusy(true);
+        try {
+          state.data = await gas('getAdminData', state.secret);
+          $('#brandName').textContent = `${state.data.appName} Admin`;
+          $('#login').classList.add('hidden');
+          $('#admin').classList.add('open');
+          $('#logoutBtn').hidden = false;
+          document.body.classList.toggle('developer-mode', state.data.authRole === 'developer');
+          showLoginGreeting();
+          renderAll();
+        } catch (error) {
+          storageRemove('sessionStorage', 'angels_admin_secret');
+          state.secret = '';
+          $('#login').classList.remove('hidden');
+          $('#admin').classList.remove('open');
+          $('#logoutBtn').hidden = true;
+          showToast(error.message || String(error));
+        } finally {
+          setBusy(false);
         }
-        if (!link || link === document) return;
-
-        const targetId = link.getAttribute('href').slice(1);
-        const target = document.getElementById(targetId);
-        if (!target) return;
-
-        event.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
-      function renderApp() {
-        $('#brandName').textContent = state.data.appName;
-        $('#heroTitle').textContent = state.data.appName;
-        $('#brandSubtitle').textContent = state.data.appSubtitle || '';
-        $('#heroSubtitle').textContent = state.data.appSubtitle || '';
-        applyTranslations();
-        $('#date').min = state.data.today;
-
-        renderNav();
-        fillCategorySelect($('#quickCategory'));
-        fillServiceSelect($('#quickService'), $('#quickCategory').value);
-        fillCategorySelect($('#modalCategory'));
-        fillServiceSelect($('#modalService'), $('#modalCategory').value);
-        renderDiscounts();
-        renderSections();
+      function renderAll() {
+        renderCategoryList();
+        renderDashboard();
+        renderReservations();
+        renderServices();
+        renderPhotos();
         renderBeforeAfter();
-        renderPolicy();
-        renderContact();
-        renderCalendar();
+        renderDiscounts();
+        renderSettings();
+        renderBlockedDays();
         refreshIcons();
       }
 
-      function renderContact() {
-        const contact = state.data.contact || {};
-        const instagramUrl = normalizeInstagramUrl(contact.instagramUrl);
-        const showSection = Boolean(contact.showContact || (contact.showInstagram && instagramUrl));
-        $('#contactSection').hidden = !showSection;
-        if (!showSection) return;
-
-        $('#contactPhoneText').textContent = contact.phone || '';
-        $('#contactEmailText').textContent = contact.email || '';
-        $('#phoneLink').href = contact.phone ? `tel:${contact.phone}` : '#';
-        $('#emailLink').href = contact.email ? `mailto:${contact.email}` : '#';
-        $('#phoneLink').hidden = !contact.phone || !contact.showContact;
-        $('#emailLink').hidden = !contact.email || !contact.showContact;
-        $('#instagramLink').hidden = !contact.showInstagram || !instagramUrl;
-        $('#instagramLink').href = instagramUrl || '#';
+      function logoutAdmin() {
+        storageRemove('sessionStorage', 'angels_admin_secret');
+        state.secret = '';
+        state.data = null;
+        $('#secret').value = '';
+        $('#login').classList.remove('hidden');
+        $('#admin').classList.remove('open');
+        $('#logoutBtn').hidden = true;
+        document.body.classList.remove('developer-mode');
+        showToast('Sesion cerrada.');
       }
 
-      function renderPolicy() {
-        const policyText = state.data && state.data.policyText ? state.data.policyText : {};
-        const text = policyText[state.language] || '';
-        $('#policyPanel').textContent = text;
+      function showLoginGreeting() {
+        if (showLoginGreeting.done) return;
+        showLoginGreeting.done = true;
+        if (state.data.authRole === 'developer') {
+          showToast('Modo developer activo.');
+          return;
+        }
+        const seen = storageGet('localStorage', 'angels_admin_seen', '');
+        if (seen) {
+          showToast('En serio, Otra vez tu aqui? jajajaja');
+        } else {
+          storageSet('localStorage', 'angels_admin_seen', '1');
+          showToast("Bienvenida a Angel's Lashes Chio");
+        }
+      }
+
+      function renderCategoryList() {
+        $('#categoryList').innerHTML = (state.data.categories || [])
+          .map(category => `<option value="${escapeHtml(category)}"></option>`)
+          .join('');
+      }
+
+      function setTab(tabName) {
+        state.tab = tabName;
+        $$('.tab').forEach(tab => tab.classList.toggle('active', tab.dataset.tab === tabName));
+        $$('.tab-panel').forEach(panel => {
+          panel.hidden = panel.id !== tabName;
+        });
+      }
+
+      function renderDashboard() {
+        const dashboard = state.data && state.data.dashboard ? state.data.dashboard : {};
+        const next = dashboard.nextReservation;
+        $('#dashboardGrid').innerHTML = `
+          <article class="metric-card"><span>Hoy</span><strong>${dashboard.todayCount || 0}</strong></article>
+          <article class="metric-card"><span>Pendientes</span><strong>${dashboard.pendingCount || 0}</strong></article>
+          <article class="metric-card"><span>Total de hoy</span><strong>${formatMoney(dashboard.todayTotal || 0)}</strong></article>
+          <article class="metric-card"><span>Proxima cita</span><strong>${next ? `${escapeHtml(next.date)} ${escapeHtml(next.time)}` : 'Sin cita'}</strong></article>
+        `;
+      }
+
+      function renderReservations() {
+        const query = $('#reservationSearch').value.trim().toLowerCase();
+        const status = $('#reservationStatus').value;
+        const from = $('#reservationFrom').value;
+        const to = $('#reservationTo').value;
+        const reservations = ((state.data && state.data.reservations) || []).filter(item => {
+          const haystack = [item.clientName, item.phone, item.email, item.service, item.category, item.id].join(' ').toLowerCase();
+          const matchesText = !query || haystack.indexOf(query) !== -1;
+          const matchesStatus = !status || item.status === status;
+          const matchesFrom = !from || item.date >= from;
+          const matchesTo = !to || item.date <= to;
+          return matchesText && matchesStatus && matchesFrom && matchesTo;
+        });
+
+        $('#reservationCount').textContent = `${reservations.length} reservas`;
+        renderClientHistory(query);
+        if (!reservations.length) {
+          $('#reservationTable').innerHTML = '<div class="empty">No hay reservas para mostrar.</div>';
+          return;
+        }
+
+        $('#reservationTable').innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Cita</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th>Notas internas</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${reservations.map(item => `
+                  <tr>
+                    <td>
+                      <strong>${escapeHtml(item.clientName || 'Sin nombre')}</strong><br>
+                      <span class="muted">${escapeHtml(item.phone || '')}</span><br>
+                      <span class="muted">${escapeHtml(item.email || '')}</span>
+                    </td>
+                    <td>
+                      <strong>${escapeHtml(item.category)} - ${escapeHtml(item.service)}</strong><br>
+                      <span>${escapeHtml(item.date)} ${escapeHtml(item.time)}</span><br>
+                      <span class="muted">${item.duration} min - ${escapeHtml(item.id)}</span>
+                      ${item.reminderSent ? `<br><span class="muted">Recordatorio: ${escapeHtml(item.reminderSent)}</span>` : ''}
+                    </td>
+                    <td>
+                      <strong>${formatMoney(item.total)}</strong><br>
+                      <span class="muted">Desc. ${formatMoney(item.discount)}</span>
+                    </td>
+                    <td><span class="status ${slug(item.status)}">${escapeHtml(item.status)}</span></td>
+                    <td>
+                      <textarea class="note-box" data-note-input="${item.rowNumber}" placeholder="Notas solo para admin">${escapeHtml(item.internalNotes || '')}</textarea>
+                      <button class="btn secondary mini" data-note-row="${item.rowNumber}" type="button">Guardar nota</button>
+                    </td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="btn soft mini" data-status-row="${item.rowNumber}" data-status="Confirmada" type="button">Confirmar</button>
+                        <button class="btn danger mini" data-status-row="${item.rowNumber}" data-status="Cancelada" type="button">Cancelar</button>
+                        <button class="btn secondary mini" data-status-row="${item.rowNumber}" data-status="Pendiente" type="button">Pendiente</button>
+                        ${contactLinks(item)}
+                        ${item.receiptUrl ? `<a class="btn secondary mini" href="${escapeHtml(item.receiptUrl)}" target="_blank" rel="noopener">PDF</a>` : ''}
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        $$('[data-status-row]').forEach(button => {
+          button.addEventListener('click', () => updateReservationStatus(button.dataset.statusRow, button.dataset.status));
+        });
+        $$('[data-note-row]').forEach(button => {
+          button.addEventListener('click', () => saveReservationNote(button.dataset.noteRow));
+        });
+      }
+
+      function contactLinks(item) {
+        const digits = normalizePhoneDigits(item.phone);
+        if (!digits) return '';
+        const message = contactMessage(item);
+        const smsHref = `sms:${digits}?&body=${encodeURIComponent(message)}`;
+        const whatsAppNumber = digits.length === 10 ? `1${digits}` : digits;
+        const whatsAppHref = `https://wa.me/${whatsAppNumber}?text=${encodeURIComponent(message)}`;
+        return `
+          <a class="btn secondary mini" href="${escapeHtml(smsHref)}">SMS</a>
+          <a class="btn secondary mini" href="${escapeHtml(whatsAppHref)}" target="_blank" rel="noopener">WhatsApp</a>
+        `;
+      }
+
+      function contactMessage(item) {
+        const name = item.clientName ? ` ${item.clientName}` : '';
+        return `Hola${name}, te escribimos de Angel's Lashes sobre tu cita de ${item.service} el ${item.date} a las ${item.time}.`;
+      }
+
+      function normalizePhoneDigits(value) {
+        return String(value || '').replace(/\D/g, '');
+      }
+
+      function renderClientHistory(query) {
+        const histories = (state.data && state.data.clientHistory) || [];
+        const filtered = histories.filter(item => {
+          if (!query) return true;
+          return [item.clientName, item.phone, item.email].join(' ').toLowerCase().indexOf(query) !== -1;
+        }).slice(0, 6);
+
+        if (!filtered.length) {
+          $('#clientHistory').innerHTML = '';
+          return;
+        }
+
+        $('#clientHistory').innerHTML = `
+          <div class="panel-head" style="margin-top: 16px;">
+            <div>
+              <h2>Historial de clientas</h2>
+              <div class="muted">Resumen rapido por telefono, email o nombre.</div>
+            </div>
+          </div>
+          <div class="history-grid">
+            ${filtered.map(item => `
+              <article class="history-card">
+                <strong>${escapeHtml(item.clientName || 'Sin nombre')}</strong><br>
+                <span class="muted">${escapeHtml(item.phone || '')}</span><br>
+                <span class="muted">${escapeHtml(item.email || '')}</span><br>
+                <span>${item.count} citas - ${formatMoney(item.total)}</span><br>
+                <span class="muted">Ultima: ${escapeHtml(item.lastDate || '')}</span>
+              </article>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      function renderServices() {
+        const services = (state.data && state.data.services) || [];
+        if (!services.length) {
+          $('#serviceTable').innerHTML = '<div class="empty">No hay servicios.</div>';
+          return;
+        }
+        $('#serviceTable').innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Servicio</th><th>Precio</th><th>Visible</th><th></th></tr></thead>
+              <tbody>
+                ${services.map(item => `
+                  <tr>
+                    <td>
+                      <strong>${escapeHtml(item.category)} · ${escapeHtml(item.service)}</strong><br>
+                      <span class="muted">${escapeHtml(item.serviceEn || '')}</span>
+                    </td>
+                    <td>${formatMoney(item.price)}<br><span class="muted">${item.duration} min</span></td>
+                    <td>${item.visible ? 'Si' : 'No'}</td>
+                    <td><button class="btn secondary mini" data-edit-service="${item.rowNumber}" type="button">Editar</button></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        $$('[data-edit-service]').forEach(button => {
+          button.addEventListener('click', () => editService(Number(button.dataset.editService)));
+        });
+      }
+
+      function renderPhotos() {
+        const photos = (state.data && state.data.photos) || [];
+        if (!photos.length) {
+          $('#photoTable').innerHTML = '<div class="empty">No hay fotos.</div>';
+          return;
+        }
+        $('#photoTable').innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Orden</th><th>Foto</th><th>Categoria</th><th>Visible</th><th></th></tr></thead>
+              <tbody>
+                ${photos.map(item => `
+                  <tr class="drag-row" draggable="true" data-photo-row="${item.rowNumber}">
+                    <td><span class="drag-handle">::</span></td>
+                    <td>
+                      ${item.imageUrl ? `<img class="thumb" src="${escapeHtml(item.imageUrl)}" alt="" loading="lazy" decoding="async">` : ''}
+                      <br><strong>${escapeHtml(item.title || item.id)}</strong>
+                    </td>
+                    <td>${escapeHtml(item.category)}<br><span class="muted">Orden ${item.order}</span></td>
+                    <td>${item.visible ? 'Si' : 'No'}</td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="btn secondary mini" data-edit-photo="${item.rowNumber}" type="button">Editar</button>
+                        <button class="btn danger mini" data-delete-photo="${item.rowNumber}" type="button">Borrar</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        $$('[data-edit-photo]').forEach(button => {
+          button.addEventListener('click', () => editPhoto(Number(button.dataset.editPhoto)));
+        });
+        $$('[data-delete-photo]').forEach(button => {
+          button.addEventListener('click', () => deletePhoto(Number(button.dataset.deletePhoto)));
+        });
+        bindPhotoDrag();
       }
 
       function renderBeforeAfter() {
-        const pairs = state.data.beforeAfter || [];
-        $('#beforeAfterSection').hidden = !pairs.length;
-        if (!pairs.length) return;
-        $('#beforeAfterGrid').innerHTML = pairs.map(pair => `
-          <article class="before-after-card reveal">
-            <div class="comparison">
-              <figure>
-                ${renderPublicImage(pair.beforeImageUrl, t('before'), '')}
-                <figcaption>${escapeHtml(t('before'))}</figcaption>
-              </figure>
-              <figure>
-                ${renderPublicImage(pair.afterImageUrl, t('after'), '')}
-                <figcaption>${escapeHtml(t('after'))}</figcaption>
-              </figure>
-            </div>
-            <h3>${escapeHtml(state.language === 'en' && pair.titleEn ? pair.titleEn : pair.title)}</h3>
-          </article>
-        `).join('');
-      }
-
-      function setLanguage(language) {
-        state.language = language === 'en' ? 'en' : 'es';
-        storageSet('localStorage', 'lumina_language', state.language);
-        if (state.data) renderApp();
-        else applyTranslations();
-      }
-
-      function applyTranslations() {
-        document.documentElement.lang = state.language;
-        document.querySelectorAll('[data-lang]').forEach(button => {
-          button.classList.toggle('active', button.dataset.lang === state.language);
+        const pairs = (state.data && state.data.beforeAfter) || [];
+        if (!pairs.length) {
+          $('#beforeAfterTable').innerHTML = '<div class="empty">No hay resultados antes/despues.</div>';
+          return;
+        }
+        $('#beforeAfterTable').innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Resultado</th><th>Orden</th><th>Visible</th><th></th></tr></thead>
+              <tbody>
+                ${pairs.map(item => `
+                  <tr>
+                    <td>
+                      <div class="before-after-preview">
+                        ${item.beforeImageUrl ? `<img src="${escapeHtml(item.beforeImageUrl)}" alt="" loading="lazy" decoding="async">` : '<img alt="">'}
+                        ${item.afterImageUrl ? `<img src="${escapeHtml(item.afterImageUrl)}" alt="" loading="lazy" decoding="async">` : '<img alt="">'}
+                      </div>
+                      <strong>${escapeHtml(item.title || item.id)}</strong><br>
+                      <span class="muted">${escapeHtml(item.titleEn || '')}</span>
+                    </td>
+                    <td>${item.order}</td>
+                    <td>${item.visible ? 'Si' : 'No'}</td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="btn secondary mini" data-edit-before-after="${item.rowNumber}" type="button">Editar</button>
+                        <button class="btn danger mini" data-delete-before-after="${item.rowNumber}" type="button">Borrar</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        $$('[data-edit-before-after]').forEach(button => {
+          button.addEventListener('click', () => editBeforeAfter(Number(button.dataset.editBeforeAfter)));
         });
-        document.querySelectorAll('[data-i18n]').forEach(element => {
-          element.textContent = t(element.dataset.i18n);
+        $$('[data-delete-before-after]').forEach(button => {
+          button.addEventListener('click', () => deleteBeforeAfter(Number(button.dataset.deleteBeforeAfter)));
         });
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-          element.placeholder = t(element.dataset.i18nPlaceholder);
-        });
-        document.querySelectorAll('[data-i18n-aria]').forEach(element => {
-          element.setAttribute('aria-label', t(element.dataset.i18nAria));
-        });
-        const agreementTexts = state.data && state.data.agreementTexts ? state.data.agreementTexts : {};
-        const agreementText = state.data ? state.data.agreementText : '';
-        $('#agreementText').innerHTML = formatAgreement(agreementTexts[state.language] || agreementText || '');
-      }
-
-      function formatAgreement(text) {
-        const escaped = escapeHtml(text);
-        const label = state.language === 'en' ? 'CANCELLATION POLICY:' : 'POLITICA DE CANCELACION:';
-        return escaped.replace(label, `<span class="cancel-policy">${label}</span>`);
-      }
-
-      function t(key, values = {}) {
-        const dictionary = I18N[state.language] || I18N.es;
-        let value = dictionary[key] || I18N.es[key] || key;
-        Object.keys(values).forEach(name => {
-          value = value.replace(`{${name}}`, values[name]);
-        });
-        return value;
-      }
-
-      function renderNav() {
-        const links = state.data.categories.map(category => (
-          `<a href="#${slug(category)}">${escapeHtml(categoryLabel(category))}</a>`
-        ));
-        links.unshift(`<a href="#inicio">${escapeHtml(t('home'))}</a>`);
-        $('#nav').innerHTML = links.join('');
       }
 
       function renderDiscounts() {
-        const discounts = state.data.publicDiscounts || [];
-        $('#discountTrack').innerHTML = '';
-        $('#discountSection').hidden = !discounts.length;
-        if (!discounts.length) return;
+        const discounts = (state.data && state.data.discounts) || [];
+        if (!discounts.length) {
+          $('#discountTable').innerHTML = '<div class="empty">No hay descuentos.</div>';
+          return;
+        }
+        $('#discountTable').innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Cupon</th><th>Categoria</th><th>Valor</th><th>Estado</th><th></th></tr></thead>
+              <tbody>
+                ${discounts.map(item => `
+                  <tr>
+                    <td><strong>${escapeHtml(item.coupon)}</strong><br><span class="muted">${escapeHtml(item.days)}</span></td>
+                    <td>${escapeHtml(item.category)}<br><span class="muted">${escapeHtml(item.categoryEn || '')}</span></td>
+                    <td>${item.value}%</td>
+                    <td>${item.available ? 'Activo' : 'Inactivo'}<br><span class="muted">${item.visible ? 'Publico' : 'Privado'}</span></td>
+                    <td><button class="btn secondary mini" data-edit-discount="${item.rowNumber}" type="button">Editar</button></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        $$('[data-edit-discount]').forEach(button => {
+          button.addEventListener('click', () => editDiscount(Number(button.dataset.editDiscount)));
+        });
+      }
 
-        $('#discountTrack').innerHTML = discounts.map(discount => `
-          <article class="discount reveal">
-            <div>
-              <strong>${escapeHtml(discount.code)}</strong><br>
-              <span>${escapeHtml(categoryLabel(discount.category, discount.categoryEn))} · ${escapeHtml(discountDays(discount))}</span>
-            </div>
-            <strong>${discount.value ? `${discount.value}%` : 'Promo'}</strong>
-          </article>
+      function renderSettings() {
+        const settings = state.data && state.data.settings ? state.data.settings : {};
+        const authRole = state.data && state.data.authRole ? state.data.authRole : 'admin';
+        $('#rolePill').textContent = authRole === 'developer' ? 'Developer' : 'Admin';
+        $('#contactVisible').checked = Boolean(settings.contactVisible);
+        $('#instagramVisible').checked = Boolean(settings.instagramVisible);
+        $('#instagramUrl').value = settings.instagramUrl || '';
+        $('#contactPhone').value = settings.contactPhone || '3053371330';
+        $('#contactEmail').value = settings.contactEmail || 'angels.lashes26@gmail.com';
+        $('#publicEnabled').checked = settings.publicEnabled !== false;
+        $('#adminEnabled').checked = settings.adminEnabled !== false;
+        const hours = state.data && state.data.businessHours ? state.data.businessHours : {};
+        $('#businessStart').value = hours.start || '09:00';
+        $('#businessEnd').value = hours.end || '18:00';
+        $('#businessInterval').value = hours.intervalMinutes || 30;
+        $('#maintenanceMessage').value = settings.maintenanceMessage || 'La pagina esta temporalmente desactivada.';
+        $('#remindersEnabled').checked = Boolean(settings.remindersEnabled);
+        $('#reminderHours').value = settings.reminderHours || 24;
+        renderOpenDays(hours.openDays || [1, 2, 3, 4, 5, 6]);
+        $('#currentPasswordField').hidden = authRole === 'developer';
+        const security = state.data && state.data.security ? state.data.security : {};
+        $('#passwordLimitText').textContent = authRole === 'developer'
+          ? 'Developer puede resetear la contrasena cuando sea necesario.'
+          : security.passwordChangedThisMonth
+            ? 'La contrasena ya fue cambiada este mes. Si necesitas cambiarla otra vez, contacta al developer.'
+            : 'Puedes cambiar tu contrasena 1 vez al mes.';
+        const passwordLocked = authRole !== 'developer' && !security.canChangePassword;
+        $('#newPassword').disabled = passwordLocked;
+        $('#passwordForm button[type="submit"]').dataset.locked = passwordLocked ? 'true' : 'false';
+        $('#passwordForm button[type="submit"]').disabled = passwordLocked;
+      }
+
+      function renderOpenDays(openDays) {
+        const labels = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+        $('#openDays').innerHTML = labels.map((label, index) => `
+          <label class="check">
+            <input type="checkbox" value="${index}" ${openDays.indexOf(index) !== -1 ? 'checked' : ''}>
+            ${label}
+          </label>
         `).join('');
       }
 
-      function renderSections() {
-        const content = $('#content');
-        const categories = state.data.categories;
-
-        if (!categories.length) {
-          content.className = 'shell section';
-          content.innerHTML = `<div class="empty">${escapeHtml(t('emptyServices'))}</div>`;
+      function renderBlockedDays() {
+        const days = (state.data && state.data.blockedDays) || [];
+        if (!days.length) {
+          $('#blockedDaysList').innerHTML = '<div class="empty">No hay dias bloqueados.</div>';
           return;
         }
-
-        content.className = '';
-        content.innerHTML = categories.map(category => renderCategory(category)).join('');
-        refreshIcons();
-        setupReveal();
-      }
-
-      function renderCategory(category) {
-        const services = state.data.services.filter(service => service.category === category);
-        const servicePhotos = services.map(service => service.image).filter(Boolean);
-        const photos = uniqueValues([...servicePhotos, ...(state.data.photos[category] || [])]).slice(0, 3);
-        while (photos.length < 3 && photos.length > 0) photos.push(photos[0]);
-        const label = categoryLabel(category);
-        const motions = ['motion-left', 'motion-depth', 'motion-right', 'motion-rise'];
-        const galleryHtml = photos.length
-          ? photos.map((photo, index) => renderPublicImage(photo, `${label} ${index + 1}`, motions[index % motions.length])).join('')
-          : '<div class="photo-placeholder" aria-hidden="true"><span class="photo-placeholder-icon"><i data-lucide="sparkles" aria-hidden="true"></i></span></div>';
-        const galleryClass = photos.length ? 'photo-grid reveal' : 'photo-grid empty-gallery reveal';
-
-        return `
-          <section id="${slug(category)}" class="section category-section">
-            <div class="shell">
-              <div class="section-head reveal">
-                <div>
-                  <h2 class="section-title">${escapeHtml(label)}</h2>
-                  <p class="section-copy">${sectionCopy(category)}</p>
-                </div>
-                <button class="btn secondary" type="button" onclick="openBookingByCategory('${escapeAttrJs(category)}')">
-                  <i data-lucide="calendar-heart" aria-hidden="true"></i>
-                  ${escapeHtml(t('bookCategory', { category: label }))}
-                </button>
-              </div>
-
-              <div class="category-layout">
-                <div class="${galleryClass}">
-                  ${galleryHtml}
-                </div>
-                <div class="services">
-                  ${services.map(renderServiceCard).join('')}
-                </div>
-              </div>
-            </div>
-          </section>
-        `;
-      }
-
-      function renderServiceCard(service) {
-        return `
-          <article class="service-card reveal">
-            <h3>${escapeHtml(serviceName(service))}</h3>
-            <p>${escapeHtml(serviceDescription(service) || t('customService'))}</p>
-            <div class="duration"><i data-lucide="clock-3" aria-hidden="true"></i>${service.duration} min</div>
-            <div class="service-meta">
-              <span>${formatMoney(service.price)}</span>
-              <button class="btn icon" type="button" aria-label="${escapeHtml(t('book'))} ${escapeHtml(serviceName(service))}" title="${escapeHtml(t('book'))}" onclick="openBookingById('${escapeAttrJs(service.id)}')">
-                <i data-lucide="calendar-plus" aria-hidden="true"></i>
-              </button>
+        $('#blockedDaysList').innerHTML = days.map(day => `
+          <article class="blocked-card">
+            <strong>${escapeHtml(day.date)}</strong><br>
+            <span class="muted">${escapeHtml(day.reason || 'Sin motivo')}</span><br>
+            <span>${day.active ? 'Activo' : 'Inactivo'}</span>
+            <div class="row-actions" style="margin-top: 8px;">
+              <button class="btn secondary mini" data-edit-block="${day.rowNumber}" type="button">Editar</button>
+              <button class="btn danger mini" data-delete-block="${day.rowNumber}" type="button">Borrar</button>
             </div>
           </article>
-        `;
-      }
-
-      function renderPublicImage(url, alt, className) {
-        const driveId = extractDriveImageId(url);
-        const classAttr = className ? ` class="${escapeHtml(className)}"` : '';
-        const fallbackAttrs = driveId
-          ? ` data-drive-id="${escapeHtml(driveId)}" data-fallback-step="0" onerror="handlePublicImageError(this)"`
-          : '';
-        return `<img${classAttr} src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async"${fallbackAttrs}>`;
-      }
-
-      window.handlePublicImageError = function(image) {
-        const driveId = image && image.dataset ? image.dataset.driveId : '';
-        if (!driveId) return;
-        const fallbacks = [
-          `https://drive.google.com/thumbnail?id=${encodeURIComponent(driveId)}&sz=w1600`,
-          `https://lh3.googleusercontent.com/d/${encodeURIComponent(driveId)}=w1600`,
-          `https://drive.google.com/uc?export=view&id=${encodeURIComponent(driveId)}`
-        ];
-        let step = Number(image.dataset.fallbackStep || 0);
-        while (step < fallbacks.length) {
-          const nextUrl = fallbacks[step];
-          step += 1;
-          image.dataset.fallbackStep = String(step);
-          if (image.src !== nextUrl) {
-            image.src = nextUrl;
-            return;
-          }
-        }
-        image.onerror = null;
-        image.classList.add('image-unavailable');
-      };
-
-      function extractDriveImageId(value) {
-        const text = String(value || '');
-        const patterns = [
-          /\/d\/([a-zA-Z0-9_-]+)/,
-          /[?&]id=([a-zA-Z0-9_-]+)/,
-          /\/file\/d\/([a-zA-Z0-9_-]+)/
-        ];
-        for (let index = 0; index < patterns.length; index++) {
-          const match = text.match(patterns[index]);
-          if (match) return match[1];
-        }
-        return '';
-      }
-
-      function fillCategorySelect(select) {
-        select.innerHTML = state.data.categories.map(category => (
-          `<option value="${escapeHtml(category)}">${escapeHtml(categoryLabel(category))}</option>`
-        )).join('');
-      }
-
-      function fillServiceSelect(select, category) {
-        const services = state.data.services.filter(service => service.category === category);
-        select.innerHTML = services.map(service => (
-          `<option value="${escapeHtml(service.name)}">${escapeHtml(serviceName(service))} · ${formatMoney(service.price)}</option>`
-        )).join('');
-      }
-
-      function getSelectedQuickService() {
-        return state.data.services.find(service =>
-          service.category === $('#quickCategory').value && service.name === $('#quickService').value
-        );
-      }
-
-      window.openBookingById = serviceId => {
-        const service = state.data.services.find(item => item.id === serviceId);
-        openBooking(service);
-      };
-
-      window.openBookingByCategory = category => {
-        const service = state.data.services.find(item => item.category === category);
-        openBooking(service);
-      };
-
-      function openBooking(service) {
-        if (!service) {
-          showToast(t('noServicesInCategory'));
-          return;
-        }
-
-        $('#modalCategory').value = service.category;
-        fillServiceSelect($('#modalService'), service.category);
-        $('#modalService').value = service.name;
-        $('#date').value = $('#date').value || state.data.today;
-        state.calendarDate = makeLocalDate($('#date').value);
-        state.selectedTime = '';
-        renderCalendar();
-        $('#bookingModal').classList.add('open');
-        $('#bookingModal').setAttribute('aria-hidden', 'false');
-        setTimeout(() => {
-          resizeSignatureCanvas();
-          loadSlots();
-        }, 80);
-      }
-
-      function closeBooking() {
-        $('#bookingModal').classList.remove('open');
-        $('#bookingModal').setAttribute('aria-hidden', 'true');
-      }
-
-      function closeReceipt() {
-        $('#receiptModal').classList.remove('open');
-        $('#receiptModal').setAttribute('aria-hidden', 'true');
-      }
-
-      async function loadSlots() {
-        const date = $('#date').value;
-        const category = $('#modalCategory').value;
-        const service = $('#modalService').value;
-        const slotGrid = $('#slotGrid');
-
-        state.selectedTime = '';
-        if (!date || !category || !service) {
-          slotGrid.innerHTML = `<div class="empty">${escapeHtml(t('chooseServiceDate'))}</div>`;
-          return;
-        }
-
-        slotGrid.innerHTML = `<div class="empty">${escapeHtml(t('searchingSlots'))}</div>`;
-        try {
-          const slots = await gas('getAvailableSlots', category, service, date, state.language);
-          if (!slots.length) {
-            slotGrid.innerHTML = `<div class="empty">${escapeHtml(t('noSlots'))}</div>`;
-            return;
-          }
-
-          slotGrid.innerHTML = slots.map(slot => (
-            `<button class="slot" type="button" data-time="${escapeHtml(slot.value)}">${escapeHtml(slot.label)}</button>`
-          )).join('');
-
-          slotGrid.querySelectorAll('.slot').forEach(button => {
-            button.addEventListener('click', () => {
-              slotGrid.querySelectorAll('.slot').forEach(item => item.classList.remove('selected'));
-              button.classList.add('selected');
-              state.selectedTime = button.dataset.time;
-            });
-          });
-        } catch (error) {
-          slotGrid.innerHTML = `<div class="empty">${escapeHtml(error.message || error)}</div>`;
-        }
-      }
-
-      function formatMonthTitle(date) {
-        try {
-          return new Intl.DateTimeFormat(state.language === 'en' ? 'en-US' : 'es-US', { month: 'long', year: 'numeric' }).format(date);
-        } catch (error) {
-          return `${date.getMonth() + 1}/${date.getFullYear()}`;
-        }
-      }
-
-      function renderCalendar() {
-        if (!state.data) return;
-        const calendar = $('#calendar');
-        if (!calendar) return;
-        const viewDate = state.calendarDate || new Date();
-        const year = viewDate.getFullYear();
-        const month = viewDate.getMonth();
-        const firstDay = new Date(year, month, 1);
-        const startOffset = firstDay.getDay();
-        const start = new Date(year, month, 1 - startOffset);
-        const selected = $('#date').value;
-        const today = state.data.today;
-        const blocked = state.data.blockedDates || [];
-        const openDays = state.data.hours && state.data.hours.openDays ? state.data.hours.openDays : [1, 2, 3, 4, 5, 6];
-        const monthTitle = formatMonthTitle(firstDay);
-        const weekdays = state.language === 'en'
-          ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-          : ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
-        const days = [];
-
-        for (let index = 0; index < 42; index++) {
-          const date = new Date(start);
-          date.setDate(start.getDate() + index);
-          const iso = toIsoDate(date);
-          const outside = date.getMonth() !== month;
-          const unavailable = iso < today || blocked.indexOf(iso) !== -1 || openDays.indexOf(date.getDay()) === -1;
-          days.push(`
-            <button class="calendar-day ${outside ? 'outside' : ''} ${unavailable ? 'unavailable' : ''} ${selected === iso ? 'selected' : ''}" type="button" data-date="${iso}" ${unavailable ? 'disabled' : ''}>
-              ${date.getDate()}
-            </button>
-          `);
-        }
-
-        calendar.innerHTML = `
-          <div class="calendar-head">
-            <button class="btn secondary icon" type="button" data-calendar-prev aria-label="${escapeHtml(t('prevMonth'))}"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
-            <div class="calendar-title">${escapeHtml(monthTitle)}</div>
-            <button class="btn secondary icon" type="button" data-calendar-next aria-label="${escapeHtml(t('nextMonth'))}"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
-          </div>
-          <div class="calendar-grid">
-            ${weekdays.map(day => `<div class="calendar-weekday">${escapeHtml(day)}</div>`).join('')}
-            ${days.join('')}
-          </div>
-        `;
-
-        calendar.querySelector('[data-calendar-prev]').addEventListener('click', () => {
-          state.calendarDate = new Date(year, month - 1, 1);
-          renderCalendar();
-          refreshIcons();
+        `).join('');
+        $$('[data-edit-block]').forEach(button => {
+          button.addEventListener('click', () => editBlockedDay(Number(button.dataset.editBlock)));
         });
-        calendar.querySelector('[data-calendar-next]').addEventListener('click', () => {
-          state.calendarDate = new Date(year, month + 1, 1);
-          renderCalendar();
-          refreshIcons();
-        });
-        calendar.querySelectorAll('[data-date]').forEach(button => {
-          button.addEventListener('click', () => {
-            $('#date').value = button.dataset.date;
-            state.calendarDate = makeLocalDate(button.dataset.date);
-            renderCalendar();
-            loadSlots();
-            refreshIcons();
-          });
+        $$('[data-delete-block]').forEach(button => {
+          button.addEventListener('click', () => deleteBlockedDay(Number(button.dataset.deleteBlock)));
         });
       }
 
-      async function submitReservation(event) {
+      function editService(rowNumber) {
+        const item = state.data.services.find(service => service.rowNumber === rowNumber);
+        if (!item) return;
+        $('#serviceRow').value = item.rowNumber;
+        $('#serviceCategory').value = item.category;
+        $('#serviceCategoryEn').value = item.categoryEn;
+        $('#serviceName').value = item.service;
+        $('#serviceNameEn').value = item.serviceEn;
+        $('#serviceDescription').value = item.description;
+        $('#serviceDescriptionEn').value = item.descriptionEn;
+        $('#servicePrice').value = item.price;
+        $('#serviceDuration').value = item.duration;
+        $('#serviceOrder').value = item.order === 9999 ? '' : item.order;
+        $('#serviceImage').value = item.image;
+        $('#serviceVisible').checked = item.visible;
+      }
+
+      function editPhoto(rowNumber) {
+        const item = state.data.photos.find(photo => photo.rowNumber === rowNumber);
+        if (!item) return;
+        $('#photoRow').value = item.rowNumber;
+        $('#photoId').value = item.id;
+        $('#photoDriveId').value = item.driveFileId;
+        $('#photoCategory').value = item.category;
+        $('#photoTitle').value = item.title;
+        $('#photoTitleEn').value = item.titleEn;
+        $('#photoOrder').value = item.order === 9999 ? '' : item.order;
+        $('#photoUrl').value = item.url;
+        $('#photoVisible').checked = item.visible;
+        $('#photoOffsetX').value = 50;
+        $('#photoOffsetY').value = 50;
+        $('#photoFocus').value = 'center';
+        state.photoFile = null;
+        $('#photoFile').value = '';
+        showPreview(item.imageUrl);
+      }
+
+      function editBeforeAfter(rowNumber) {
+        const item = state.data.beforeAfter.find(pair => pair.rowNumber === rowNumber);
+        if (!item) return;
+        $('#beforeAfterRow').value = item.rowNumber;
+        $('#beforeAfterId').value = item.id;
+        $('#beforeDriveId').value = item.beforeDriveFileId;
+        $('#afterDriveId').value = item.afterDriveFileId;
+        $('#beforeAfterTitle').value = item.title;
+        $('#beforeAfterTitleEn').value = item.titleEn;
+        $('#beforeAfterOrder').value = item.order === 9999 ? '' : item.order;
+        $('#beforeAfterVisible').checked = item.visible;
+        $('#beforeUrl').value = item.beforeUrl;
+        $('#afterUrl').value = item.afterUrl;
+        state.beforeFile = null;
+        state.afterFile = null;
+        $('#beforeFile').value = '';
+        $('#afterFile').value = '';
+        showBeforeAfterPreview('before', item.beforeImageUrl);
+        showBeforeAfterPreview('after', item.afterImageUrl);
+      }
+
+      function editBlockedDay(rowNumber) {
+        const item = state.data.blockedDays.find(day => day.rowNumber === rowNumber);
+        if (!item) return;
+        $('#blockedRow').value = item.rowNumber;
+        $('#blockedDate').value = item.date;
+        $('#blockedReason').value = item.reason;
+        $('#blockedActive').checked = item.active;
+      }
+
+      function editDiscount(rowNumber) {
+        const item = state.data.discounts.find(discount => discount.rowNumber === rowNumber);
+        if (!item) return;
+        $('#discountRow').value = item.rowNumber;
+        $('#discountCoupon').value = item.coupon;
+        $('#discountValue').value = item.value;
+        $('#discountCategory').value = item.category;
+        $('#discountCategoryEn').value = item.categoryEn;
+        $('#discountDays').value = item.days;
+        $('#discountDaysEn').value = item.daysEn;
+        $('#discountAvailable').checked = item.available;
+        $('#discountVisible').checked = item.visible;
+      }
+
+      async function saveService(event) {
         event.preventDefault();
-        if (!state.selectedTime) {
-          showToast(t('chooseTime'));
+        const ok = await mutate('saveAdminService', {
+          rowNumber: $('#serviceRow').value,
+          category: $('#serviceCategory').value,
+          categoryEn: $('#serviceCategoryEn').value,
+          service: $('#serviceName').value,
+          serviceEn: $('#serviceNameEn').value,
+          description: $('#serviceDescription').value,
+          descriptionEn: $('#serviceDescriptionEn').value,
+          price: $('#servicePrice').value,
+          duration: $('#serviceDuration').value,
+          order: $('#serviceOrder').value,
+          image: $('#serviceImage').value,
+          visible: $('#serviceVisible').checked
+        }, 'Servicio guardado.');
+        if (ok) resetServiceForm();
+      }
+
+      async function saveDiscount(event) {
+        event.preventDefault();
+        const ok = await mutate('saveAdminDiscount', {
+          rowNumber: $('#discountRow').value,
+          coupon: $('#discountCoupon').value,
+          value: $('#discountValue').value,
+          category: $('#discountCategory').value,
+          categoryEn: $('#discountCategoryEn').value,
+          days: $('#discountDays').value,
+          daysEn: $('#discountDaysEn').value,
+          available: $('#discountAvailable').checked,
+          visible: $('#discountVisible').checked
+        }, 'Cupon guardado.');
+        if (ok) resetDiscountForm();
+      }
+
+      async function saveSettings(event) {
+        event.preventDefault();
+        await mutate('saveAdminSettings', {
+          contactVisible: $('#contactVisible').checked,
+          contactPhone: $('#contactPhone').value,
+          contactEmail: $('#contactEmail').value,
+          instagramVisible: $('#instagramVisible').checked,
+          instagramUrl: $('#instagramUrl').value,
+          businessStart: $('#businessStart').value,
+          businessEnd: $('#businessEnd').value,
+          businessInterval: $('#businessInterval').value,
+          openDays: $$('#openDays input:checked').map(input => input.value),
+          maintenanceMessage: $('#maintenanceMessage').value,
+          remindersEnabled: $('#remindersEnabled').checked,
+          reminderHours: $('#reminderHours').value,
+          publicEnabled: $('#publicEnabled').checked,
+          adminEnabled: $('#adminEnabled').checked
+        }, 'Ajustes guardados.');
+      }
+
+      async function changePassword(event) {
+        event.preventDefault();
+        const newPassword = $('#newPassword').value.trim();
+        if (!newPassword) {
+          showToast('Escribe la nueva contrasena.');
           return;
         }
-        if (!state.signatureDrawn) {
-          showToast(t('missingSignature'));
+        const ok = await mutate('changeAdminPassword', {
+          currentPassword: $('#currentPassword').value,
+          newPassword
+        }, 'Contrasena actualizada.');
+        if (ok) {
+          if (state.data.authRole !== 'developer') {
+            state.secret = newPassword;
+            storageSet('sessionStorage', 'angels_admin_secret', state.secret);
+          }
+          $('#passwordForm').reset();
+        }
+      }
+
+      async function changeDeveloperPin(event) {
+        event.preventDefault();
+        const newDeveloperPin = $('#newDeveloperPin').value.trim();
+        if (!newDeveloperPin) {
+          showToast('Escribe el nuevo PIN developer.');
           return;
         }
+        const ok = await mutate('changeDeveloperPin', { newDeveloperPin }, 'PIN developer actualizado.');
+        if (ok) {
+          state.secret = newDeveloperPin;
+          storageSet('sessionStorage', 'angels_admin_secret', state.secret);
+          $('#developerPinForm').reset();
+        }
+      }
 
-        const submitButton = $('#submitBooking');
-        submitButton.disabled = true;
-        submitButton.innerHTML = `<i data-lucide="loader-circle" aria-hidden="true"></i> ${escapeHtml(t('creating'))}`;
-        refreshIcons();
-
-        const payload = {
-          language: state.language,
-          category: $('#modalCategory').value,
-          service: $('#modalService').value,
-          clientName: $('#clientName').value,
-          phone: $('#phone').value,
-          email: $('#email').value,
-          date: $('#date').value,
-          time: state.selectedTime,
-          coupon: $('#coupon').value,
-          notes: $('#notes').value,
-          firstVisit: $('#firstVisit').checked,
-          agreementAccepted: $('#agreementAccepted').checked,
-          signatureDataUrl: $('#signatureCanvas').toDataURL('image/png')
-        };
-
+      async function savePhoto(event) {
+        event.preventDefault();
         try {
-          const reservation = await gas('createReservation', payload);
-          closeBooking();
-          showReceipt(reservation);
-          $('#bookingForm').reset();
-          $('#date').min = state.data.today;
-          clearSignature();
-          await refreshData();
+          let dataUrl = '';
+          if (state.photoFile) {
+            dataUrl = await cropImage(
+              state.photoFile,
+              $('#photoAspect').value,
+              Number($('#photoOffsetX').value),
+              Number($('#photoOffsetY').value)
+            );
+          }
+          const ok = await mutate('saveAdminPhoto', {
+            rowNumber: $('#photoRow').value,
+            id: $('#photoId').value,
+            category: $('#photoCategory').value,
+            title: $('#photoTitle').value,
+            titleEn: $('#photoTitleEn').value,
+            order: $('#photoOrder').value,
+            visible: $('#photoVisible').checked,
+            url: $('#photoUrl').value,
+            driveFileId: $('#photoDriveId').value,
+            dataUrl,
+            fileName: state.photoFile ? state.photoFile.name : ''
+          }, 'Foto guardada.');
+          if (ok) resetPhotoForm();
+        } catch (error) {
+          showToast(error.message || String(error));
+        }
+      }
+
+      async function saveBeforeAfter(event) {
+        event.preventDefault();
+        try {
+          const beforeDataUrl = state.beforeFile ? await cropImage(state.beforeFile, '4:5', 50, 50) : '';
+          const afterDataUrl = state.afterFile ? await cropImage(state.afterFile, '4:5', 50, 50) : '';
+          const ok = await mutate('saveBeforeAfter', {
+            rowNumber: $('#beforeAfterRow').value,
+            id: $('#beforeAfterId').value,
+            title: $('#beforeAfterTitle').value,
+            titleEn: $('#beforeAfterTitleEn').value,
+            order: $('#beforeAfterOrder').value,
+            visible: $('#beforeAfterVisible').checked,
+            beforeDriveFileId: $('#beforeDriveId').value,
+            afterDriveFileId: $('#afterDriveId').value,
+            beforeUrl: $('#beforeUrl').value,
+            afterUrl: $('#afterUrl').value,
+            beforeDataUrl,
+            afterDataUrl,
+            fileName: [state.beforeFile ? state.beforeFile.name : '', state.afterFile ? state.afterFile.name : ''].filter(Boolean).join('-')
+          }, 'Resultado guardado.');
+          if (ok) resetBeforeAfterForm();
+        } catch (error) {
+          showToast(error.message || String(error));
+        }
+      }
+
+      async function saveBlockedDay(event) {
+        event.preventDefault();
+        const ok = await mutate('saveBlockedDay', {
+          rowNumber: $('#blockedRow').value,
+          date: $('#blockedDate').value,
+          reason: $('#blockedReason').value,
+          active: $('#blockedActive').checked
+        }, 'Dia bloqueado guardado.');
+        if (ok) resetBlockedDayForm();
+      }
+
+      async function updateReservationStatus(rowNumber, status) {
+        await mutate('updateAdminReservationStatus', rowNumber, status, `Reserva marcada como ${status}.`);
+      }
+
+      async function saveReservationNote(rowNumber) {
+        const input = document.querySelector(`[data-note-input="${rowNumber}"]`);
+        if (!input) return;
+        setBusy(true);
+        try {
+          state.data = await gas('saveAdminReservationNote', state.secret, rowNumber, input.value);
+          showToast('Nota interna guardada.');
+          renderAll();
         } catch (error) {
           showToast(error.message || String(error));
         } finally {
-          submitButton.disabled = false;
-          submitButton.innerHTML = `<i data-lucide="send" aria-hidden="true"></i> <span data-i18n="createBooking">${escapeHtml(t('createBooking'))}</span>`;
-          refreshIcons();
+          setBusy(false);
         }
       }
 
-      function showReceipt(reservation) {
-        const selectedService = state.data.services.find(service => (
-          service.category === reservation.category && service.name === reservation.service
-        ));
-        const displayService = selectedService ? serviceName(selectedService) : reservation.service;
-        $('#receiptBody').innerHTML = `
-          <div class="receipt-success">
-            <div class="success-hero">
-              <i data-lucide="badge-check" aria-hidden="true"></i>
-              <h3>${escapeHtml(t('successTitle'))}</h3>
-              <p>${escapeHtml(t('successCopy'))}</p>
-            </div>
-            <div class="receipt-summary">
-              <div><span>ID</span><strong>${escapeHtml(reservation.id)}</strong></div>
-              <div><span>${escapeHtml(t('receiptService'))}</span><strong>${escapeHtml(categoryLabel(reservation.category))} - ${escapeHtml(displayService)}</strong></div>
-              <div><span>${escapeHtml(t('receiptDate'))}</span><strong>${escapeHtml(reservation.date)} ${escapeHtml(t('at'))} ${escapeHtml(reservation.time)}</strong></div>
-              <div><span>${escapeHtml(t('receiptStatus'))}</span><strong>${escapeHtml(statusLabel(reservation.status))}</strong></div>
-              <div><span>${escapeHtml(t('receiptPrice'))}</span><strong>${formatMoney(reservation.price)}</strong></div>
-              <div><span>${escapeHtml(t('receiptDiscount'))}</span><strong>${formatMoney(reservation.discount)}</strong></div>
-              <div><span>${escapeHtml(t('receiptTotal'))}</span><strong>${formatMoney(reservation.total)}</strong></div>
-            </div>
-          </div>
-          <div class="dialog-actions">
-            ${reservation.receiptUrl ? `<a class="btn" href="${escapeHtml(reservation.receiptUrl)}" target="_blank" rel="noopener"><i data-lucide="file-down" aria-hidden="true"></i> ${escapeHtml(t('viewPdf'))}</a>` : ''}
-            <button class="btn secondary" type="button" onclick="document.querySelector('#closeReceipt').click()">${escapeHtml(t('close'))}</button>
-          </div>
-        `;
-        $('#receiptModal').classList.add('open');
-        $('#receiptModal').setAttribute('aria-hidden', 'false');
-        refreshIcons();
+      async function deletePhoto(rowNumber) {
+        if (!confirm('Borrar esta foto tambien la movera a la papelera de Drive si fue subida desde aqui.')) return;
+        await mutate('deleteAdminPhoto', rowNumber, null, 'Foto borrada.');
       }
 
-      async function refreshData() {
-        state.data = await gas('getAppData');
-        renderApp();
+      async function deleteBeforeAfter(rowNumber) {
+        if (!confirm('Borrar este antes/despues y mover sus fotos a la papelera si fueron subidas aqui?')) return;
+        await mutate('deleteBeforeAfter', rowNumber, null, 'Resultado borrado.');
       }
 
-      function resizeSignatureCanvas() {
-        const canvas = $('#signatureCanvas');
-        if (!canvas) return;
-        const rect = canvas.getBoundingClientRect();
-        if (!rect.width) return;
-        const ratio = window.devicePixelRatio || 1;
-        canvas.width = Math.floor(rect.width * ratio);
-        canvas.height = Math.floor(160 * ratio);
-        const context = canvas.getContext('2d');
-        context.scale(ratio, ratio);
-        context.lineCap = 'round';
-        context.lineJoin = 'round';
-        context.lineWidth = 2.4;
-        context.strokeStyle = '#432233';
-        state.signatureDrawn = false;
+      async function deleteBlockedDay(rowNumber) {
+        if (!confirm('Borrar este bloqueo de fecha?')) return;
+        await mutate('deleteBlockedDay', rowNumber, null, 'Bloqueo borrado.');
       }
 
-      function clearSignature() {
-        resizeSignatureCanvas();
+      async function runReminders() {
+        setBusy(true);
+        try {
+          const result = await gas('runAdminReminders', state.secret);
+          state.data = result.data;
+          showToast(result.message || 'Recordatorios procesados.');
+          renderAll();
+        } catch (error) {
+          showToast(error.message || String(error));
+        } finally {
+          setBusy(false);
+        }
       }
 
-      let drawing = false;
-      let lastPoint = null;
-
-      $('#signatureCanvas').addEventListener('pointerdown', event => {
-        drawing = true;
-        lastPoint = getCanvasPoint(event);
-        $('#signatureCanvas').setPointerCapture(event.pointerId);
-      });
-
-      $('#signatureCanvas').addEventListener('pointermove', event => {
-        if (!drawing) return;
-        const point = getCanvasPoint(event);
-        const context = $('#signatureCanvas').getContext('2d');
-        context.beginPath();
-        context.moveTo(lastPoint.x, lastPoint.y);
-        context.lineTo(point.x, point.y);
-        context.stroke();
-        lastPoint = point;
-        state.signatureDrawn = true;
-      });
-
-      ['pointerup', 'pointercancel', 'pointerleave'].forEach(type => {
-        $('#signatureCanvas').addEventListener(type, () => {
-          drawing = false;
-          lastPoint = null;
-        });
-      });
-
-      function getCanvasPoint(event) {
-        const rect = $('#signatureCanvas').getBoundingClientRect();
-        return {
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top
-        };
+      async function clearPublicPageCache() {
+        setBusy(true);
+        try {
+          await gas('clearPublicCache', state.secret);
+          showToast('Pagina de clientas actualizada. Abrela de nuevo o refrescala.');
+        } catch (error) {
+          showToast(error.message || String(error));
+        } finally {
+          setBusy(false);
+        }
       }
 
-      function setupReveal() {
-        const items = document.querySelectorAll('.reveal:not(.visible)');
-        if (!('IntersectionObserver' in window)) {
-          items.forEach(item => item.classList.add('visible'));
+      async function mutate(functionName, payloadOrRow, statusOrExtra, maybeMessage) {
+        setBusy(true);
+        try {
+          if (functionName === 'updateAdminReservationStatus') {
+            state.data = await gas(functionName, state.secret, payloadOrRow, statusOrExtra);
+            showToast(maybeMessage);
+          } else {
+            state.data = await gas(functionName, state.secret, payloadOrRow);
+            showToast(maybeMessage || statusOrExtra);
+          }
+          renderAll();
+          return true;
+        } catch (error) {
+          showToast(error.message || String(error));
+          return false;
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function resetServiceForm() {
+        $('#serviceForm').reset();
+        $('#serviceRow').value = '';
+        $('#serviceDuration').value = 60;
+        $('#serviceOrder').value = 1;
+        $('#serviceVisible').checked = true;
+      }
+
+      function resetDiscountForm() {
+        $('#discountForm').reset();
+        $('#discountRow').value = '';
+        $('#discountCategory').value = 'Todas';
+        $('#discountCategoryEn').value = 'All';
+        $('#discountDays').value = 'Todos';
+        $('#discountDaysEn').value = 'Every day';
+        $('#discountAvailable').checked = true;
+        $('#discountVisible').checked = false;
+      }
+
+      function resetPhotoForm() {
+        $('#photoForm').reset();
+        $('#photoRow').value = '';
+        $('#photoId').value = '';
+        $('#photoDriveId').value = '';
+        $('#photoOrder').value = 1;
+        $('#photoVisible').checked = true;
+        $('#photoOffsetX').value = 50;
+        $('#photoOffsetY').value = 50;
+        $('#photoFocus').value = 'center';
+        state.photoFile = null;
+        showPreview('');
+        updatePreviewAspect();
+      }
+
+      function resetBeforeAfterForm() {
+        $('#beforeAfterForm').reset();
+        $('#beforeAfterRow').value = '';
+        $('#beforeAfterId').value = '';
+        $('#beforeDriveId').value = '';
+        $('#afterDriveId').value = '';
+        $('#beforeAfterOrder').value = 1;
+        $('#beforeAfterVisible').checked = true;
+        state.beforeFile = null;
+        state.afterFile = null;
+        showBeforeAfterPreview('before', '');
+        showBeforeAfterPreview('after', '');
+      }
+
+      function resetBlockedDayForm() {
+        $('#blockedDayForm').reset();
+        $('#blockedRow').value = '';
+        $('#blockedActive').checked = true;
+      }
+
+      function handlePhotoFile(event) {
+        const file = event.target.files && event.target.files[0];
+        state.photoFile = file || null;
+        if (!file) {
+          showPreview('');
           return;
         }
-        const observer = new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              observer.unobserve(entry.target);
+        const reader = new FileReader();
+        reader.onload = () => showPreview(reader.result);
+        reader.readAsDataURL(file);
+      }
+
+      function handleBeforeAfterFile(event, side) {
+        const file = event.target.files && event.target.files[0];
+        if (side === 'before') state.beforeFile = file || null;
+        if (side === 'after') state.afterFile = file || null;
+        if (!file) {
+          showBeforeAfterPreview(side, '');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => showBeforeAfterPreview(side, reader.result);
+        reader.readAsDataURL(file);
+      }
+
+      function showPreview(src) {
+        const preview = $('#photoPreview');
+        preview.src = src || '';
+        preview.classList.toggle('show', Boolean(src));
+        updatePreviewPosition();
+      }
+
+      function showBeforeAfterPreview(side, src) {
+        const preview = side === 'before' ? $('#beforePreview') : $('#afterPreview');
+        preview.src = src || '';
+      }
+
+      function updatePreviewAspect() {
+        const [w, h] = $('#photoAspect').value.split(':').map(Number);
+        $('#photoPreview').style.aspectRatio = `${w} / ${h}`;
+      }
+
+      function syncFocusSliders() {
+        const focus = $('#photoFocus').value;
+        $('#photoOffsetX').value = 50;
+        $('#photoOffsetY').value = focus === 'top' ? 0 : focus === 'bottom' ? 100 : 50;
+        updatePreviewPosition();
+      }
+
+      function updatePreviewPosition() {
+        $('#photoPreview').style.objectPosition = `${$('#photoOffsetX').value}% ${$('#photoOffsetY').value}%`;
+      }
+
+      function bindPhotoDrag() {
+        let dragged = null;
+        $$('[data-photo-row]').forEach(row => {
+          row.addEventListener('dragstart', () => {
+            dragged = row;
+            row.classList.add('dragging');
+          });
+          row.addEventListener('dragend', async () => {
+            row.classList.remove('dragging');
+            dragged = null;
+            const ordered = $$('[data-photo-row]').map(item => item.dataset.photoRow);
+            setBusy(true);
+            try {
+              state.data = await gas('reorderAdminPhotos', state.secret, ordered);
+              showToast('Orden de fotos actualizado.');
+              renderAll();
+            } catch (error) {
+              showToast(error.message || String(error));
+            } finally {
+              setBusy(false);
             }
           });
-        }, { threshold: 0.12 });
-        items.forEach(item => observer.observe(item));
+          row.addEventListener('dragover', event => {
+            event.preventDefault();
+            if (!dragged || dragged === row) return;
+            const body = row.parentElement;
+            const rect = row.getBoundingClientRect();
+            const after = event.clientY > rect.top + rect.height / 2;
+            body.insertBefore(dragged, after ? row.nextSibling : row);
+          });
+        });
       }
 
-      function categoryLabel(category, categoryEn = '') {
-        if (state.language === 'en' && categoryEn) return categoryEn;
-        const categoryTranslations = state.data && state.data.categoryTranslations ? state.data.categoryTranslations : {};
-        const translations = categoryTranslations[category] || {};
-        const sheetTranslation = translations[state.language];
-        if (state.language === 'en' && sheetTranslation) return sheetTranslation;
-        const key = slug(category);
-        const languagePack = I18N[state.language] || {};
-        return languagePack.categories && languagePack.categories[key] ? languagePack.categories[key] : category;
+      function cropImage(file, aspectValue, offsetXPercent, offsetYPercent) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error('No se pudo leer la imagen.'));
+          reader.onload = () => {
+            const image = new Image();
+            image.onerror = () => reject(new Error('No se pudo preparar la imagen.'));
+            image.onload = () => {
+              const [aspectW, aspectH] = aspectValue.split(':').map(Number);
+              const targetRatio = aspectW / aspectH;
+              const imageRatio = image.naturalWidth / image.naturalHeight;
+              let cropW = image.naturalWidth;
+              let cropH = image.naturalHeight;
+              let cropX = 0;
+              let cropY = 0;
+
+              if (imageRatio > targetRatio) {
+                cropW = cropH * targetRatio;
+                cropX = (image.naturalWidth - cropW) * clamp(offsetXPercent / 100, 0, 1);
+              } else {
+                cropH = cropW / targetRatio;
+                cropY = (image.naturalHeight - cropH) * clamp(offsetYPercent / 100, 0, 1);
+              }
+
+              const outputW = Math.min(1400, Math.round(cropW));
+              const outputH = Math.round(outputW / targetRatio);
+              const canvas = document.createElement('canvas');
+              canvas.width = outputW;
+              canvas.height = outputH;
+              const context = canvas.getContext('2d');
+              context.drawImage(image, cropX, cropY, cropW, cropH, 0, 0, outputW, outputH);
+              resolve(canvas.toDataURL('image/jpeg', 0.84));
+            };
+            image.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        });
       }
 
-      function discountDays(discount) {
-        return state.language === 'en' && discount.daysEn ? discount.daysEn : discount.days;
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
       }
 
-      function serviceName(service) {
-        return state.language === 'en' && service.nameEn ? service.nameEn : service.name;
-      }
-
-      function serviceDescription(service) {
-        return state.language === 'en' && service.descriptionEn ? service.descriptionEn : service.description;
-      }
-
-      function statusLabel(status) {
-        const languagePack = I18N[state.language] || {};
-        return languagePack.statuses && languagePack.statuses[slug(status)] ? languagePack.statuses[slug(status)] : status;
-      }
-
-      function sectionCopy(category) {
-        const languagePack = I18N[state.language] || {};
-        return languagePack.sectionCopy && languagePack.sectionCopy[slug(category)] ? languagePack.sectionCopy[slug(category)] : t('defaultSectionCopy');
-      }
-
-      function normalizeInstagramUrl(value) {
-        let text = String(value || '').replace(/\s+/g, '');
-        if (!text) return '';
-        if (text.charAt(0) === '@') {
-          text = `https://www.instagram.com/${text.slice(1)}`;
-        } else if (/^instagram\.com\//i.test(text)) {
-          text = `https://www.${text}`;
-        } else if (/^www\.instagram\.com\//i.test(text)) {
-          text = `https://${text}`;
-        } else if (/^[a-zA-Z0-9._]{2,30}$/.test(text)) {
-          text = `https://www.instagram.com/${text}`;
-        }
-        return /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._/?=&%-]*$/i.test(text) ? text : '';
+      function setBusy(isBusy) {
+        $$('button').forEach(button => {
+          button.disabled = isBusy || button.dataset.locked === 'true';
+        });
       }
 
       function gas(functionName, ...args) {
+        return postToAppsScript(functionName, args);
+      }
+
+      function postToAppsScript(functionName, args) {
+        const endpoint = String(ADMIN_CONFIG.apiBaseUrl || '').trim();
+        if (!endpoint) {
+          throw new Error('Configura apiBaseUrl en assets/admin-config.js con el link /exec de Apps Script.');
+        }
+
         return new Promise((resolve, reject) => {
-          if (!window.google || !google.script || !google.script.run) {
-            reject(new Error('Esta pagina debe abrirse desde el Web App de Apps Script.'));
-            return;
+          const requestId = `angels_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+          const iframeName = `frame_${requestId}`;
+          const iframe = document.createElement('iframe');
+          const form = document.createElement('form');
+          const timeout = setTimeout(() => finish(null, new Error('La conexion esta tardando mas de lo normal.')), 120000);
+
+          iframe.name = iframeName;
+          iframe.hidden = true;
+          iframe.style.display = 'none';
+
+          form.method = 'POST';
+          form.action = endpoint;
+          form.target = iframeName;
+          form.style.display = 'none';
+
+          addHiddenField(form, 'requestId', requestId);
+          addHiddenField(form, 'fn', functionName);
+          addHiddenField(form, 'args', JSON.stringify(args || []));
+
+          function onMessage(event) {
+            const message = event.data || {};
+            if (!message.angelsApi || message.requestId !== requestId) return;
+            if (message.ok) finish(message.data);
+            else finish(null, new Error(message.error || 'No se pudo completar la solicitud.'));
           }
-          let finished = false;
-          const timer = setTimeout(() => {
-            if (!finished) {
-              finished = true;
-              reject(new Error('La conexion esta tardando mas de lo normal. Actualiza la pagina e intenta otra vez.'));
-            }
-          }, 25000);
-          const finish = (callback, value) => {
-            if (finished) return;
-            finished = true;
-            clearTimeout(timer);
-            callback(value);
-          };
-          google.script.run
-            .withSuccessHandler(result => finish(resolve, result))
-            .withFailureHandler(error => finish(reject, error))[functionName](...args);
+
+          function finish(data, error) {
+            clearTimeout(timeout);
+            window.removeEventListener('message', onMessage);
+            form.remove();
+            iframe.remove();
+            if (error) reject(error);
+            else resolve(data);
+          }
+
+          window.addEventListener('message', onMessage);
+          document.body.appendChild(iframe);
+          document.body.appendChild(form);
+          form.submit();
         });
       }
 
-      function formatMoney(value) {
-        const currency = state.data && state.data.currency ? state.data.currency : 'USD';
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(Number(value || 0));
+      function addHiddenField(form, name, value) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
       }
 
-      function refreshIcons() {
-        if (window.lucide) lucide.createIcons();
+      function formatMoney(value) {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value || 0));
       }
 
       function showToast(message) {
@@ -2283,17 +2247,11 @@
         toast.textContent = message;
         toast.classList.add('show');
         clearTimeout(showToast.timer);
-        showToast.timer = setTimeout(() => toast.classList.remove('show'), 4200);
+        showToast.timer = setTimeout(() => toast.classList.remove('show'), 3600);
       }
 
-      function slug(value) {
-        const text = String(value || '');
-        const normalized = text.normalize ? text.normalize('NFD') : text;
-        return normalized
-          .replace(/[\u0300-\u036f]/g, '')
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '');
+      function refreshIcons() {
+        if (window.lucide) lucide.createIcons();
       }
 
       function escapeHtml(value) {
@@ -2305,43 +2263,14 @@
           .replace(/'/g, '&#39;');
       }
 
-      function escapeJs(value) {
-        return String(value == null ? '' : value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-      }
-
-      function escapeAttrJs(value) {
-        return escapeHtml(escapeJs(value));
-      }
-
-      function uniqueValues(values) {
-        return values.filter((value, index, list) => value && list.indexOf(value) === index);
-      }
-
-      function makeLocalDate(dateIso) {
-        if (!dateIso) return new Date();
-        const parts = String(dateIso).split('-').map(Number);
-        if (parts.length !== 3 || parts.some(part => isNaN(part))) return new Date();
-        return new Date(parts[0], parts[1] - 1, parts[2]);
-      }
-
-      function toIsoDate(date) {
-        const year = date.getFullYear();
-        const month = pad2(date.getMonth() + 1);
-        const day = pad2(date.getDate());
-        return `${year}-${month}-${day}`;
-      }
-
-      function pad2(value) {
-        value = String(value);
-        return value.length < 2 ? `0${value}` : value;
-      }
-
-      function debounce(callback, delay) {
-        let timer;
-        return (...args) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => callback(...args), delay);
-        };
+      function slug(value) {
+        const text = String(value || '');
+        const normalized = text.normalize ? text.normalize('NFD') : text;
+        return normalized
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '');
       }
     </script>
   </body>

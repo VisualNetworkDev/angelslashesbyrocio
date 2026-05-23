@@ -2271,17 +2271,62 @@
       }
 
       async function callBackend(functionName, args) {
-        const baseUrl = String(APP_CONFIG.apiBaseUrl || '').replace(/\/$/, '');
-        const response = await fetch(`${baseUrl}/${functionName}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ args })
+        return postToAppsScript(functionName, args);
+      }
+
+      function postToAppsScript(functionName, args) {
+        const endpoint = String(APP_CONFIG.apiBaseUrl || '').trim();
+        if (!endpoint) throw new Error('La conexion con el backend todavia no esta configurada.');
+
+        return new Promise((resolve, reject) => {
+          const requestId = `angels_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+          const iframeName = `frame_${requestId}`;
+          const iframe = document.createElement('iframe');
+          const form = document.createElement('form');
+          const timeout = setTimeout(() => finish(null, new Error('La conexion esta tardando mas de lo normal.')), 120000);
+
+          iframe.name = iframeName;
+          iframe.hidden = true;
+          iframe.style.display = 'none';
+
+          form.method = 'POST';
+          form.action = endpoint;
+          form.target = iframeName;
+          form.style.display = 'none';
+
+          addHiddenField(form, 'requestId', requestId);
+          addHiddenField(form, 'fn', functionName);
+          addHiddenField(form, 'args', JSON.stringify(args || []));
+
+          function onMessage(event) {
+            const message = event.data || {};
+            if (!message.angelsApi || message.requestId !== requestId) return;
+            if (message.ok) finish(message.data);
+            else finish(null, new Error(message.error || 'No se pudo completar la solicitud.'));
+          }
+
+          function finish(data, error) {
+            clearTimeout(timeout);
+            window.removeEventListener('message', onMessage);
+            form.remove();
+            iframe.remove();
+            if (error) reject(error);
+            else resolve(data);
+          }
+
+          window.addEventListener('message', onMessage);
+          document.body.appendChild(iframe);
+          document.body.appendChild(form);
+          form.submit();
         });
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok || payload.error) {
-          throw new Error(payload.error || 'No se pudo conectar con el servidor.');
-        }
-        return Object.prototype.hasOwnProperty.call(payload, 'data') ? payload.data : payload;
+      }
+
+      function addHiddenField(form, name, value) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
       }
 
       function getAvailableSlotsStatic(category, serviceName, dateIso) {
