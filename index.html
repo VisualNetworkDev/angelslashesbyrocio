@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://unpkg.com">
-    <script src="assets/site-data.js"></script>
+    <script src="assets/site-data.js?v=20260522-2"></script>
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <style>
       :root {
@@ -1346,10 +1346,11 @@
       }
 
       const INITIAL_APP_DATA = readJsonElement('initialAppData', null);
+      const APP_VERSION = '20260522-2';
       const APP_CONFIG = Object.assign({
-        apiBaseUrl: '',
+        apiBaseUrl: 'https://script.google.com/macros/s/AKfycbwgK38IEFSorraDiy3p2o_xa32zMqC7NoWeHkraVunped0N4enjIKpfP1AVra461R6CQQ/exec',
         dataUrl: 'data/site-data.json',
-        mode: 'static'
+        mode: 'api'
       }, window.ANGELS_SITE_DATA || {});
 
       const state = {
@@ -1583,10 +1584,15 @@
 
       async function loadAppData() {
         if (APP_CONFIG.apiBaseUrl) {
-          return callBackend('getAppData', []);
+          try {
+            return await callBackend('getAppData', []);
+          } catch (error) {
+            console.warn('API no disponible, usando datos locales:', error.message || error);
+          }
         }
 
-        const response = await fetch(APP_CONFIG.dataUrl, { cache: 'no-store' });
+        const separator = APP_CONFIG.dataUrl.indexOf('?') === -1 ? '?' : '&';
+        const response = await fetch(`${APP_CONFIG.dataUrl}${separator}v=${encodeURIComponent(APP_VERSION)}`, { cache: 'no-store' });
         if (!response.ok) throw new Error('No se pudo cargar la informacion de la pagina.');
         return response.json();
       }
@@ -1842,7 +1848,7 @@
         const fallbackAttrs = driveId
           ? ` data-drive-id="${escapeHtml(driveId)}" data-fallback-step="0" onerror="handlePublicImageError(this)"`
           : '';
-        return `<img${classAttr} src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async"${fallbackAttrs}>`;
+        return `<img${classAttr} src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${fallbackAttrs}>`;
       }
 
       window.handlePublicImageError = function(image) {
@@ -2283,7 +2289,7 @@
           const iframeName = `frame_${requestId}`;
           const iframe = document.createElement('iframe');
           const form = document.createElement('form');
-          const timeout = setTimeout(() => finish(null, new Error('La conexion esta tardando mas de lo normal.')), 120000);
+          const timeout = setTimeout(() => finish(null, new Error('La conexion esta tardando mas de lo normal.')), apiTimeoutFor(functionName));
 
           iframe.name = iframeName;
           iframe.hidden = true;
@@ -2308,8 +2314,8 @@
           function finish(data, error) {
             clearTimeout(timeout);
             window.removeEventListener('message', onMessage);
-            form.remove();
-            iframe.remove();
+            removeNode(form);
+            removeNode(iframe);
             if (error) reject(error);
             else resolve(data);
           }
@@ -2327,6 +2333,15 @@
         input.name = name;
         input.value = value;
         form.appendChild(input);
+      }
+
+      function removeNode(node) {
+        if (node && node.parentNode) node.parentNode.removeChild(node);
+      }
+
+      function apiTimeoutFor(functionName) {
+        if (functionName === 'createReservation') return 90000;
+        return 35000;
       }
 
       function getAvailableSlotsStatic(category, serviceName, dateIso) {
