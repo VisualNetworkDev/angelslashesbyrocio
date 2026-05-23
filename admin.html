@@ -974,8 +974,8 @@
                   <div id="openDays" class="day-checks"></div>
                 </div>
                 <div class="field">
-                  <label for="reminderHours">Enviar recordatorio antes de</label>
-                  <input id="reminderHours" type="number" min="1" step="1">
+                  <label for="reminderHours">Primer recordatorio (horas)</label>
+                  <input id="reminderHours" type="number" min="24" step="1" value="24" readonly>
                 </div>
                 <div class="field full">
                   <label for="maintenanceMessage">Mensaje de mantenimiento</label>
@@ -996,6 +996,7 @@
               <div class="row-actions">
                 <button class="btn" type="submit"><i data-lucide="settings" aria-hidden="true"></i>Guardar ajustes</button>
                 <button class="btn secondary" type="button" id="sendRemindersBtn"><i data-lucide="bell-ring" aria-hidden="true"></i>Enviar recordatorios ahora</button>
+                <button class="btn secondary developer-only" type="button" id="installReminderTriggerBtn"><i data-lucide="alarm-clock" aria-hidden="true"></i>Activar automaticos</button>
                 <button class="btn secondary" type="button" id="clearPublicCacheBtn"><i data-lucide="rotate-cw" aria-hidden="true"></i>Actualizar pagina clientas</button>
               </div>
             </form>
@@ -1204,6 +1205,7 @@
         $('#newBeforeAfterBtn').addEventListener('click', resetBeforeAfterForm);
         $('#newBlockedDayBtn').addEventListener('click', resetBlockedDayForm);
         $('#sendRemindersBtn').addEventListener('click', runReminders);
+        $('#installReminderTriggerBtn').addEventListener('click', installReminderTrigger);
         $('#clearPublicCacheBtn').addEventListener('click', clearPublicPageCache);
         $('#photoFile').addEventListener('change', handlePhotoFile);
         $('#beforeFile').addEventListener('change', event => handleBeforeAfterFile(event, 'before'));
@@ -1384,7 +1386,8 @@
                       <strong>${escapeHtml(item.category)} - ${escapeHtml(item.service)}</strong><br>
                       <span>${escapeHtml(item.date)} ${escapeHtml(item.time)}</span><br>
                       <span class="muted">${item.duration} min - ${escapeHtml(item.id)}</span>
-                      ${item.reminderSent ? `<br><span class="muted">Recordatorio: ${escapeHtml(item.reminderSent)}</span>` : ''}
+                      ${item.reminder24hSent ? `<br><span class="muted">Recordatorio 24h: ${escapeHtml(item.reminder24hSent)}</span>` : ''}
+                      ${item.reminder1hSent ? `<br><span class="muted">Recordatorio 1h: ${escapeHtml(item.reminder1hSent)}</span>` : ''}
                     </td>
                     <td>
                       <strong>${formatMoney(item.total)}</strong><br>
@@ -1972,6 +1975,24 @@
         }
       }
 
+      async function installReminderTrigger() {
+        if (state.data && state.data.authRole !== 'developer') {
+          showToast('Solo developer puede activar los recordatorios automaticos.');
+          return;
+        }
+        setBusy(true);
+        try {
+          const result = await gas('installReminderTrigger', state.secret);
+          state.data = result.data;
+          showToast(result.message || 'Recordatorios automaticos activos.');
+          renderAll();
+        } catch (error) {
+          showToast(error.message || String(error));
+        } finally {
+          setBusy(false);
+        }
+      }
+
       async function clearPublicPageCache() {
         setBusy(true);
         try {
@@ -2293,7 +2314,7 @@
 
       function apiTimeoutFor(functionName) {
         if (['saveAdminPhoto', 'saveBeforeAfter', 'createReservation'].indexOf(functionName) !== -1) return 120000;
-        if (['getAdminData', 'runAdminReminders'].indexOf(functionName) !== -1) return 60000;
+        if (['getAdminData', 'runAdminReminders', 'installReminderTrigger'].indexOf(functionName) !== -1) return 60000;
         return 40000;
       }
 
