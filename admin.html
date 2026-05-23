@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://unpkg.com">
-    <script src="assets/admin-config.js"></script>
+    <script src="assets/admin-config.js?v=20260522-2"></script>
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <style>
       :root {
@@ -763,7 +763,7 @@
                 </label>
                 <div class="field full">
                   <label for="photoFile">Subir desde galeria</label>
-                  <input id="photoFile" type="file" accept="image/*">
+                  <input id="photoFile" type="file" accept="image/jpeg,image/png,image/webp">
                 </div>
                 <div class="field">
                   <label for="photoAspect">Recorte</label>
@@ -840,11 +840,11 @@
                 </label>
                 <div class="field">
                   <label for="beforeFile">Foto antes</label>
-                  <input id="beforeFile" type="file" accept="image/*">
+                  <input id="beforeFile" type="file" accept="image/jpeg,image/png,image/webp">
                 </div>
                 <div class="field">
                   <label for="afterFile">Foto despues</label>
-                  <input id="afterFile" type="file" accept="image/*">
+                  <input id="afterFile" type="file" accept="image/jpeg,image/png,image/webp">
                 </div>
                 <div class="field full before-after-preview">
                   <img id="beforePreview" alt="">
@@ -1111,8 +1111,8 @@
       const $ = selector => document.querySelector(selector);
       const $$ = selector => Array.prototype.slice.call(document.querySelectorAll(selector));
       const ADMIN_CONFIG = Object.assign({
-        apiBaseUrl: '',
-        publicUrl: './'
+        apiBaseUrl: 'https://script.google.com/macros/s/AKfycbwgK38IEFSorraDiy3p2o_xa32zMqC7NoWeHkraVunped0N4enjIKpfP1AVra461R6CQQ/exec',
+        publicUrl: 'https://visualnetworkdev.github.io/angelslashesbyrocio/'
       }, window.ANGELS_ADMIN_CONFIG || {});
       const PUBLIC_APP_URL = ADMIN_CONFIG.publicUrl || './';
 
@@ -1180,7 +1180,7 @@
         $('#publicLink').addEventListener('click', event => {
           if ($('#publicLink').dataset.missing === 'true') {
             event.preventDefault();
-            showToast('Pega el link del deploy en PUBLIC_APP_URL dentro de Code.gs.');
+            showToast('Configura publicUrl en assets/admin-config.js.');
           }
         });
         $('#refreshBtn').addEventListener('click', loadAdminData);
@@ -1504,7 +1504,7 @@
                   <tr class="drag-row" draggable="true" data-photo-row="${item.rowNumber}">
                     <td><span class="drag-handle">::</span></td>
                     <td>
-                      ${item.imageUrl ? `<img class="thumb" src="${escapeHtml(item.imageUrl)}" alt="" loading="lazy" decoding="async">` : ''}
+                      ${item.imageUrl ? `<img class="thumb" src="${escapeHtml(item.imageUrl)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''}
                       <br><strong>${escapeHtml(item.title || item.id)}</strong>
                     </td>
                     <td>${escapeHtml(item.category)}<br><span class="muted">Orden ${item.order}</span></td>
@@ -1545,8 +1545,8 @@
                   <tr>
                     <td>
                       <div class="before-after-preview">
-                        ${item.beforeImageUrl ? `<img src="${escapeHtml(item.beforeImageUrl)}" alt="" loading="lazy" decoding="async">` : '<img alt="">'}
-                        ${item.afterImageUrl ? `<img src="${escapeHtml(item.afterImageUrl)}" alt="" loading="lazy" decoding="async">` : '<img alt="">'}
+                        ${item.beforeImageUrl ? `<img src="${escapeHtml(item.beforeImageUrl)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '<img alt="">'}
+                        ${item.afterImageUrl ? `<img src="${escapeHtml(item.afterImageUrl)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '<img alt="">'}
                       </div>
                       <strong>${escapeHtml(item.title || item.id)}</strong><br>
                       <span class="muted">${escapeHtml(item.titleEn || '')}</span>
@@ -2044,11 +2044,18 @@
 
       function handlePhotoFile(event) {
         const file = event.target.files && event.target.files[0];
-        state.photoFile = file || null;
+        state.photoFile = null;
         if (!file) {
           showPreview('');
           return;
         }
+        if (!isAllowedImageFile(file)) {
+          event.target.value = '';
+          showPreview('');
+          showToast('Usa una imagen JPG, PNG o WebP.');
+          return;
+        }
+        state.photoFile = file;
         const reader = new FileReader();
         reader.onload = () => showPreview(reader.result);
         reader.readAsDataURL(file);
@@ -2056,15 +2063,27 @@
 
       function handleBeforeAfterFile(event, side) {
         const file = event.target.files && event.target.files[0];
-        if (side === 'before') state.beforeFile = file || null;
-        if (side === 'after') state.afterFile = file || null;
+        if (side === 'before') state.beforeFile = null;
+        if (side === 'after') state.afterFile = null;
         if (!file) {
           showBeforeAfterPreview(side, '');
           return;
         }
+        if (!isAllowedImageFile(file)) {
+          event.target.value = '';
+          showBeforeAfterPreview(side, '');
+          showToast('Usa una imagen JPG, PNG o WebP.');
+          return;
+        }
+        if (side === 'before') state.beforeFile = file;
+        if (side === 'after') state.afterFile = file;
         const reader = new FileReader();
         reader.onload = () => showBeforeAfterPreview(side, reader.result);
         reader.readAsDataURL(file);
+      }
+
+      function isAllowedImageFile(file) {
+        return ['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) !== -1;
       }
 
       function showPreview(src) {
@@ -2152,19 +2171,33 @@
                 cropY = (image.naturalHeight - cropH) * clamp(offsetYPercent / 100, 0, 1);
               }
 
-              const outputW = Math.min(1400, Math.round(cropW));
-              const outputH = Math.round(outputW / targetRatio);
-              const canvas = document.createElement('canvas');
-              canvas.width = outputW;
-              canvas.height = outputH;
-              const context = canvas.getContext('2d');
-              context.drawImage(image, cropX, cropY, cropW, cropH, 0, 0, outputW, outputH);
-              resolve(canvas.toDataURL('image/jpeg', 0.84));
+              resolve(makeCompressedCrop(image, cropX, cropY, cropW, cropH, targetRatio));
             };
             image.src = reader.result;
           };
           reader.readAsDataURL(file);
         });
+      }
+
+      function makeCompressedCrop(image, cropX, cropY, cropW, cropH, targetRatio) {
+        const attempts = [
+          { width: 1280, quality: 0.82 },
+          { width: 1100, quality: 0.8 },
+          { width: 920, quality: 0.78 }
+        ];
+        let result = '';
+        attempts.some(settings => {
+          const outputW = Math.min(settings.width, Math.round(cropW));
+          const outputH = Math.round(outputW / targetRatio);
+          const canvas = document.createElement('canvas');
+          canvas.width = outputW;
+          canvas.height = outputH;
+          const context = canvas.getContext('2d');
+          context.drawImage(image, cropX, cropY, cropW, cropH, 0, 0, outputW, outputH);
+          result = canvas.toDataURL('image/jpeg', settings.quality);
+          return result.length < 1800000;
+        });
+        return result;
       }
 
       function clamp(value, min, max) {
@@ -2192,7 +2225,7 @@
           const iframeName = `frame_${requestId}`;
           const iframe = document.createElement('iframe');
           const form = document.createElement('form');
-          const timeout = setTimeout(() => finish(null, new Error('La conexion esta tardando mas de lo normal.')), 120000);
+          const timeout = setTimeout(() => finish(null, new Error('La conexion esta tardando mas de lo normal.')), apiTimeoutFor(functionName));
 
           iframe.name = iframeName;
           iframe.hidden = true;
@@ -2217,8 +2250,8 @@
           function finish(data, error) {
             clearTimeout(timeout);
             window.removeEventListener('message', onMessage);
-            form.remove();
-            iframe.remove();
+            removeNode(form);
+            removeNode(iframe);
             if (error) reject(error);
             else resolve(data);
           }
@@ -2236,6 +2269,16 @@
         input.name = name;
         input.value = value;
         form.appendChild(input);
+      }
+
+      function removeNode(node) {
+        if (node && node.parentNode) node.parentNode.removeChild(node);
+      }
+
+      function apiTimeoutFor(functionName) {
+        if (['saveAdminPhoto', 'saveBeforeAfter', 'createReservation'].indexOf(functionName) !== -1) return 120000;
+        if (['getAdminData', 'runAdminReminders'].indexOf(functionName) !== -1) return 60000;
+        return 40000;
       }
 
       function formatMoney(value) {
