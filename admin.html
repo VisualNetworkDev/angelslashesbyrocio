@@ -1226,10 +1226,26 @@
       }
 
       function getCleanPublicUrl(value) {
-        const url = String(value || '').trim();
-        if (url === './' || url === '/' || /^\.{0,2}\//.test(url)) return url;
-        if (!url || url.indexOf('script.google.com/macros/s/') === -1 || url.indexOf('/exec') === -1) return '';
-        return url.split('#')[0].split('?')[0];
+        const rawUrl = String(value || '').trim();
+        if (!rawUrl) return '';
+        if (rawUrl === './' || rawUrl === '/' || /^\.{1,2}\//.test(rawUrl)) return rawUrl;
+
+        try {
+          const url = new URL(rawUrl, window.location.href);
+          if (url.protocol !== 'https:' && url.protocol !== 'http:') return '';
+          url.hash = '';
+          url.search = '';
+
+          if (/\/admin\.html$/i.test(url.pathname)) {
+            url.pathname = url.pathname.replace(/admin\.html$/i, '');
+          } else if (/\/admin\/?$/i.test(url.pathname)) {
+            url.pathname = url.pathname.replace(/admin\/?$/i, '');
+          }
+
+          return url.href;
+        } catch (error) {
+          return '';
+        }
       }
 
       async function loadAdminData() {
