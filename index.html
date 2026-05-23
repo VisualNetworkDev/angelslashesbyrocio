@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://unpkg.com">
-    <script src="assets/site-data.js?v=20260522-2"></script>
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <style>
       :root {
@@ -1309,7 +1309,7 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script id="initialAppData" type="application/json">null</script>
+    <script id="initialAppData" type="application/json"><?!= typeof initialAppDataJson !== 'undefined' ? initialAppDataJson : 'null' ?></script>
 
     <script>
       const $ = selector => document.querySelector(selector);
@@ -1346,12 +1346,6 @@
       }
 
       const INITIAL_APP_DATA = readJsonElement('initialAppData', null);
-      const APP_VERSION = '20260522-2';
-      const APP_CONFIG = Object.assign({
-        apiBaseUrl: 'https://script.google.com/macros/s/AKfycbwgK38IEFSorraDiy3p2o_xa32zMqC7NoWeHkraVunped0N4enjIKpfP1AVra461R6CQQ/exec',
-        dataUrl: 'data/site-data.json',
-        mode: 'api'
-      }, window.ANGELS_SITE_DATA || {});
 
       const state = {
         data: null,
@@ -1550,7 +1544,7 @@
         setupReveal();
         try {
           const initialData = INITIAL_APP_DATA && typeof INITIAL_APP_DATA === 'object' ? INITIAL_APP_DATA : null;
-          state.data = normalizeAppData(hasUsableAppData(initialData) ? initialData : await loadAppData());
+          state.data = normalizeAppData(hasUsableAppData(initialData) ? initialData : await gas('getAppData'));
           renderApp();
         } catch (error) {
           $('#content').innerHTML = `<div class="shell empty">${escapeHtml(error.message || error)}</div>`;
@@ -1580,21 +1574,6 @@
         data.publicDiscounts = Array.isArray(data.publicDiscounts) ? data.publicDiscounts : [];
         data.today = data.today || toIsoDate(new Date());
         return data;
-      }
-
-      async function loadAppData() {
-        if (APP_CONFIG.apiBaseUrl) {
-          try {
-            return await callBackend('getAppData', []);
-          } catch (error) {
-            console.warn('API no disponible, usando datos locales:', error.message || error);
-          }
-        }
-
-        const separator = APP_CONFIG.dataUrl.indexOf('?') === -1 ? '?' : '&';
-        const response = await fetch(`${APP_CONFIG.dataUrl}${separator}v=${encodeURIComponent(APP_VERSION)}`, { cache: 'no-store' });
-        if (!response.ok) throw new Error('No se pudo cargar la informacion de la pagina.');
-        return response.json();
       }
 
       function bindEvents() {
@@ -1791,7 +1770,6 @@
         const services = state.data.services.filter(service => service.category === category);
         const servicePhotos = services.map(service => service.image).filter(Boolean);
         const photos = uniqueValues([...servicePhotos, ...(state.data.photos[category] || [])]).slice(0, 3);
-        while (photos.length < 3 && photos.length > 0) photos.push(photos[0]);
         const label = categoryLabel(category);
         const motions = ['motion-left', 'motion-depth', 'motion-right', 'motion-rise'];
         const galleryHtml = photos.length
@@ -1848,7 +1826,7 @@
         const fallbackAttrs = driveId
           ? ` data-drive-id="${escapeHtml(driveId)}" data-fallback-step="0" onerror="handlePublicImageError(this)"`
           : '';
-        return `<img${classAttr} src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${fallbackAttrs}>`;
+        return `<img${classAttr} src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async"${fallbackAttrs}>`;
       }
 
       window.handlePublicImageError = function(image) {
@@ -2265,183 +2243,29 @@
         return /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._/?=&%-]*$/i.test(text) ? text : '';
       }
 
-      async function gas(functionName, ...args) {
-        if (APP_CONFIG.apiBaseUrl) {
-          return callBackend(functionName, args);
-        }
-
-        if (functionName === 'getAppData') return loadAppData();
-        if (functionName === 'getAvailableSlots') return getAvailableSlotsStatic(args[0], args[1], args[2]);
-        if (functionName === 'createReservation') return createReservationStatic(args[0]);
-        throw new Error('Esta funcion todavia necesita backend.');
-      }
-
-      async function callBackend(functionName, args) {
-        return postToAppsScript(functionName, args);
-      }
-
-      function postToAppsScript(functionName, args) {
-        const endpoint = String(APP_CONFIG.apiBaseUrl || '').trim();
-        if (!endpoint) throw new Error('La conexion con el backend todavia no esta configurada.');
-
+      function gas(functionName, ...args) {
         return new Promise((resolve, reject) => {
-          const requestId = `angels_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-          const iframeName = `frame_${requestId}`;
-          const iframe = document.createElement('iframe');
-          const form = document.createElement('form');
-          const timeout = setTimeout(() => finish(null, new Error('La conexion esta tardando mas de lo normal.')), apiTimeoutFor(functionName));
-
-          iframe.name = iframeName;
-          iframe.hidden = true;
-          iframe.style.display = 'none';
-
-          form.method = 'POST';
-          form.action = endpoint;
-          form.target = iframeName;
-          form.style.display = 'none';
-
-          addHiddenField(form, 'requestId', requestId);
-          addHiddenField(form, 'fn', functionName);
-          addHiddenField(form, 'args', JSON.stringify(args || []));
-
-          function onMessage(event) {
-            const message = event.data || {};
-            if (!message.angelsApi || message.requestId !== requestId) return;
-            if (message.ok) finish(message.data);
-            else finish(null, new Error(message.error || 'No se pudo completar la solicitud.'));
+          if (!window.google || !google.script || !google.script.run) {
+            reject(new Error('Esta pagina debe abrirse desde el Web App de Apps Script.'));
+            return;
           }
-
-          function finish(data, error) {
-            clearTimeout(timeout);
-            window.removeEventListener('message', onMessage);
-            removeNode(form);
-            removeNode(iframe);
-            if (error) reject(error);
-            else resolve(data);
-          }
-
-          window.addEventListener('message', onMessage);
-          document.body.appendChild(iframe);
-          document.body.appendChild(form);
-          form.submit();
+          let finished = false;
+          const timer = setTimeout(() => {
+            if (!finished) {
+              finished = true;
+              reject(new Error('La conexion esta tardando mas de lo normal. Actualiza la pagina e intenta otra vez.'));
+            }
+          }, 25000);
+          const finish = (callback, value) => {
+            if (finished) return;
+            finished = true;
+            clearTimeout(timer);
+            callback(value);
+          };
+          google.script.run
+            .withSuccessHandler(result => finish(resolve, result))
+            .withFailureHandler(error => finish(reject, error))[functionName](...args);
         });
-      }
-
-      function addHiddenField(form, name, value) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = name;
-        input.value = value;
-        form.appendChild(input);
-      }
-
-      function removeNode(node) {
-        if (node && node.parentNode) node.parentNode.removeChild(node);
-      }
-
-      function apiTimeoutFor(functionName) {
-        if (functionName === 'createReservation') return 90000;
-        return 35000;
-      }
-
-      function getAvailableSlotsStatic(category, serviceName, dateIso) {
-        if (!state.data || !dateIso) return [];
-        const service = findService(category, serviceName);
-        if (!service || isDateBlocked(dateIso)) return [];
-
-        const hours = state.data.hours || {};
-        const openDays = hours.openDays || [1, 2, 3, 4, 5, 6];
-        const date = makeLocalDate(dateIso);
-        if (openDays.indexOf(date.getDay()) === -1) return [];
-
-        const start = timeToMinutes(hours.start || '09:00');
-        const end = timeToMinutes(hours.end || '18:00');
-        const interval = Number(hours.intervalMinutes || 30);
-        const duration = Number(service.duration || 60);
-        const slots = [];
-
-        for (let minutes = start; minutes + duration <= end; minutes += interval) {
-          const time24 = minutesToTime24(minutes);
-          if (isPastSlot(dateIso, time24)) continue;
-          slots.push({ value: time24, label: formatAmPm(time24) });
-        }
-        return slots;
-      }
-
-      function createReservationStatic(payload) {
-        payload = payload || {};
-        const service = findService(payload.category, payload.service);
-        if (!service) throw new Error(t('noServicesInCategory'));
-        if (!payload.agreementAccepted) throw new Error(t('acceptAgreement'));
-
-        const price = Number(service.price || 0);
-        const coupon = applyStaticCoupon(payload.coupon, service.category, price);
-        return {
-          id: `AL-${Date.now()}`,
-          category: service.category,
-          service: service.name,
-          date: payload.date,
-          time: formatAmPm(payload.time),
-          status: 'Pendiente',
-          price,
-          discount: coupon.discount,
-          total: coupon.total,
-          coupon: coupon.code,
-          receiptUrl: ''
-        };
-      }
-
-      function findService(category, serviceName) {
-        return (state.data.services || []).find(service => service.category === category && service.name === serviceName);
-      }
-
-      function applyStaticCoupon(code, category, price) {
-        const couponCode = String(code || '').trim().toUpperCase();
-        if (!couponCode) return { code: '', discount: 0, total: price };
-
-        const discount = (state.data.publicDiscounts || []).find(item => {
-          const categoryMatches = !item.category || item.category === 'Todas' || item.category === category;
-          return String(item.code || '').toUpperCase() === couponCode && categoryMatches;
-        });
-        if (!discount) throw new Error(state.language === 'en' ? 'This coupon is not available.' : 'Este cupon no esta disponible.');
-
-        const value = Number(discount.value || 0);
-        const amount = value <= 100 ? roundMoney(price * (value / 100)) : Math.min(price, roundMoney(value));
-        return { code: couponCode, discount: amount, total: roundMoney(Math.max(0, price - amount)) };
-      }
-
-      function isDateBlocked(dateIso) {
-        return (state.data.blockedDates || []).indexOf(dateIso) !== -1;
-      }
-
-      function isPastSlot(dateIso, time24) {
-        const now = new Date();
-        const slot = makeLocalDate(dateIso);
-        const minutes = timeToMinutes(time24);
-        slot.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
-        return slot.getTime() <= now.getTime();
-      }
-
-      function timeToMinutes(time24) {
-        const parts = String(time24 || '00:00').split(':').map(Number);
-        return (parts[0] || 0) * 60 + (parts[1] || 0);
-      }
-
-      function minutesToTime24(minutes) {
-        return `${pad2(Math.floor(minutes / 60))}:${pad2(minutes % 60)}`;
-      }
-
-      function formatAmPm(time24) {
-        const minutes = timeToMinutes(time24);
-        const hour24 = Math.floor(minutes / 60);
-        const minute = minutes % 60;
-        const suffix = hour24 >= 12 ? 'PM' : 'AM';
-        const hour12 = hour24 % 12 || 12;
-        return `${hour12}:${pad2(minute)} ${suffix}`;
-      }
-
-      function roundMoney(value) {
-        return Math.round((Number(value) || 0) * 100) / 100;
       }
 
       function formatMoney(value) {
