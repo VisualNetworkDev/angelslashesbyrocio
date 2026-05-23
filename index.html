@@ -453,52 +453,109 @@
         grid-template-columns: 1fr 0.82fr;
         gap: 12px;
         min-height: 430px;
+        perspective: 1200px;
+        position: relative;
       }
 
-      .photo-grid img {
-        width: 100%;
+      .photo-frame {
+        min-height: 210px;
         height: 100%;
-        object-fit: cover;
+        margin: 0;
         border-radius: var(--radius);
-        box-shadow: 0 16px 36px rgba(67, 34, 51, 0.12);
+        overflow: hidden;
+        position: relative;
+        background: #fff;
+        box-shadow: 0 18px 42px rgba(67, 34, 51, 0.16);
         opacity: 0;
-        transition: transform 600ms ease, filter 600ms ease;
+        isolation: isolate;
+        transform-origin: var(--origin, center);
       }
 
-      .photo-grid img:first-child {
+      .photo-frame:first-child {
         grid-row: span 2;
       }
 
-      .photo-grid img:hover {
-        transform: scale(1.018);
-        filter: saturate(1.08);
+      .photo-frame::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 36%),
+          linear-gradient(180deg, rgba(67, 34, 51, 0) 55%, rgba(67, 34, 51, 0.16));
+        opacity: 0.88;
       }
 
-      .photo-grid.visible img.motion-left {
-        animation: photoFromLeft 900ms cubic-bezier(0.2, 0.72, 0.18, 1) forwards;
+      .photo-frame::after {
+        content: "";
+        position: absolute;
+        inset: -45% -70%;
+        z-index: 3;
+        pointer-events: none;
+        background: linear-gradient(115deg, rgba(255,255,255,0) 35%, rgba(255,255,255,0.34) 48%, rgba(255,255,255,0) 62%);
+        transform: translateX(-58%) rotate(8deg);
+        opacity: 0;
       }
 
-      .photo-grid.visible img.motion-right {
-        animation: photoFromRight 920ms cubic-bezier(0.2, 0.72, 0.18, 1) 120ms forwards;
+      .photo-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        filter: saturate(1.01) contrast(1.02);
+        transform: scale(1.035);
+        transition: transform 850ms cubic-bezier(.2,.72,.18,1), filter 850ms ease;
       }
 
-      .photo-grid.visible img.motion-rise {
-        animation: photoRise 940ms cubic-bezier(0.2, 0.72, 0.18, 1) 220ms forwards;
+      .photo-frame:hover img {
+        transform: scale(1.085);
+        filter: saturate(1.12) contrast(1.04);
       }
 
-      .photo-grid.visible img.motion-depth {
-        animation: photoDepth 1000ms cubic-bezier(0.2, 0.72, 0.18, 1) 180ms forwards;
+      .photo-frame:hover::after {
+        animation: photoSheen 900ms ease forwards;
+      }
+
+      .photo-grid.visible .photo-frame.motion-left {
+        --origin: left center;
+        animation: photoFromLeft 950ms cubic-bezier(0.2, 0.72, 0.18, 1) forwards;
+      }
+
+      .photo-grid.visible .photo-frame.motion-right {
+        --origin: right center;
+        animation: photoFromRight 980ms cubic-bezier(0.2, 0.72, 0.18, 1) 120ms forwards;
+      }
+
+      .photo-grid.visible .photo-frame.motion-rise {
+        --origin: center bottom;
+        animation: photoRise 980ms cubic-bezier(0.2, 0.72, 0.18, 1) 220ms forwards;
+      }
+
+      .photo-grid.visible .photo-frame.motion-depth {
+        --origin: center;
+        animation: photoDepth 1050ms cubic-bezier(0.2, 0.72, 0.18, 1) 180ms forwards;
+      }
+
+      .photo-grid.visible .photo-frame.motion-tilt {
+        --origin: left bottom;
+        animation: photoTilt 1050ms cubic-bezier(0.2, 0.72, 0.18, 1) 100ms forwards;
+      }
+
+      .photo-grid.visible .photo-frame.motion-soft {
+        --origin: center top;
+        animation: photoSoft 1080ms cubic-bezier(0.2, 0.72, 0.18, 1) 160ms forwards;
       }
 
       @keyframes photoFromLeft {
         from {
           opacity: 0;
-          transform: translateX(-46px) rotate(-1.8deg) scale(0.96);
+          transform: translateX(-62px) rotateY(-12deg) rotate(-2deg) scale(0.96);
           filter: blur(8px) saturate(0.92);
         }
         to {
           opacity: 1;
-          transform: translateX(0) rotate(0) scale(1);
+          transform: translateX(0) rotateY(0) rotate(0) scale(1);
           filter: blur(0) saturate(1);
         }
       }
@@ -506,12 +563,12 @@
       @keyframes photoFromRight {
         from {
           opacity: 0;
-          transform: translateX(46px) rotate(1.8deg) scale(0.96);
+          transform: translateX(62px) rotateY(12deg) rotate(2deg) scale(0.96);
           filter: blur(8px) saturate(0.92);
         }
         to {
           opacity: 1;
-          transform: translateX(0) rotate(0) scale(1);
+          transform: translateX(0) rotateY(0) rotate(0) scale(1);
           filter: blur(0) saturate(1);
         }
       }
@@ -539,6 +596,46 @@
           opacity: 1;
           transform: perspective(900px) translateZ(0) translateY(0) scale(1);
           filter: blur(0) saturate(1);
+        }
+      }
+
+      @keyframes photoTilt {
+        from {
+          opacity: 0;
+          transform: perspective(900px) rotateX(11deg) rotateZ(-2.4deg) translateY(34px) scale(0.94);
+          filter: blur(9px) saturate(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: perspective(900px) rotateX(0) rotateZ(0) translateY(0) scale(1);
+          filter: blur(0) saturate(1);
+        }
+      }
+
+      @keyframes photoSoft {
+        from {
+          opacity: 0;
+          transform: scale(1.08);
+          filter: blur(12px) saturate(0.86);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+          filter: blur(0) saturate(1);
+        }
+      }
+
+      @keyframes photoSheen {
+        0% {
+          opacity: 0;
+          transform: translateX(-58%) rotate(8deg);
+        }
+        22% {
+          opacity: 0.72;
+        }
+        100% {
+          opacity: 0;
+          transform: translateX(58%) rotate(8deg);
         }
       }
 
@@ -884,52 +981,169 @@
 
       .before-after-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 18px;
       }
 
       .before-after-card {
-        border: 1px solid var(--line);
+        position: relative;
+        border: 1px solid rgba(91, 42, 66, 0.12);
         border-radius: var(--radius);
         overflow: hidden;
-        background: #fff;
-        box-shadow: 0 12px 30px rgba(67, 34, 51, 0.08);
+        background:
+          linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,244,241,0.9)),
+          #fff;
+        box-shadow: 0 18px 46px rgba(67, 34, 51, 0.12);
+        transform-origin: center bottom;
+        transition: transform 340ms ease, box-shadow 340ms ease, border-color 340ms ease;
+      }
+
+      .before-after-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 4px;
+        z-index: 3;
+        background: linear-gradient(90deg, var(--plum), var(--rose), #e8b7b4);
+      }
+
+      .before-after-card:hover {
+        border-color: rgba(183, 110, 121, 0.34);
+        box-shadow: 0 24px 58px rgba(67, 34, 51, 0.16);
+        transform: translateY(-4px);
       }
 
       .comparison {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        position: relative;
+        min-height: 250px;
+        background: #fff8f6;
+        isolation: isolate;
+      }
+
+      .comparison::before {
+        content: "";
+        position: absolute;
+        inset: 14px auto 14px 50%;
+        z-index: 4;
+        width: 1px;
+        background: linear-gradient(180deg, transparent, rgba(255,255,255,0.95), rgba(91,42,66,0.36), rgba(255,255,255,0.95), transparent);
+        box-shadow: 0 0 0 1px rgba(91, 42, 66, 0.06);
+      }
+
+      .comparison::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 5;
+        width: 28px;
+        height: 28px;
+        border: 5px solid rgba(255,255,255,0.8);
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--rose), var(--plum));
+        box-shadow: 0 12px 28px rgba(67, 34, 51, 0.22);
+        transform: translate(-50%, -50%);
       }
 
       .comparison figure {
         margin: 0;
         position: relative;
-        min-height: 220px;
+        min-height: 250px;
+        overflow: hidden;
+        opacity: 0;
+        filter: saturate(0.95);
+      }
+
+      .comparison figure::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background:
+          linear-gradient(145deg, rgba(255,255,255,0.24), rgba(255,255,255,0) 36%),
+          linear-gradient(180deg, rgba(67,34,51,0) 52%, rgba(67,34,51,0.2));
+        opacity: 0.82;
       }
 
       .comparison img {
         width: 100%;
         height: 100%;
-        min-height: 220px;
+        min-height: 250px;
         object-fit: cover;
+        display: block;
+        transform: scale(1.045);
+        transition: transform 900ms cubic-bezier(.2,.72,.18,1), filter 900ms ease;
+      }
+
+      .before-after-card:hover .comparison img {
+        transform: scale(1.09);
+        filter: saturate(1.08) contrast(1.03);
       }
 
       .comparison figcaption {
         position: absolute;
-        left: 8px;
-        bottom: 8px;
+        left: 12px;
+        bottom: 12px;
+        z-index: 6;
         border-radius: 999px;
-        background: rgba(67, 34, 51, 0.78);
+        border: 1px solid rgba(255,255,255,0.28);
+        background: rgba(67, 34, 51, 0.76);
         color: #fff;
-        padding: 5px 8px;
-        font-size: 12px;
+        padding: 6px 10px;
+        font-size: 11px;
         font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+      }
+
+      .before-after-card.visible .comparison figure:first-child {
+        animation: compareBefore 860ms cubic-bezier(0.2, 0.72, 0.18, 1) 80ms forwards;
+      }
+
+      .before-after-card.visible .comparison figure:last-child {
+        animation: compareAfter 900ms cubic-bezier(0.2, 0.72, 0.18, 1) 180ms forwards;
       }
 
       .before-after-card h3 {
         margin: 0;
-        padding: 13px;
+        padding: 15px 16px 16px;
         color: var(--plum);
+        background:
+          radial-gradient(circle at 16px 0, rgba(183, 110, 121, 0.16), transparent 32%),
+          rgba(255,255,255,0.66);
+        font-size: 17px;
+        line-height: 1.25;
+      }
+
+      @keyframes compareBefore {
+        from {
+          opacity: 0;
+          transform: translateX(-34px) scale(0.98);
+          filter: blur(7px) saturate(0.88);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+          filter: blur(0) saturate(1);
+        }
+      }
+
+      @keyframes compareAfter {
+        from {
+          opacity: 0;
+          transform: translateX(34px) scale(0.98);
+          filter: blur(7px) saturate(0.88);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+          filter: blur(0) saturate(1);
+        }
       }
 
       .policy-section {
@@ -1070,8 +1284,20 @@
           grid-template-columns: 1fr;
         }
 
-        .photo-grid img:first-child {
+        .photo-frame:first-child {
           grid-row: auto;
+        }
+
+        .comparison,
+        .comparison figure,
+        .comparison img {
+          min-height: 220px;
+        }
+
+        .comparison::after {
+          width: 24px;
+          height: 24px;
+          border-width: 4px;
         }
 
         .dialog-body {
@@ -1080,7 +1306,8 @@
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .photo-grid img,
+        .photo-frame,
+        .comparison figure,
         .photo-placeholder,
         .reveal {
           animation: none !important;
@@ -1816,7 +2043,7 @@
               <strong>${escapeHtml(discount.code)}</strong><br>
               <span>${escapeHtml(categoryLabel(discount.category, discount.categoryEn))} · ${escapeHtml(discountDays(discount))}</span>
             </div>
-            <strong>${discount.value ? `${discount.value}%` : 'Promo'}</strong>
+            <strong>${escapeHtml(formatDiscountValue(discount))}</strong>
           </article>
         `).join('');
       }
@@ -1842,7 +2069,7 @@
         const servicePhotos = services.map(service => service.image).filter(Boolean);
         const photos = uniqueValues([...servicePhotos, ...(state.data.photos[category] || [])]).slice(0, 3);
         const label = categoryLabel(category);
-        const motions = ['motion-left', 'motion-depth', 'motion-right', 'motion-rise'];
+        const motions = ['motion-left', 'motion-depth', 'motion-right', 'motion-rise', 'motion-tilt', 'motion-soft'];
         const galleryHtml = photos.length
           ? photos.map((photo, index) => renderPublicImage(photo, `${label} ${index + 1}`, motions[index % motions.length])).join('')
           : '<div class="photo-placeholder" aria-hidden="true"><span class="photo-placeholder-icon"><i data-lucide="sparkles" aria-hidden="true"></i></span></div>';
@@ -1893,11 +2120,12 @@
 
       function renderPublicImage(url, alt, className) {
         const driveId = extractDriveImageId(url);
-        const classAttr = className ? ` class="${escapeHtml(className)}"` : '';
         const fallbackAttrs = driveId
           ? ` data-drive-id="${escapeHtml(driveId)}" data-fallback-step="0" onerror="handlePublicImageError(this)"`
           : '';
-        return `<img${classAttr} src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${fallbackAttrs}>`;
+        const imageMarkup = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${fallbackAttrs}>`;
+        if (!className) return imageMarkup;
+        return `<figure class="${escapeHtml(`photo-frame ${className}`)}">${imageMarkup}</figure>`;
       }
 
       window.handlePublicImageError = function(image) {
@@ -2449,8 +2677,9 @@
         if (!couponCode) return { code: '', discount: 0, total: price };
 
         const discount = (state.data.publicDiscounts || []).find(item => {
-          const categoryMatches = !item.category || item.category === 'Todas' || item.category === category;
-          return String(item.code || '').toUpperCase() === couponCode && categoryMatches;
+          const categoryText = normalizeText(item.category || item.categoryEn || 'Todas');
+          const categoryMatches = !categoryText || ['todas', 'todos', 'all'].indexOf(categoryText) !== -1 || categoryText === normalizeText(category);
+          return String(item.code || '').toUpperCase() === couponCode && categoryMatches && couponDayMatches(item, $('#date').value || state.data.today);
         });
         if (!discount) throw new Error(state.language === 'en' ? 'This coupon is not available.' : 'Este cupon no esta disponible.');
 
@@ -2461,6 +2690,20 @@
 
       function isDateBlocked(dateIso) {
         return (state.data.blockedDates || []).indexOf(dateIso) !== -1;
+      }
+
+      function couponDayMatches(discount, dateIso) {
+        const days = normalizeText(`${discount.days || ''} ${discount.daysEn || ''}`);
+        if (!days || /\b(todos|todas|all|diario|daily)\b/.test(days) || days.indexOf('every day') !== -1) return true;
+        const date = makeLocalDate(dateIso || state.data.today);
+        const dayNumber = date.getDay();
+        const spanishDays = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+        const englishDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        return days.indexOf(String(dayNumber)) !== -1 ||
+          days.indexOf(spanishDays[dayNumber]) !== -1 ||
+          days.indexOf(englishDays[dayNumber]) !== -1 ||
+          (days.indexOf('lunes-a-viernes') !== -1 && dayNumber >= 1 && dayNumber <= 5) ||
+          (days.indexOf('monday-friday') !== -1 && dayNumber >= 1 && dayNumber <= 5);
       }
 
       function isPastSlot(dateIso, time24) {
@@ -2498,6 +2741,12 @@
         return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(Number(value || 0));
       }
 
+      function formatDiscountValue(discount) {
+        const value = Number(discount && discount.value || 0);
+        if (!value) return 'Promo';
+        return value <= 100 ? `${value}%` : formatMoney(value);
+      }
+
       function refreshIcons() {
         if (window.lucide) lucide.createIcons();
       }
@@ -2511,13 +2760,13 @@
       }
 
       function slug(value) {
+        return normalizeText(value).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+
+      function normalizeText(value) {
         const text = String(value || '');
         const normalized = text.normalize ? text.normalize('NFD') : text;
-        return normalized
-          .replace(/[\u0300-\u036f]/g, '')
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '');
+        return normalized.replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
       }
 
       function escapeHtml(value) {
