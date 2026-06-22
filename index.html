@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://unpkg.com">
-    <script src="assets/site-data.js?v=20260523-1"></script>
-    <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://script.google.com">
+    <link rel="preconnect" href="https://lh3.googleusercontent.com">
+    <script src="assets/site-data.js?v=20260622-2"></script>
+    <script defer src="assets/lucide.min.js?v=20260622-2"></script>
     <style>
       :root {
         --ink: #2b2226;
@@ -762,6 +763,47 @@
         background: rgba(255, 244, 241, 0.7);
       }
 
+      .browser-notice {
+        padding: 20px 0 0;
+      }
+
+      .browser-notice[hidden] {
+        display: none;
+      }
+
+      .browser-notice-card {
+        border: 1px solid rgba(194, 141, 85, 0.32);
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        background:
+          linear-gradient(135deg, rgba(255, 250, 247, 0.96), rgba(255, 244, 241, 0.88)),
+          #fff;
+        box-shadow: 0 12px 34px rgba(67, 34, 51, 0.1);
+        padding: 14px;
+      }
+
+      .browser-notice-card strong {
+        display: block;
+        color: var(--plum);
+        margin-bottom: 4px;
+      }
+
+      .browser-notice-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .browser-notice-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
       .modal {
         position: fixed;
         inset: 0;
@@ -1026,37 +1068,163 @@
       }
 
       .comparison {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        --position: 50%;
         position: relative;
         min-height: 250px;
         background: #fff8f6;
         isolation: isolate;
+        overflow: hidden;
+        cursor: ew-resize;
       }
 
       .comparison::before {
         content: "";
         position: absolute;
-        inset: 14px auto 14px 50%;
+        inset: 14px auto 14px var(--position);
         z-index: 4;
-        width: 1px;
+        width: 2px;
         background: linear-gradient(180deg, transparent, rgba(255,255,255,0.95), rgba(91,42,66,0.36), rgba(255,255,255,0.95), transparent);
         box-shadow: 0 0 0 1px rgba(91, 42, 66, 0.06);
+        transform: translateX(-50%);
       }
 
       .comparison::after {
         content: "";
         position: absolute;
-        left: 50%;
+        left: var(--position);
         top: 50%;
         z-index: 5;
-        width: 28px;
-        height: 28px;
+        width: 36px;
+        height: 36px;
         border: 5px solid rgba(255,255,255,0.8);
         border-radius: 50%;
         background: linear-gradient(135deg, var(--rose), var(--plum));
         box-shadow: 0 12px 28px rgba(67, 34, 51, 0.22);
         transform: translate(-50%, -50%);
+      }
+
+      .comparison-image,
+      .comparison-after {
+        margin: 0;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 250px;
+        object-fit: cover;
+        display: block;
+        filter: saturate(0.98) contrast(1.01);
+        transform: scale(1.035);
+        transition: transform 900ms cubic-bezier(.2,.72,.18,1), filter 900ms ease;
+      }
+
+      .comparison-after {
+        clip-path: inset(0 0 0 var(--position));
+      }
+
+      .comparison-placeholder {
+        min-height: 250px;
+        display: grid;
+        place-items: center;
+        color: var(--muted);
+        background:
+          linear-gradient(135deg, rgba(255, 244, 241, 0.96), rgba(244, 216, 191, 0.44)),
+          #fff;
+      }
+
+      .comparison-scrim {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background:
+          linear-gradient(145deg, rgba(255,255,255,0.22), rgba(255,255,255,0) 36%),
+          linear-gradient(180deg, rgba(67,34,51,0) 52%, rgba(67,34,51,0.2));
+        opacity: 0.82;
+      }
+
+      .comparison-range {
+        position: absolute;
+        inset: 0;
+        z-index: 7;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        cursor: ew-resize;
+        opacity: 0;
+      }
+
+      .comparison-handle {
+        position: absolute;
+        left: var(--position);
+        top: 50%;
+        z-index: 6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        color: #fff;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+      }
+
+      .comparison-handle i {
+        width: 20px;
+        height: 20px;
+        filter: drop-shadow(0 2px 6px rgba(43, 34, 38, 0.28));
+      }
+
+      .comparison-badge {
+        position: absolute;
+        bottom: 12px;
+        z-index: 6;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.28);
+        background: rgba(67, 34, 51, 0.76);
+        color: #fff;
+        padding: 6px 10px;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+      }
+
+      .comparison-badge.before {
+        left: 12px;
+      }
+
+      .comparison-badge.after {
+        right: 12px;
+      }
+
+      .comparison-hint {
+        position: absolute;
+        left: 50%;
+        top: 12px;
+        z-index: 6;
+        max-width: calc(100% - 24px);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.84);
+        color: var(--rose-dark);
+        padding: 6px 10px;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        box-shadow: 0 8px 20px rgba(67, 34, 51, 0.12);
+      }
+
+      .comparison > :not(.comparison-range) {
+        opacity: 0;
+      }
+
+      .before-after-card.visible .comparison > :not(.comparison-range) {
+        animation: compareFadeIn 760ms cubic-bezier(0.2, 0.72, 0.18, 1) 120ms forwards;
       }
 
       .comparison figure {
@@ -1080,17 +1248,8 @@
         opacity: 0.82;
       }
 
-      .comparison img {
-        width: 100%;
-        height: 100%;
-        min-height: 250px;
-        object-fit: cover;
-        display: block;
-        transform: scale(1.045);
-        transition: transform 900ms cubic-bezier(.2,.72,.18,1), filter 900ms ease;
-      }
-
-      .before-after-card:hover .comparison img {
+      .before-after-card:hover .comparison-image,
+      .before-after-card:hover .comparison-after {
         transform: scale(1.09);
         filter: saturate(1.08) contrast(1.03);
       }
@@ -1155,6 +1314,15 @@
           opacity: 1;
           transform: translateX(0) scale(1);
           filter: blur(0) saturate(1);
+        }
+      }
+
+      @keyframes compareFadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
         }
       }
 
@@ -1292,6 +1460,15 @@
           flex-direction: column;
         }
 
+        .browser-notice-card {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .browser-notice-actions {
+          justify-content: flex-start;
+        }
+
         .photo-grid {
           grid-template-columns: 1fr;
         }
@@ -1302,7 +1479,9 @@
 
         .comparison,
         .comparison figure,
-        .comparison img {
+        .comparison img,
+        .comparison-image,
+        .comparison-after {
           min-height: 220px;
         }
 
@@ -1320,6 +1499,9 @@
       @media (prefers-reduced-motion: reduce) {
         .photo-frame,
         .comparison figure,
+        .comparison-image,
+        .comparison-after,
+        .comparison > :not(.comparison-range),
         .photo-placeholder,
         .reveal {
           animation: none !important;
@@ -1412,6 +1594,19 @@
       </section>
 
       <div id="content" class="loading" data-i18n="loadingServices">Cargando servicios...</div>
+
+      <section id="browserNotice" class="browser-notice shell" hidden>
+        <div class="browser-notice-card">
+          <div>
+            <strong data-i18n="browserNoticeTitle">Reserva segura</strong>
+            <p data-i18n="browserNoticeCopy">Si abriste esta pagina desde Instagram y la reserva no responde, abre el enlace en Chrome o Safari para completar tu cita.</p>
+          </div>
+          <div class="browser-notice-actions">
+            <a id="openBrowserLink" class="btn" href="#" target="_blank" rel="noopener"><i data-lucide="external-link" aria-hidden="true"></i><span data-i18n="openBrowser">Abrir en navegador</span></a>
+            <button id="copyPageLink" class="btn secondary" type="button"><i data-lucide="copy" aria-hidden="true"></i><span data-i18n="copyLink">Copiar enlace</span></button>
+          </div>
+        </div>
+      </section>
 
       <section id="beforeAfterSection" class="section category-section" hidden>
         <div class="shell">
@@ -1585,7 +1780,9 @@
       }
 
       const INITIAL_APP_DATA = readJsonElement('initialAppData', null);
-      const APP_VERSION = '20260523-1';
+      const APP_VERSION = '20260622-2';
+      const APP_DATA_CACHE_KEY = 'angels_public_data_cache_v20260622';
+      const APP_DATA_CACHE_TTL = 10 * 60 * 1000;
       const APP_CONFIG = Object.assign({
         apiBaseUrl: 'https://script.google.com/macros/s/AKfycbwgK38IEFSorraDiy3p2o_xa32zMqC7NoWeHkraVunped0N4enjIKpfP1AVra461R6CQQ/exec',
         dataUrl: 'data/site-data.json',
@@ -1597,7 +1794,9 @@
         selectedTime: '',
         signatureDrawn: false,
         language: storageGet('localStorage', 'lumina_language', 'es'),
-        calendarDate: new Date()
+        calendarDate: new Date(),
+        backgroundRefreshRunning: false,
+        apiOffline: false
       };
 
       const I18N = {
@@ -1647,6 +1846,14 @@
           policyTitle: 'Politica de citas',
           before: 'Antes',
           after: 'Despues',
+          beforeAfterHint: 'Desliza para comparar',
+          beforeAfterAria: 'Comparar antes y despues',
+          browserNoticeTitle: 'Reserva segura',
+          browserNoticeCopy: 'Si abriste esta pagina desde Instagram y la reserva no responde, abre el enlace en Chrome o Safari para completar tu cita.',
+          openBrowser: 'Abrir en navegador',
+          copyLink: 'Copiar enlace',
+          linkCopied: 'Enlace copiado.',
+          bookingBrowserBlocked: 'El navegador de Instagram esta bloqueando la conexion segura de reserva. Abre esta pagina en Chrome o Safari para completar tu cita.',
           prevMonth: 'Mes anterior',
           nextMonth: 'Mes siguiente',
           successTitle: 'Solicitud recibida',
@@ -1734,6 +1941,14 @@
           beforeAfterTitle: 'Before and after',
           beforeAfterCopy: 'Real results shared from the studio.',
           policyTitle: 'Appointment policy',
+          beforeAfterHint: 'Slide to compare',
+          beforeAfterAria: 'Compare before and after',
+          browserNoticeTitle: 'Secure booking',
+          browserNoticeCopy: 'If you opened this page from Instagram and booking does not respond, open the link in Chrome or Safari to complete your appointment.',
+          openBrowser: 'Open in browser',
+          copyLink: 'Copy link',
+          linkCopied: 'Link copied.',
+          bookingBrowserBlocked: 'Instagram browser is blocking the secure booking connection. Open this page in Chrome or Safari to complete your appointment.',
           before: 'Before',
           after: 'After',
           prevMonth: 'Previous month',
@@ -1825,23 +2040,91 @@
 
       async function loadAppData() {
         if (APP_CONFIG.apiBaseUrl) {
+          if (isLikelyInAppBrowser()) {
+            const localData = await loadLocalAppData();
+            localData.siteStatus = Object.assign({}, localData.siteStatus || {}, {
+              publicEnabled: true,
+              apiOffline: true,
+              inAppBrowser: true
+            });
+            state.apiOffline = true;
+            refreshAppDataInBackground();
+            return localData;
+          }
+
+          const cachedData = readCachedAppData();
+          if (cachedData) {
+            refreshAppDataInBackground();
+            return cachedData;
+          }
+
           try {
-            return await callBackend('getAppData', []);
+            const data = await callBackend('getAppData', []);
+            writeCachedAppData(data);
+            state.apiOffline = false;
+            return data;
           } catch (error) {
             console.warn('API no disponible, usando datos locales:', error.message || error);
             const fallback = await loadLocalAppData();
             fallback.siteStatus = Object.assign({}, fallback.siteStatus || {}, {
-              publicEnabled: false,
+              publicEnabled: true,
               apiOffline: true,
               maintenanceMessage: state.language === 'en'
-                ? 'Online booking is temporarily unavailable. Please contact the studio for assistance.'
-                : 'Las reservas en linea estan temporalmente fuera de servicio. Contactanos para ayudarte.'
+                ? 'The page loaded with local information because the booking connection is taking longer than expected.'
+                : 'La pagina cargo con informacion local porque la conexion de reserva esta tardando mas de lo normal.'
             });
+            state.apiOffline = true;
             return fallback;
           }
         }
 
         return loadLocalAppData();
+      }
+
+      async function refreshAppDataInBackground() {
+        if (state.backgroundRefreshRunning || !APP_CONFIG.apiBaseUrl) return;
+        state.backgroundRefreshRunning = true;
+        try {
+          const data = await callBackend('getAppData', []);
+          writeCachedAppData(data);
+          state.apiOffline = false;
+          state.data = normalizeAppData(data);
+          if (!$('#bookingModal').classList.contains('open')) renderApp();
+        } catch (error) {
+          console.warn('No se pudo refrescar la informacion en segundo plano:', error.message || error);
+          state.apiOffline = true;
+          if (state.data) {
+            state.data.siteStatus = Object.assign({}, state.data.siteStatus || {}, { apiOffline: true });
+            renderBrowserNotice();
+          }
+        } finally {
+          state.backgroundRefreshRunning = false;
+        }
+      }
+
+      function readCachedAppData() {
+        try {
+          const raw = storageGet('localStorage', APP_DATA_CACHE_KEY, '');
+          if (!raw) return null;
+          const cached = JSON.parse(raw);
+          if (!cached || !cached.savedAt || !cached.data) return null;
+          if (Date.now() - Number(cached.savedAt) > APP_DATA_CACHE_TTL) return null;
+          return cached.data;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function writeCachedAppData(data) {
+        if (!hasUsableAppData(data)) return;
+        try {
+          storageSet('localStorage', APP_DATA_CACHE_KEY, JSON.stringify({
+            savedAt: Date.now(),
+            data
+          }));
+        } catch (error) {
+          console.warn('No se pudo guardar cache local:', error.message || error);
+        }
       }
 
       async function loadLocalAppData() {
@@ -1871,7 +2154,9 @@
         $('#cancelBooking').addEventListener('click', closeBooking);
         $('#closeReceipt').addEventListener('click', closeReceipt);
         $('#clearSignature').addEventListener('click', clearSignature);
+        $('#copyPageLink').addEventListener('click', copyCurrentPageLink);
         document.addEventListener('click', handleInternalNav);
+        document.addEventListener('input', handleComparisonInput);
         document.querySelectorAll('[data-lang]').forEach(button => {
           button.addEventListener('click', () => setLanguage(button.dataset.lang));
         });
@@ -1891,6 +2176,17 @@
 
         event.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function handleComparisonInput(event) {
+        if (!event.target || !event.target.matches('[data-comparison-range]')) return;
+        updateComparisonSlider(event.target);
+      }
+
+      function updateComparisonSlider(range) {
+        const value = Math.max(0, Math.min(100, Number(range.value || 50)));
+        const comparison = range.closest('.comparison');
+        if (comparison) comparison.style.setProperty('--position', `${value}%`);
       }
 
       function renderApp() {
@@ -1921,6 +2217,7 @@
         renderBeforeAfter();
         renderPolicy();
         renderContact();
+        renderBrowserNotice();
         renderCalendar();
         refreshIcons();
       }
@@ -1931,6 +2228,7 @@
         $('#discountSection').hidden = true;
         $('#beforeAfterSection').hidden = true;
         $('#contactSection').hidden = true;
+        $('#browserNotice').hidden = true;
         const trustBand = document.querySelector('.trust-band');
         const policySection = document.querySelector('.policy-section');
         if (trustBand) trustBand.hidden = true;
@@ -1950,19 +2248,56 @@
         refreshIcons();
       }
 
+      function renderBrowserNotice() {
+        const notice = $('#browserNotice');
+        const openLink = $('#openBrowserLink');
+        if (!notice || !openLink) return;
+        const shouldShow = Boolean(isLikelyInAppBrowser() || state.apiOffline || (state.data && state.data.siteStatus && state.data.siteStatus.apiOffline));
+        notice.hidden = !shouldShow;
+        openLink.href = getCanonicalPageUrl();
+        if (shouldShow) refreshIcons();
+      }
+
+      async function copyCurrentPageLink() {
+        const url = getCanonicalPageUrl();
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(url);
+          } else {
+            const input = document.createElement('input');
+            input.value = url;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            input.remove();
+          }
+          showToast(t('linkCopied'));
+        } catch (error) {
+          showToast(url);
+        }
+      }
+
+      function getCanonicalPageUrl() {
+        const url = new URL(window.location.href);
+        url.hash = '';
+        return url.href;
+      }
+
       function renderContact() {
         const contact = state.data.contact || {};
         const instagramUrl = normalizeInstagramUrl(contact.instagramUrl);
+        const phoneHref = normalizePhoneHref(contact.phone);
+        const emailHref = normalizeEmailHref(contact.email);
         const showSection = Boolean(contact.showContact || (contact.showInstagram && instagramUrl));
         $('#contactSection').hidden = !showSection;
         if (!showSection) return;
 
         $('#contactPhoneText').textContent = contact.phone || '';
         $('#contactEmailText').textContent = contact.email || '';
-        $('#phoneLink').href = contact.phone ? `tel:${contact.phone}` : '#';
-        $('#emailLink').href = contact.email ? `mailto:${contact.email}` : '#';
-        $('#phoneLink').hidden = !contact.phone || !contact.showContact;
-        $('#emailLink').hidden = !contact.email || !contact.showContact;
+        $('#phoneLink').href = phoneHref || '#';
+        $('#emailLink').href = emailHref || '#';
+        $('#phoneLink').hidden = !phoneHref || !contact.showContact;
+        $('#emailLink').hidden = !emailHref || !contact.showContact;
         $('#instagramLink').hidden = !contact.showInstagram || !instagramUrl;
         $('#instagramLink').href = instagramUrl || '#';
       }
@@ -1977,21 +2312,42 @@
         const pairs = state.data.beforeAfter || [];
         $('#beforeAfterSection').hidden = !pairs.length;
         if (!pairs.length) return;
-        $('#beforeAfterGrid').innerHTML = pairs.map(pair => `
+        $('#beforeAfterGrid').innerHTML = pairs.map(pair => {
+          const title = state.language === 'en' && pair.titleEn ? pair.titleEn : pair.title;
+          return `
           <article class="before-after-card reveal">
-            <div class="comparison">
-              <figure>
-                ${renderPublicImage(pair.beforeImageUrl, t('before'), '')}
-                <figcaption>${escapeHtml(t('before'))}</figcaption>
-              </figure>
-              <figure>
-                ${renderPublicImage(pair.afterImageUrl, t('after'), '')}
-                <figcaption>${escapeHtml(t('after'))}</figcaption>
-              </figure>
+            <div class="comparison" data-comparison style="--position: 50%">
+              ${renderComparisonImage(pair.beforeImageUrl, t('before'), 'comparison-image')}
+              ${renderComparisonImage(pair.afterImageUrl, t('after'), 'comparison-after')}
+              <span class="comparison-scrim" aria-hidden="true"></span>
+              <span class="comparison-badge before">${escapeHtml(t('before'))}</span>
+              <span class="comparison-badge after">${escapeHtml(t('after'))}</span>
+              <span class="comparison-hint">${escapeHtml(t('beforeAfterHint'))}</span>
+              <input class="comparison-range" data-comparison-range type="range" min="0" max="100" value="50" aria-label="${escapeHtml(`${t('beforeAfterAria')}: ${title || ''}`)}">
+              <span class="comparison-handle" aria-hidden="true"><i data-lucide="move-horizontal"></i></span>
             </div>
-            <h3>${escapeHtml(state.language === 'en' && pair.titleEn ? pair.titleEn : pair.title)}</h3>
+            <h3>${escapeHtml(title)}</h3>
           </article>
-        `).join('');
+        `;
+        }).join('');
+        setupComparisonSliders();
+        setupReveal();
+      }
+
+      function renderComparisonImage(url, alt, className) {
+        const safeUrl = normalizeSafeImageUrl(url);
+        if (!safeUrl) {
+          return `<div class="comparison-placeholder ${escapeHtml(className)}">${escapeHtml(alt)}</div>`;
+        }
+        const driveId = extractDriveImageId(safeUrl);
+        const fallbackAttrs = driveId
+          ? ` data-drive-id="${escapeHtml(driveId)}" data-fallback-step="0" onerror="handlePublicImageError(this)"`
+          : '';
+        return `<img class="${escapeHtml(className)}" src="${escapeHtml(safeUrl)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${fallbackAttrs}>`;
+      }
+
+      function setupComparisonSliders() {
+        document.querySelectorAll('[data-comparison-range]').forEach(updateComparisonSlider);
       }
 
       function setLanguage(language) {
@@ -2130,12 +2486,20 @@
         `;
       }
 
-      function renderPublicImage(url, alt, className) {
-        const driveId = extractDriveImageId(url);
+      function renderPublicImage(url, alt, className, options = {}) {
+        const safeUrl = normalizeSafeImageUrl(url);
+        if (!safeUrl && !className) {
+          return `<span class="comparison-placeholder">${escapeHtml(alt || '')}</span>`;
+        }
+        const loading = options.loading || 'lazy';
+        const fetchPriority = options.fetchPriority ? ` fetchpriority="${escapeHtml(options.fetchPriority)}"` : '';
+        const driveId = extractDriveImageId(safeUrl);
         const fallbackAttrs = driveId
           ? ` data-drive-id="${escapeHtml(driveId)}" data-fallback-step="0" onerror="handlePublicImageError(this)"`
           : '';
-        const imageMarkup = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${fallbackAttrs}>`;
+        const imageMarkup = safeUrl
+          ? `<img src="${escapeHtml(safeUrl)}" alt="${escapeHtml(alt)}" loading="${escapeHtml(loading)}" decoding="async" referrerpolicy="no-referrer"${fetchPriority}${fallbackAttrs}>`
+          : `<span class="comparison-placeholder">${escapeHtml(alt || '')}</span>`;
         if (!className) return imageMarkup;
         return `<figure class="${escapeHtml(`photo-frame ${className}`)}">${imageMarkup}</figure>`;
       }
@@ -2400,6 +2764,7 @@
           service.category === reservation.category && service.name === reservation.service
         ));
         const displayService = selectedService ? serviceName(selectedService) : reservation.service;
+        const receiptUrl = normalizeSafeUrl(reservation.receiptUrl, ['https:']);
         $('#receiptBody').innerHTML = `
           <div class="receipt-success">
             <div class="success-hero">
@@ -2418,7 +2783,7 @@
             </div>
           </div>
           <div class="dialog-actions">
-            ${reservation.receiptUrl ? `<a class="btn" href="${escapeHtml(reservation.receiptUrl)}" target="_blank" rel="noopener"><i data-lucide="file-down" aria-hidden="true"></i> ${escapeHtml(t('viewPdf'))}</a>` : ''}
+            ${receiptUrl ? `<a class="btn" href="${escapeHtml(receiptUrl)}" target="_blank" rel="noopener"><i data-lucide="file-down" aria-hidden="true"></i> ${escapeHtml(t('viewPdf'))}</a>` : ''}
             <button class="btn secondary" type="button" onclick="document.querySelector('#closeReceipt').click()">${escapeHtml(t('close'))}</button>
           </div>
         `;
@@ -2554,9 +2919,59 @@
         return /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._/?=&%-]*$/i.test(text) ? text : '';
       }
 
+      function normalizeSafeUrl(value, allowedProtocols = ['https:']) {
+        const text = String(value || '').trim();
+        if (!text) return '';
+        try {
+          const url = new URL(text, window.location.href);
+          return allowedProtocols.indexOf(url.protocol) === -1 ? '' : url.href;
+        } catch (error) {
+          return '';
+        }
+      }
+
+      function normalizeSafeImageUrl(value) {
+        const text = String(value || '').trim();
+        if (!text) return '';
+        if (/^data:image\/(?:png|jpe?g|webp|gif);base64,[a-z0-9+/=\s]+$/i.test(text)) return text;
+        return normalizeSafeUrl(text, ['https:']);
+      }
+
+      function normalizePhoneHref(value) {
+        const phone = String(value || '').replace(/[^\d+]/g, '');
+        return phone.replace(/\D/g, '').length >= 7 ? `tel:${phone}` : '';
+      }
+
+      function normalizeEmailHref(value) {
+        const email = String(value || '').trim();
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? `mailto:${email}` : '';
+      }
+
+      function isLikelyInAppBrowser() {
+        const ua = navigator.userAgent || '';
+        return /Instagram|FBAN|FBAV|FB_IAB|Line\/|TikTok|Twitter/i.test(ua);
+      }
+
       async function gas(functionName, ...args) {
         if (APP_CONFIG.apiBaseUrl) {
-          return callBackend(functionName, args);
+          try {
+            const result = await callBackend(functionName, args);
+            state.apiOffline = false;
+            return result;
+          } catch (error) {
+            state.apiOffline = true;
+            if (state.data) {
+              state.data.siteStatus = Object.assign({}, state.data.siteStatus || {}, { apiOffline: true });
+              renderBrowserNotice();
+            }
+            if (functionName === 'getAvailableSlots') {
+              return getAvailableSlotsStatic(args[0], args[1], args[2]);
+            }
+            if (functionName === 'createReservation' && isLikelyInAppBrowser()) {
+              throw new Error(t('bookingBrowserBlocked'));
+            }
+            throw error;
+          }
         }
 
         if (functionName === 'getAppData') return loadAppData();
@@ -2570,7 +2985,7 @@
       }
 
       function postToAppsScript(functionName, args) {
-        const endpoint = String(APP_CONFIG.apiBaseUrl || '').trim();
+        const endpoint = normalizeSafeUrl(APP_CONFIG.apiBaseUrl, ['https:']);
         if (!endpoint) throw new Error('La conexion con el backend todavia no esta configurada.');
 
         return new Promise((resolve, reject) => {
@@ -2590,6 +3005,7 @@
           form.style.display = 'none';
 
           addHiddenField(form, 'requestId', requestId);
+          addHiddenField(form, 'origin', window.location.origin || 'null');
           addHiddenField(form, 'fn', functionName);
           addHiddenField(form, 'args', JSON.stringify(args || []));
 
