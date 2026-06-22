@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://script.google.com">
     <link rel="preconnect" href="https://lh3.googleusercontent.com">
-    <script src="assets/site-data.js?v=20260622-2"></script>
-    <script defer src="assets/lucide.min.js?v=20260622-2"></script>
+    <script src="assets/site-data.js?v=20260622-3"></script>
+    <script defer src="assets/lucide.min.js?v=20260622-3"></script>
     <style>
       :root {
         --ink: #2b2226;
@@ -483,6 +483,47 @@
         transform-origin: var(--origin, center);
       }
 
+      .photo-fullscreen {
+        width: 100%;
+        height: 100%;
+        min-height: inherit;
+        display: block;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        text-align: inherit;
+      }
+
+      .photo-fullscreen:focus-visible {
+        outline: 3px solid rgba(183, 110, 121, 0.5);
+        outline-offset: -3px;
+      }
+
+      .photo-zoom-cue {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        z-index: 4;
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: rgba(67, 34, 51, 0.74);
+        box-shadow: 0 10px 24px rgba(43, 34, 38, 0.22);
+        opacity: 0;
+        transform: translateY(6px);
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .photo-frame:hover .photo-zoom-cue,
+      .photo-fullscreen:focus-visible .photo-zoom-cue {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
       .photo-frame:first-child {
         grid-row: span 2;
       }
@@ -817,6 +858,49 @@
 
       .modal.open {
         display: flex;
+      }
+
+      .image-lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 120;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        background: rgba(24, 18, 22, 0.86);
+        backdrop-filter: blur(12px);
+      }
+
+      .image-lightbox.open {
+        display: flex;
+      }
+
+      .image-lightbox img {
+        max-width: min(1180px, calc(100vw - 36px));
+        max-height: calc(100vh - 110px);
+        width: auto;
+        height: auto;
+        border-radius: var(--radius);
+        box-shadow: 0 26px 90px rgba(0, 0, 0, 0.36);
+        object-fit: contain;
+      }
+
+      .image-lightbox-close {
+        position: fixed;
+        top: 18px;
+        right: 18px;
+        z-index: 1;
+      }
+
+      .image-lightbox-caption {
+        position: fixed;
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        color: rgba(255, 255, 255, 0.86);
+        text-align: center;
+        font-weight: 800;
       }
 
       .dialog {
@@ -1646,6 +1730,14 @@
       </section>
     </main>
 
+    <section id="imageLightbox" class="image-lightbox" aria-hidden="true">
+      <button id="closeImageLightbox" class="btn secondary icon image-lightbox-close" type="button" aria-label="Cerrar" data-i18n-aria="close">
+        <i data-lucide="x" aria-hidden="true"></i>
+      </button>
+      <img id="imageLightboxImg" alt="">
+      <div id="imageLightboxCaption" class="image-lightbox-caption"></div>
+    </section>
+
     <section id="bookingModal" class="modal" aria-hidden="true">
       <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
         <div class="dialog-head">
@@ -1780,8 +1872,8 @@
       }
 
       const INITIAL_APP_DATA = readJsonElement('initialAppData', null);
-      const APP_VERSION = '20260622-2';
-      const APP_DATA_CACHE_KEY = 'angels_public_data_cache_v20260622';
+      const APP_VERSION = '20260622-3';
+      const APP_DATA_CACHE_KEY = 'angels_public_data_cache_v20260622_3';
       const APP_DATA_CACHE_TTL = 10 * 60 * 1000;
       const APP_CONFIG = Object.assign({
         apiBaseUrl: 'https://script.google.com/macros/s/AKfycbwgK38IEFSorraDiy3p2o_xa32zMqC7NoWeHkraVunped0N4enjIKpfP1AVra461R6CQQ/exec',
@@ -1848,6 +1940,7 @@
           after: 'Despues',
           beforeAfterHint: 'Desliza para comparar',
           beforeAfterAria: 'Comparar antes y despues',
+          viewImage: 'Ver imagen',
           browserNoticeTitle: 'Reserva segura',
           browserNoticeCopy: 'Si abriste esta pagina desde Instagram y la reserva no responde, abre el enlace en Chrome o Safari para completar tu cita.',
           openBrowser: 'Abrir en navegador',
@@ -1943,6 +2036,7 @@
           policyTitle: 'Appointment policy',
           beforeAfterHint: 'Slide to compare',
           beforeAfterAria: 'Compare before and after',
+          viewImage: 'View image',
           browserNoticeTitle: 'Secure booking',
           browserNoticeCopy: 'If you opened this page from Instagram and booking does not respond, open the link in Chrome or Safari to complete your appointment.',
           openBrowser: 'Open in browser',
@@ -1996,6 +2090,49 @@
         }
       };
 
+      const KNOWN_SERVICE_TRANSLATIONS = {
+        'diseno-de-cejas': 'Brow shaping',
+        'cejas-con-tinte': 'Brow tint',
+        'laminado-de-cejas': 'Brow lamination',
+        'lifting-de-pestanas': 'Lash lift',
+        'extensiones-clasicas': 'Classic lash extensions',
+        'extensiones-hibridas': 'Hybrid lash extensions',
+        'extensiones-volumen': 'Volume lash extensions',
+        'relleno-clasico': 'Classic lash fill',
+        'relleno-hibrido': 'Hybrid lash fill',
+        'relleno-volumen': 'Volume lash fill',
+        'retiro-de-pestanas': 'Lash extension removal',
+        'depilacion-facial': 'Facial waxing',
+        'depilacion-facial-completa': 'Full facial waxing',
+        'bozo-o-menton': 'Lip or chin waxing',
+        'maquillaje-social': 'Event makeup',
+        'maquillaje-novia-test': 'Bridal makeup trial'
+      };
+
+      const KNOWN_DESCRIPTION_TRANSLATIONS = {
+        'diseno-personalizado-para-definir-la-forma-natural-de-tus-cejas': 'Personalized shaping to define your natural brow structure.',
+        'medicion-limpieza-y-definicion-natural': 'Mapping, cleanup and natural definition.',
+        'color-suave-para-dar-mas-presencia-y-armonia-a-tus-cejas': 'Soft color for fuller, more balanced brows.',
+        'efecto-peinado-volumen-suave-y-acabado-pulido': 'Brushed effect, soft volume and polished finish.',
+        'curvatura-natural-para-abrir-la-mirada-con-un-acabado-delicado': 'A natural curl that opens the eyes with a delicate finish.',
+        'curvatura-natural-con-tinte-opcional': 'Natural curl with optional tint.',
+        'efecto-natural-pestana-por-pestana': 'Natural one-by-one lash effect.',
+        'aplicacion-delicada-para-un-look-limpio-y-femenino': 'Delicate application for a clean, feminine look.',
+        'volumen-elegante-y-natural-para-el-dia-a-dia': 'Elegant, natural volume for everyday wear.',
+        'mezcla-de-clasico-y-volumen': 'A balanced mix of classic and volume lashes.',
+        'efecto-mas-lleno-y-dramatico': 'A fuller, more dramatic lash effect.',
+        'mantenimiento-de-extensiones-clasicas': 'Maintenance for classic lash extensions.',
+        'mantenimiento-de-extensiones-hibridas': 'Maintenance for hybrid lash extensions.',
+        'mantenimiento-de-extensiones-volumen': 'Maintenance for volume lash extensions.',
+        'retiro-seguro-de-extensiones': 'Safe removal of lash extensions.',
+        'limpieza-precisa-para-un-rostro-suave-y-cuidado': 'Precise hair removal for a smooth, polished face.',
+        'limpieza-de-rostro-con-tecnica-suave': 'Facial cleanup with a gentle technique.',
+        'retoque-rapido-para-zonas-pequenas': 'Quick touch-up for small areas.',
+        'piel-luminosa-y-tonos-elegantes-para-eventos-y-sesiones': 'Glowing skin and elegant tones for events and photos.',
+        'piel-luminosa-y-estilo-personalizado-para-eventos': 'Glowing skin and a personalized look for events.',
+        'prueba-de-maquillaje-con-recomendaciones-de-look': 'Makeup trial with personalized look recommendations.'
+      };
+
       document.addEventListener('DOMContentLoaded', init);
 
       async function init() {
@@ -2040,41 +2177,33 @@
 
       async function loadAppData() {
         if (APP_CONFIG.apiBaseUrl) {
-          if (isLikelyInAppBrowser()) {
-            const localData = await loadLocalAppData();
-            localData.siteStatus = Object.assign({}, localData.siteStatus || {}, {
-              publicEnabled: true,
-              apiOffline: true,
-              inAppBrowser: true
-            });
-            state.apiOffline = true;
-            refreshAppDataInBackground();
-            return localData;
-          }
-
           const cachedData = readCachedAppData();
-          if (cachedData) {
+          if (cachedData && !isLikelyInAppBrowser()) {
             refreshAppDataInBackground();
             return cachedData;
           }
 
           try {
-            const data = await callBackend('getAppData', []);
+            const data = await callReadBackend('getAppData', [], { preferJsonp: isLikelyInAppBrowser() });
             writeCachedAppData(data);
             state.apiOffline = false;
             return data;
           } catch (error) {
-            console.warn('API no disponible, usando datos locales:', error.message || error);
-            const fallback = await loadLocalAppData();
-            fallback.siteStatus = Object.assign({}, fallback.siteStatus || {}, {
-              publicEnabled: true,
-              apiOffline: true,
-              maintenanceMessage: state.language === 'en'
-                ? 'The page loaded with local information because the booking connection is taking longer than expected.'
-                : 'La pagina cargo con informacion local porque la conexion de reserva esta tardando mas de lo normal.'
-            });
+            console.warn('API no disponible:', error.message || error);
             state.apiOffline = true;
-            return fallback;
+            if (cachedData) {
+              cachedData.siteStatus = Object.assign({}, cachedData.siteStatus || {}, {
+                publicEnabled: true,
+                apiOffline: true,
+                maintenanceMessage: state.language === 'en'
+                  ? 'The page is showing the latest saved business information while the live booking connection responds.'
+                  : 'La pagina esta mostrando la ultima informacion real guardada mientras responde la conexion de reservas.'
+              });
+              return cachedData;
+            }
+            throw new Error(state.language === 'en'
+              ? 'The live business information could not be loaded. Please open this page in Chrome or Safari and try again.'
+              : 'No se pudo cargar la informacion real del negocio. Abre esta pagina en Chrome o Safari e intenta de nuevo.');
           }
         }
 
@@ -2085,7 +2214,7 @@
         if (state.backgroundRefreshRunning || !APP_CONFIG.apiBaseUrl) return;
         state.backgroundRefreshRunning = true;
         try {
-          const data = await callBackend('getAppData', []);
+          const data = await callReadBackend('getAppData', [], { preferJsonp: isLikelyInAppBrowser() });
           writeCachedAppData(data);
           state.apiOffline = false;
           state.data = normalizeAppData(data);
@@ -2155,8 +2284,19 @@
         $('#closeReceipt').addEventListener('click', closeReceipt);
         $('#clearSignature').addEventListener('click', clearSignature);
         $('#copyPageLink').addEventListener('click', copyCurrentPageLink);
+        $('#closeImageLightbox').addEventListener('click', closeImageLightbox);
+        $('#imageLightbox').addEventListener('click', event => {
+          if (event.target === $('#imageLightbox')) closeImageLightbox();
+        });
         document.addEventListener('click', handleInternalNav);
         document.addEventListener('input', handleComparisonInput);
+        document.addEventListener('keydown', event => {
+          if (event.key === 'Escape') {
+            closeImageLightbox();
+            closeReceipt();
+            closeBooking();
+          }
+        });
         document.querySelectorAll('[data-lang]').forEach(button => {
           button.addEventListener('click', () => setLanguage(button.dataset.lang));
         });
@@ -2252,7 +2392,7 @@
         const notice = $('#browserNotice');
         const openLink = $('#openBrowserLink');
         if (!notice || !openLink) return;
-        const shouldShow = Boolean(isLikelyInAppBrowser() || state.apiOffline || (state.data && state.data.siteStatus && state.data.siteStatus.apiOffline));
+        const shouldShow = Boolean(state.apiOffline || (state.data && state.data.siteStatus && state.data.siteStatus.apiOffline));
         notice.hidden = !shouldShow;
         openLink.href = getCanonicalPageUrl();
         if (shouldShow) refreshIcons();
@@ -2498,7 +2638,7 @@
           ? ` data-drive-id="${escapeHtml(driveId)}" data-fallback-step="0" onerror="handlePublicImageError(this)"`
           : '';
         const imageMarkup = safeUrl
-          ? `<img src="${escapeHtml(safeUrl)}" alt="${escapeHtml(alt)}" loading="${escapeHtml(loading)}" decoding="async" referrerpolicy="no-referrer"${fetchPriority}${fallbackAttrs}>`
+          ? `<button class="photo-fullscreen" type="button" onclick="openImageLightbox('${escapeAttrJs(safeUrl)}', '${escapeAttrJs(alt)}')" aria-label="${escapeHtml(`${t('viewImage')}: ${alt}`)}"><img src="${escapeHtml(safeUrl)}" alt="${escapeHtml(alt)}" loading="${escapeHtml(loading)}" decoding="async" referrerpolicy="no-referrer"${fetchPriority}${fallbackAttrs}><span class="photo-zoom-cue" aria-hidden="true"><i data-lucide="maximize-2"></i></span></button>`
           : `<span class="comparison-placeholder">${escapeHtml(alt || '')}</span>`;
         if (!className) return imageMarkup;
         return `<figure class="${escapeHtml(`photo-frame ${className}`)}">${imageMarkup}</figure>`;
@@ -2598,6 +2738,24 @@
       function closeReceipt() {
         $('#receiptModal').classList.remove('open');
         $('#receiptModal').setAttribute('aria-hidden', 'true');
+      }
+
+      window.openImageLightbox = (url, caption) => {
+        const safeUrl = normalizeSafeImageUrl(url);
+        if (!safeUrl) return;
+        $('#imageLightboxImg').src = safeUrl;
+        $('#imageLightboxImg').alt = caption || '';
+        $('#imageLightboxCaption').textContent = caption || '';
+        $('#imageLightbox').classList.add('open');
+        $('#imageLightbox').setAttribute('aria-hidden', 'false');
+      };
+
+      function closeImageLightbox() {
+        const lightbox = $('#imageLightbox');
+        if (!lightbox || !lightbox.classList.contains('open')) return;
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        $('#imageLightboxImg').removeAttribute('src');
       }
 
       async function loadSlots() {
@@ -2887,11 +3045,13 @@
       }
 
       function serviceName(service) {
-        return state.language === 'en' && service.nameEn ? service.nameEn : service.name;
+        if (state.language !== 'en') return service.name;
+        return service.nameEn || KNOWN_SERVICE_TRANSLATIONS[slug(service.name)] || service.name;
       }
 
       function serviceDescription(service) {
-        return state.language === 'en' && service.descriptionEn ? service.descriptionEn : service.description;
+        if (state.language !== 'en') return service.description;
+        return service.descriptionEn || KNOWN_DESCRIPTION_TRANSLATIONS[slug(service.description)] || service.description;
       }
 
       function statusLabel(status) {
@@ -2952,20 +3112,40 @@
         return /Instagram|FBAN|FBAV|FB_IAB|Line\/|TikTok|Twitter/i.test(ua);
       }
 
+      async function callReadBackend(functionName, args = [], options = {}) {
+        const preferJsonp = Boolean(options.preferJsonp);
+        if (preferJsonp) {
+          try {
+            return await callBackendJsonp(functionName, args);
+          } catch (jsonpError) {
+            console.warn('JSONP no disponible, probando bridge:', jsonpError.message || jsonpError);
+            return callBackend(functionName, args);
+          }
+        }
+
+        try {
+          return await callBackend(functionName, args);
+        } catch (bridgeError) {
+          console.warn('Bridge no disponible, probando JSONP:', bridgeError.message || bridgeError);
+          return callBackendJsonp(functionName, args);
+        }
+      }
+
       async function gas(functionName, ...args) {
         if (APP_CONFIG.apiBaseUrl) {
           try {
-            const result = await callBackend(functionName, args);
+            const isPublicRead = functionName === 'getAppData' || functionName === 'getAvailableSlots';
+            const result = isPublicRead
+              ? await callReadBackend(functionName, args, { preferJsonp: isLikelyInAppBrowser() })
+              : await callBackend(functionName, args);
             state.apiOffline = false;
+            if (functionName === 'getAppData') writeCachedAppData(result);
             return result;
           } catch (error) {
             state.apiOffline = true;
             if (state.data) {
               state.data.siteStatus = Object.assign({}, state.data.siteStatus || {}, { apiOffline: true });
               renderBrowserNotice();
-            }
-            if (functionName === 'getAvailableSlots') {
-              return getAvailableSlotsStatic(args[0], args[1], args[2]);
             }
             if (functionName === 'createReservation' && isLikelyInAppBrowser()) {
               throw new Error(t('bookingBrowserBlocked'));
@@ -2982,6 +3162,47 @@
 
       async function callBackend(functionName, args) {
         return postToAppsScript(functionName, args);
+      }
+
+      function callBackendJsonp(functionName, args = []) {
+        const endpoint = normalizeSafeUrl(APP_CONFIG.apiBaseUrl, ['https:']);
+        if (!endpoint) {
+          return Promise.reject(new Error('API no configurada.'));
+        }
+
+        return new Promise((resolve, reject) => {
+          const requestId = `jsonp_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+          const callbackName = `__angelsJsonp_${requestId}`;
+          const script = document.createElement('script');
+          const timeout = setTimeout(() => finish(null, new Error('La conexion de datos esta tardando mas de lo normal.')), apiTimeoutFor(functionName));
+          const url = new URL(endpoint);
+
+          url.searchParams.set('requestId', requestId);
+          url.searchParams.set('fn', functionName);
+          url.searchParams.set('args', JSON.stringify(args || []));
+          url.searchParams.set('callback', callbackName);
+          url.searchParams.set('origin', window.location.origin || 'null');
+
+          window[callbackName] = message => {
+            if (!message || !message.angelsApi || message.requestId !== requestId) return;
+            if (message.ok) finish(message.data);
+            else finish(null, new Error(message.error || 'No se pudo completar la solicitud.'));
+          };
+
+          script.src = url.href;
+          script.async = true;
+          script.onerror = () => finish(null, new Error('No se pudo cargar la informacion desde Apps Script.'));
+
+          function finish(data, error) {
+            clearTimeout(timeout);
+            try { delete window[callbackName]; } catch (deleteError) { window[callbackName] = undefined; }
+            removeNode(script);
+            if (error) reject(error);
+            else resolve(data);
+          }
+
+          document.head.appendChild(script);
+        });
       }
 
       function postToAppsScript(functionName, args) {
