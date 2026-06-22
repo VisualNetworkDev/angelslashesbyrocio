@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://unpkg.com">
-    <script src="assets/admin-config.js?v=20260522-2"></script>
-    <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://script.google.com">
+    <script src="assets/admin-config.js?v=20260622-1"></script>
+    <script defer src="assets/lucide.min.js?v=20260622-1"></script>
     <style>
       :root {
         --ink: #2c2528;
@@ -1250,6 +1250,17 @@
         }
       }
 
+      function normalizeSafeUrl(value, allowedProtocols = ['https:']) {
+        const text = String(value || '').trim();
+        if (!text) return '';
+        try {
+          const url = new URL(text, window.location.href);
+          return allowedProtocols.indexOf(url.protocol) === -1 ? '' : url.href;
+        } catch (error) {
+          return '';
+        }
+      }
+
       async function loadAdminData() {
         if (!state.secret) return;
         setBusy(true);
@@ -2252,7 +2263,7 @@
       }
 
       function postToAppsScript(functionName, args) {
-        const endpoint = String(ADMIN_CONFIG.apiBaseUrl || '').trim();
+        const endpoint = normalizeSafeUrl(ADMIN_CONFIG.apiBaseUrl, ['https:']);
         if (!endpoint) {
           throw new Error('Configura apiBaseUrl en assets/admin-config.js con el link /exec de Apps Script.');
         }
@@ -2274,6 +2285,7 @@
           form.style.display = 'none';
 
           addHiddenField(form, 'requestId', requestId);
+          addHiddenField(form, 'origin', window.location.origin || 'null');
           addHiddenField(form, 'fn', functionName);
           addHiddenField(form, 'args', JSON.stringify(args || []));
 
