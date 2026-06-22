@@ -679,24 +679,12 @@
                   <input id="serviceCategory" list="categoryList" required>
                 </div>
                 <div class="field">
-                  <label for="serviceCategoryEn">Categoria EN</label>
-                  <input id="serviceCategoryEn">
-                </div>
-                <div class="field">
                   <label for="serviceName">Servicio</label>
                   <input id="serviceName" required>
-                </div>
-                <div class="field">
-                  <label for="serviceNameEn">Servicio EN</label>
-                  <input id="serviceNameEn">
                 </div>
                 <div class="field full">
                   <label for="serviceDescription">Descripcion</label>
                   <textarea id="serviceDescription"></textarea>
-                </div>
-                <div class="field full">
-                  <label for="serviceDescriptionEn">Descripcion EN</label>
-                  <textarea id="serviceDescriptionEn"></textarea>
                 </div>
                 <div class="field">
                   <label for="servicePrice">Precio</label>
@@ -752,10 +740,6 @@
                 <div class="field">
                   <label for="photoTitle">Titulo</label>
                   <input id="photoTitle">
-                </div>
-                <div class="field">
-                  <label for="photoTitleEn">Titulo EN</label>
-                  <input id="photoTitleEn">
                 </div>
                 <label class="check">
                   <input id="photoVisible" type="checkbox" checked>
@@ -827,10 +811,6 @@
                   <input id="beforeAfterTitle" required>
                 </div>
                 <div class="field">
-                  <label for="beforeAfterTitleEn">Titulo EN</label>
-                  <input id="beforeAfterTitleEn">
-                </div>
-                <div class="field">
                   <label for="beforeAfterOrder">Orden</label>
                   <input id="beforeAfterOrder" type="number" min="1" step="1" value="1">
                 </div>
@@ -892,16 +872,8 @@
                   <input id="discountCategory" list="categoryList" value="Todas">
                 </div>
                 <div class="field">
-                  <label for="discountCategoryEn">Categoria EN</label>
-                  <input id="discountCategoryEn" value="All">
-                </div>
-                <div class="field">
                   <label for="discountDays">Dias</label>
                   <input id="discountDays" value="Todos">
-                </div>
-                <div class="field">
-                  <label for="discountDaysEn">Dias EN</label>
-                  <input id="discountDaysEn" value="Every day">
                 </div>
                 <label class="check">
                   <input id="discountAvailable" type="checkbox" checked>
@@ -1503,7 +1475,7 @@
                   <tr>
                     <td>
                       <strong>${escapeHtml(item.category)} · ${escapeHtml(item.service)}</strong><br>
-                      <span class="muted">${escapeHtml(item.serviceEn || '')}</span>
+                      <span class="muted">${escapeHtml(item.description || '')}</span>
                     </td>
                     <td>${formatMoney(item.price)}<br><span class="muted">${item.duration} min</span></td>
                     <td>${item.visible ? 'Si' : 'No'}</td>
@@ -1579,7 +1551,7 @@
                         ${item.afterImageUrl ? `<img src="${escapeHtml(item.afterImageUrl)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '<img alt="">'}
                       </div>
                       <strong>${escapeHtml(item.title || item.id)}</strong><br>
-                      <span class="muted">${escapeHtml(item.titleEn || '')}</span>
+                      <span class="muted">${escapeHtml(item.id || '')}</span>
                     </td>
                     <td>${item.order}</td>
                     <td>${item.visible ? 'Si' : 'No'}</td>
@@ -1617,7 +1589,7 @@
                 ${discounts.map(item => `
                   <tr>
                     <td><strong>${escapeHtml(item.coupon)}</strong><br><span class="muted">${escapeHtml(item.days)}</span></td>
-                    <td>${escapeHtml(item.category)}<br><span class="muted">${escapeHtml(item.categoryEn || '')}</span></td>
+                    <td>${escapeHtml(item.category)}</td>
                     <td>${item.value}%</td>
                     <td>${item.available ? 'Activo' : 'Inactivo'}<br><span class="muted">${item.visible ? 'Publico' : 'Privado'}</span></td>
                     <td><button class="btn secondary mini" data-edit-discount="${item.rowNumber}" type="button">Editar</button></td>
@@ -1704,11 +1676,8 @@
         if (!item) return;
         $('#serviceRow').value = item.rowNumber;
         $('#serviceCategory').value = item.category;
-        $('#serviceCategoryEn').value = item.categoryEn;
         $('#serviceName').value = item.service;
-        $('#serviceNameEn').value = item.serviceEn;
         $('#serviceDescription').value = item.description;
-        $('#serviceDescriptionEn').value = item.descriptionEn;
         $('#servicePrice').value = item.price;
         $('#serviceDuration').value = item.duration;
         $('#serviceOrder').value = item.order === 9999 ? '' : item.order;
@@ -1724,7 +1693,6 @@
         $('#photoDriveId').value = item.driveFileId;
         $('#photoCategory').value = item.category;
         $('#photoTitle').value = item.title;
-        $('#photoTitleEn').value = item.titleEn;
         $('#photoOrder').value = item.order === 9999 ? '' : item.order;
         $('#photoUrl').value = item.url;
         $('#photoVisible').checked = item.visible;
@@ -1744,7 +1712,6 @@
         $('#beforeDriveId').value = item.beforeDriveFileId;
         $('#afterDriveId').value = item.afterDriveFileId;
         $('#beforeAfterTitle').value = item.title;
-        $('#beforeAfterTitleEn').value = item.titleEn;
         $('#beforeAfterOrder').value = item.order === 9999 ? '' : item.order;
         $('#beforeAfterVisible').checked = item.visible;
         $('#beforeUrl').value = item.beforeUrl;
@@ -1773,9 +1740,7 @@
         $('#discountCoupon').value = item.coupon;
         $('#discountValue').value = item.value;
         $('#discountCategory').value = item.category;
-        $('#discountCategoryEn').value = item.categoryEn;
         $('#discountDays').value = item.days;
-        $('#discountDaysEn').value = item.daysEn;
         $('#discountAvailable').checked = item.available;
         $('#discountVisible').checked = item.visible;
       }
@@ -1785,11 +1750,8 @@
         const ok = await mutate('saveAdminService', {
           rowNumber: $('#serviceRow').value,
           category: $('#serviceCategory').value,
-          categoryEn: $('#serviceCategoryEn').value,
           service: $('#serviceName').value,
-          serviceEn: $('#serviceNameEn').value,
           description: $('#serviceDescription').value,
-          descriptionEn: $('#serviceDescriptionEn').value,
           price: $('#servicePrice').value,
           duration: $('#serviceDuration').value,
           order: $('#serviceOrder').value,
@@ -1806,9 +1768,7 @@
           coupon: $('#discountCoupon').value,
           value: $('#discountValue').value,
           category: $('#discountCategory').value,
-          categoryEn: $('#discountCategoryEn').value,
           days: $('#discountDays').value,
-          daysEn: $('#discountDaysEn').value,
           available: $('#discountAvailable').checked,
           visible: $('#discountVisible').checked
         }, 'Cupon guardado.');
@@ -1887,7 +1847,6 @@
             id: $('#photoId').value,
             category: $('#photoCategory').value,
             title: $('#photoTitle').value,
-            titleEn: $('#photoTitleEn').value,
             order: $('#photoOrder').value,
             visible: $('#photoVisible').checked,
             url: $('#photoUrl').value,
@@ -1910,7 +1869,6 @@
             rowNumber: $('#beforeAfterRow').value,
             id: $('#beforeAfterId').value,
             title: $('#beforeAfterTitle').value,
-            titleEn: $('#beforeAfterTitleEn').value,
             order: $('#beforeAfterOrder').value,
             visible: $('#beforeAfterVisible').checked,
             beforeDriveFileId: $('#beforeDriveId').value,
@@ -2048,9 +2006,7 @@
         $('#discountForm').reset();
         $('#discountRow').value = '';
         $('#discountCategory').value = 'Todas';
-        $('#discountCategoryEn').value = 'All';
         $('#discountDays').value = 'Todos';
-        $('#discountDaysEn').value = 'Every day';
         $('#discountAvailable').checked = true;
         $('#discountVisible').checked = false;
       }
