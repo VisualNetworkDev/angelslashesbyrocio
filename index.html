@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://script.google.com">
     <link rel="preconnect" href="https://lh3.googleusercontent.com">
-    <script src="assets/site-data.js?v=20260622-3"></script>
-    <script defer src="assets/lucide.min.js?v=20260622-3"></script>
+    <link rel="icon" type="image/png" href="assets/favicon.png?v=20260623-1">
+    <link rel="apple-touch-icon" href="assets/angels-lashes-logo-square.png?v=20260623-1">
+    <script src="assets/site-data.js?v=20260623-1"></script>
+    <script defer src="assets/lucide.min.js?v=20260623-1"></script>
     <style>
       :root {
         --ink: #2b2226;
@@ -36,6 +38,10 @@
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         color: var(--ink);
         background: var(--cream);
+      }
+
+      body.loading-active {
+        overflow: hidden;
       }
 
       button,
@@ -112,9 +118,122 @@
         border-radius: 50%;
         display: grid;
         place-items: center;
-        background: linear-gradient(135deg, var(--rose), var(--champagne));
-        color: #fff;
+        border: 1px solid rgba(183, 110, 121, 0.28);
+        background: #fff;
+        overflow: hidden;
         box-shadow: 0 10px 28px rgba(183, 110, 121, 0.32);
+      }
+
+      .brand-mark img,
+      .intro-logo img,
+      .hero-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .intro-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background:
+          radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0) 28%),
+          linear-gradient(135deg, #fff8f6 0%, #f4d8df 48%, #b76e79 100%);
+        transition: opacity 420ms ease, visibility 420ms ease;
+      }
+
+      .intro-loader.done {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .intro-card {
+        width: min(360px, 100%);
+        display: grid;
+        justify-items: center;
+        gap: 16px;
+        text-align: center;
+        color: var(--plum);
+      }
+
+      .intro-logo {
+        width: 132px;
+        height: 132px;
+        position: relative;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 24px 70px rgba(67, 34, 51, 0.22);
+      }
+
+      .intro-logo::before,
+      .intro-logo::after {
+        content: "";
+        position: absolute;
+        inset: -12px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.62);
+        animation: introRing 1800ms ease-in-out infinite;
+      }
+
+      .intro-logo::after {
+        inset: -24px;
+        animation-delay: 260ms;
+      }
+
+      .intro-card h2 {
+        margin: 4px 0 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 30px;
+        line-height: 1;
+      }
+
+      .intro-card p {
+        margin: 0;
+        max-width: 280px;
+        color: rgba(67, 34, 51, 0.72);
+        line-height: 1.6;
+      }
+
+      .intro-progress {
+        width: min(220px, 78vw);
+        height: 4px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.52);
+      }
+
+      .intro-progress span {
+        display: block;
+        width: 42%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--plum), var(--rose));
+        animation: introLoad 1450ms ease-in-out infinite;
+      }
+
+      @keyframes introRing {
+        0%, 100% {
+          opacity: 0.34;
+          transform: scale(0.96);
+        }
+        50% {
+          opacity: 0.92;
+          transform: scale(1.04);
+        }
+      }
+
+      @keyframes introLoad {
+        0% {
+          transform: translateX(-115%);
+        }
+        100% {
+          transform: translateX(260%);
+        }
       }
 
       .nav {
@@ -184,8 +303,39 @@
         inset: 0;
         z-index: -2;
         background:
-          linear-gradient(115deg, rgba(67, 34, 51, 0.96) 0%, rgba(120, 54, 75, 0.78) 38%, rgba(183, 110, 121, 0.56) 68%, rgba(255, 250, 247, 0.92) 100%),
+          linear-gradient(115deg, rgba(67, 34, 51, 0.98) 0%, rgba(120, 54, 75, 0.82) 38%, rgba(183, 110, 121, 0.58) 68%, rgba(255, 250, 247, 0.9) 100%),
           repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0 1px, transparent 1px 18px);
+      }
+
+      .hero-media-mark {
+        position: absolute;
+        right: max(16px, calc((100vw - 1180px) / 2));
+        top: 54%;
+        z-index: -1;
+        width: min(530px, 58vw);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        overflow: hidden;
+        opacity: 0.24;
+        filter: saturate(0.96) contrast(1.04);
+        transform: translateY(-50%);
+        box-shadow: 0 40px 110px rgba(67, 34, 51, 0.24);
+      }
+
+      .hero-media-mark img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .hero-logo {
+        width: 82px;
+        height: 82px;
+        margin-bottom: 22px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 18px 44px rgba(43, 34, 38, 0.2);
       }
 
       .hero::after {
@@ -359,6 +509,12 @@
 
       .section {
         padding: 82px 0;
+      }
+
+      .section:nth-of-type(even) {
+        background:
+          radial-gradient(circle at 12% 0, rgba(183, 110, 121, 0.1), transparent 28%),
+          linear-gradient(180deg, rgba(255, 244, 241, 0.46), rgba(255, 250, 247, 0));
       }
 
       .section-head {
@@ -1117,6 +1273,185 @@
         background: #fff;
       }
 
+      .instagram-section {
+        border-top: 1px solid var(--line);
+        background:
+          radial-gradient(circle at 12% 18%, rgba(183, 110, 121, 0.15), transparent 26%),
+          linear-gradient(135deg, #fffaf7, #fff4f1);
+      }
+
+      .instagram-showcase {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.88fr) minmax(0, 1.12fr);
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .ig-phone {
+        position: relative;
+        min-height: 500px;
+        border: 1px solid rgba(67, 34, 51, 0.16);
+        border-radius: 32px;
+        overflow: hidden;
+        background: var(--plum);
+        box-shadow: 0 26px 70px rgba(67, 34, 51, 0.18);
+      }
+
+      .ig-phone img {
+        width: 100%;
+        height: 100%;
+        min-height: 500px;
+        object-fit: cover;
+        opacity: 0.95;
+        transform: scale(1.02);
+        transition: opacity 300ms ease, transform 650ms ease;
+      }
+
+      .ig-phone.switching img {
+        opacity: 0.58;
+        transform: scale(1.08);
+      }
+
+      .ig-topbar {
+        position: absolute;
+        inset: 14px 14px auto;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 20px;
+        padding: 10px 12px;
+        color: #fff;
+        background: rgba(43, 34, 38, 0.45);
+        backdrop-filter: blur(14px);
+      }
+
+      .ig-account {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 900;
+      }
+
+      .ig-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .ig-live-chip {
+        position: absolute;
+        left: 16px;
+        bottom: 16px;
+        z-index: 2;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 999px;
+        padding: 8px 11px;
+        color: #fff;
+        background: rgba(67, 34, 51, 0.62);
+        font-size: 12px;
+        font-weight: 900;
+        backdrop-filter: blur(12px);
+      }
+
+      .ig-copy-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        display: grid;
+        align-content: center;
+        gap: 16px;
+        padding: clamp(20px, 4vw, 36px);
+        background: rgba(255, 255, 255, 0.74);
+        box-shadow: 0 18px 44px rgba(67, 34, 51, 0.1);
+      }
+
+      .ig-mini-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .ig-mini-row button,
+      .ig-post-grid button {
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: #fff;
+        box-shadow: none;
+      }
+
+      .ig-mini-row img,
+      .ig-post-grid img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+      }
+
+      .ig-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .ig-dialog {
+        width: min(1040px, 100%);
+      }
+
+      .ig-modal-layout {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.08fr);
+        gap: 18px;
+      }
+
+      .ig-modal-main {
+        position: relative;
+        min-height: min(620px, 68vh);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: var(--plum);
+      }
+
+      .ig-modal-main img {
+        width: 100%;
+        height: 100%;
+        min-height: inherit;
+        object-fit: cover;
+      }
+
+      .ig-modal-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 2;
+        border-radius: 999px;
+        padding: 8px 10px;
+        color: #fff;
+        background: rgba(67, 34, 51, 0.68);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .ig-modal-side {
+        display: grid;
+        align-content: start;
+        gap: 14px;
+      }
+
+      .ig-post-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .ig-post-grid button.active {
+        outline: 3px solid rgba(183, 110, 121, 0.34);
+      }
+
       .before-after-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1466,6 +1801,26 @@
         color: var(--plum);
       }
 
+      .receipt-qr {
+        border: 1px solid rgba(183, 110, 121, 0.24);
+        border-radius: var(--radius);
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        align-items: center;
+        padding: 14px;
+        background: #fff;
+      }
+
+      .receipt-qr img {
+        width: 118px;
+        height: 118px;
+        border-radius: var(--radius);
+        object-fit: contain;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
       .contact-card {
         display: flex;
         align-items: center;
@@ -1506,8 +1861,16 @@
         }
 
         .hero-layout,
-        .category-layout {
+        .category-layout,
+        .instagram-showcase,
+        .ig-modal-layout {
           grid-template-columns: 1fr;
+        }
+
+        .hero-media-mark {
+          width: 84vw;
+          right: -28vw;
+          opacity: 0.16;
         }
 
         .photo-grid {
@@ -1517,7 +1880,8 @@
         .services,
         .form-grid,
         .trust-grid,
-        .receipt-summary {
+        .receipt-summary,
+        .receipt-qr {
           grid-template-columns: 1fr;
         }
 
@@ -1555,6 +1919,11 @@
 
         .photo-grid {
           grid-template-columns: 1fr;
+        }
+
+        .ig-phone,
+        .ig-phone img {
+          min-height: 380px;
         }
 
         .photo-frame:first-child {
@@ -1596,11 +1965,21 @@
       }
     </style>
   </head>
-  <body>
+  <body class="loading-active">
+    <div id="introLoader" class="intro-loader" role="status" aria-live="polite">
+      <div class="intro-card">
+        <div class="intro-logo">
+          <img src="assets/angels-lashes-logo-square.png?v=20260623-1" alt="Angel's Lashes">
+        </div>
+        <h2>Angel's Lashes</h2>
+        <p data-i18n="introLoading">Preparando tu experiencia de belleza...</p>
+        <div class="intro-progress" aria-hidden="true"><span></span></div>
+      </div>
+    </div>
     <header class="topbar">
       <div class="shell topbar-inner">
         <a href="#inicio" class="brand" aria-label="Inicio" data-i18n-aria="home">
-          <span class="brand-mark"><i data-lucide="sparkles" aria-hidden="true"></i></span>
+          <span class="brand-mark"><img id="brandLogo" src="assets/angels-lashes-logo-square.png?v=20260623-1" alt=""></span>
           <span class="brand-text">
             <span id="brandName">Angel's Lashes</span>
             <span class="brand-subtitle"><span id="brandSubtitle">By Rocio Rivero</span><span class="brand-heart">&hearts;</span></span>
@@ -1616,18 +1995,24 @@
 
     <main id="app">
       <section id="inicio" class="hero">
+        <div class="hero-media-mark" aria-hidden="true">
+          <img id="heroLogoBackdrop" src="assets/angels-lashes-logo.jpeg?v=20260623-1" alt="">
+        </div>
         <div class="shell hero-layout">
           <div class="hero-copy reveal">
-            <div class="eyebrow"><i data-lucide="flower-2" aria-hidden="true"></i><span data-i18n="eyebrow">Cejas, pestañas y maquillaje</span></div>
+            <div class="hero-logo" aria-hidden="true">
+              <img id="heroLogo" src="assets/angels-lashes-logo-square.png?v=20260623-1" alt="">
+            </div>
+            <div class="eyebrow"><i data-lucide="flower-2" aria-hidden="true"></i><span data-i18n="eyebrow">Cejas, pestaÃ±as y maquillaje</span></div>
             <h1 id="heroTitle">Angel's Lashes</h1>
             <div class="hero-subtitle"><span id="heroSubtitle">By Rocio Rivero</span><span class="brand-heart">&hearts;</span></div>
             <p data-i18n="heroCopy">Servicios de belleza con un acabado delicado, moderno y pensado para resaltar tu estilo natural.</p>
           </div>
 
           <form id="quickBook" class="quick-book reveal">
-            <h2 data-i18n="quickBook">Reserva rápida</h2>
+            <h2 data-i18n="quickBook">Reserva rÃ¡pida</h2>
             <div class="field">
-              <label for="quickCategory" data-i18n="category">Categoría</label>
+              <label for="quickCategory" data-i18n="category">CategorÃ­a</label>
               <select id="quickCategory" required></select>
             </div>
             <div class="field">
@@ -1704,6 +2089,32 @@
         </div>
       </section>
 
+      <section id="instagramPreviewSection" class="section instagram-section" hidden>
+        <div class="shell instagram-showcase">
+          <div class="ig-phone reveal" id="instagramPhone">
+            <img id="instagramMainImage" src="assets/angels-lashes-logo.jpeg?v=20260623-1" alt="Instagram preview">
+            <div class="ig-topbar">
+              <span class="ig-account">
+                <span class="ig-avatar"><img src="assets/angels-lashes-logo-square.png?v=20260623-1" alt=""></span>
+                <span id="instagramUser">@angelslashes</span>
+              </span>
+              <i data-lucide="heart" aria-hidden="true"></i>
+            </div>
+            <span class="ig-live-chip" data-i18n="instagramChip">Vista Instagram</span>
+          </div>
+          <div class="ig-copy-card reveal">
+            <div class="eyebrow"><i data-lucide="camera" aria-hidden="true"></i><span data-i18n="instagramEyebrow">Inspiracion del estudio</span></div>
+            <h2 class="section-title" data-i18n="instagramTitle">Ultimos trabajos</h2>
+            <p class="section-copy" data-i18n="instagramCopy">Un vistazo visual a estilos, resultados y detalles de Angel's Lashes, integrado sin depender de aplicaciones externas.</p>
+            <div id="instagramMiniRow" class="ig-mini-row"></div>
+            <div class="ig-actions">
+              <button id="openInstagramPreview" class="btn" type="button"><i data-lucide="maximize-2" aria-hidden="true"></i><span data-i18n="instagramOpenPreview">Ver preview</span></button>
+              <a id="openInstagramProfile" class="btn secondary" href="#" target="_blank" rel="noopener"><i data-lucide="camera" aria-hidden="true"></i><span data-i18n="instagramVisit">Abrir Instagram</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="section policy-section">
         <div class="shell">
           <div class="section-head reveal">
@@ -1724,7 +2135,7 @@
           <div class="contact-links">
             <a id="phoneLink" class="btn secondary" href="#"><i data-lucide="phone" aria-hidden="true"></i><span id="contactPhoneText"></span></a>
             <a id="emailLink" class="btn secondary" href="#"><i data-lucide="mail" aria-hidden="true"></i><span id="contactEmailText"></span></a>
-            <a id="instagramLink" class="btn" href="#" target="_blank" rel="noopener" hidden><i data-lucide="instagram" aria-hidden="true"></i>Instagram</a>
+            <a id="instagramLink" class="btn" href="#" target="_blank" rel="noopener" hidden><i data-lucide="camera" aria-hidden="true"></i>Instagram</a>
           </div>
         </div>
       </section>
@@ -1749,7 +2160,7 @@
         <form id="bookingForm" class="dialog-body">
           <div class="form-grid">
             <div class="field">
-              <label for="modalCategory" data-i18n="category">Categoría</label>
+              <label for="modalCategory" data-i18n="category">CategorÃ­a</label>
               <select id="modalCategory" required></select>
             </div>
             <div class="field">
@@ -1761,7 +2172,7 @@
               <input id="clientName" autocomplete="name" required>
             </div>
             <div class="field">
-              <label for="phone" data-i18n="phone">Teléfono</label>
+              <label for="phone" data-i18n="phone">TelÃ©fono</label>
               <input id="phone" autocomplete="tel" required>
             </div>
             <div class="field">
@@ -1778,7 +2189,7 @@
               <div id="slotGrid" class="slot-grid"></div>
             </div>
             <div class="field">
-              <label for="coupon" data-i18n="coupon">Cupón</label>
+              <label for="coupon" data-i18n="coupon">CupÃ³n</label>
               <input id="coupon" autocomplete="off" placeholder="Opcional" data-i18n-placeholder="optional">
             </div>
             <label class="check-row">
@@ -1818,6 +2229,33 @@
             </button>
           </div>
         </form>
+      </div>
+    </section>
+
+    <section id="instagramPreviewModal" class="modal" aria-hidden="true">
+      <div class="dialog ig-dialog" role="dialog" aria-modal="true" aria-labelledby="instagramPreviewTitle">
+        <div class="dialog-head">
+          <h2 id="instagramPreviewTitle" class="dialog-title" data-i18n="instagramModalTitle">Instagram Preview</h2>
+          <button class="btn secondary icon" type="button" id="closeInstagramPreview" aria-label="Cerrar" data-i18n-aria="close">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="dialog-body ig-modal-layout">
+          <div class="ig-modal-main">
+            <img id="instagramModalImage" src="assets/angels-lashes-logo.jpeg?v=20260623-1" alt="Instagram preview">
+            <span id="instagramModalType" class="ig-modal-badge">POST</span>
+          </div>
+          <div class="ig-modal-side">
+            <div class="eyebrow"><i data-lucide="camera" aria-hidden="true"></i><span id="instagramModalUser">@angelslashes</span></div>
+            <h3 id="instagramModalCaption" class="section-title">Angel's Lashes</h3>
+            <p class="section-copy" data-i18n="instagramModalCopy">Galeria visual preparada con fotos del negocio para que se sienta como parte de la pagina.</p>
+            <div id="instagramPostGrid" class="ig-post-grid"></div>
+            <div class="ig-actions">
+              <button id="nextInstagramPreview" class="btn" type="button"><i data-lucide="arrow-right" aria-hidden="true"></i><span data-i18n="instagramNext">Siguiente foto</span></button>
+              <a id="modalInstagramProfile" class="btn secondary" href="#" target="_blank" rel="noopener"><i data-lucide="camera" aria-hidden="true"></i><span data-i18n="instagramVisit">Abrir Instagram</span></a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1872,8 +2310,8 @@
       }
 
       const INITIAL_APP_DATA = readJsonElement('initialAppData', null);
-      const APP_VERSION = '20260622-3';
-      const APP_DATA_CACHE_KEY = 'angels_public_data_cache_v20260622_3';
+      const APP_VERSION = '20260623-1';
+      const APP_DATA_CACHE_KEY = 'angels_public_data_cache_v20260623_1';
       const APP_DATA_CACHE_TTL = 10 * 60 * 1000;
       const APP_CONFIG = Object.assign({
         apiBaseUrl: 'https://script.google.com/macros/s/AKfycbwgK38IEFSorraDiy3p2o_xa32zMqC7NoWeHkraVunped0N4enjIKpfP1AVra461R6CQQ/exec',
@@ -1888,15 +2326,18 @@
         language: storageGet('localStorage', 'lumina_language', 'es'),
         calendarDate: new Date(),
         backgroundRefreshRunning: false,
-        apiOffline: false
+        apiOffline: false,
+        instagramIndex: 0,
+        instagramTimer: null
       };
 
       const I18N = {
         es: {
-          eyebrow: 'Cejas, pestañas y maquillaje',
+          introLoading: 'Preparando tu experiencia de belleza...',
+          eyebrow: 'Cejas, pestaÃ±as y maquillaje',
           heroCopy: 'Servicios de belleza con un acabado delicado, moderno y pensado para resaltar tu estilo natural.',
-          quickBook: 'Reserva rápida',
-          category: 'Categoría',
+          quickBook: 'Reserva rÃ¡pida',
+          category: 'CategorÃ­a',
           service: 'Servicio',
           book: 'Reservar',
           activePromos: 'Promos activas',
@@ -1905,10 +2346,10 @@
           newBooking: 'Nueva reserva',
           close: 'Cerrar',
           name: 'Nombre',
-          phone: 'Teléfono',
+          phone: 'TelÃ©fono',
           date: 'Fecha',
           time: 'Hora',
-          coupon: 'Cupón',
+          coupon: 'CupÃ³n',
           optional: 'Opcional',
           firstVisit: 'Es mi primera cita',
           notes: 'Notas',
@@ -1941,6 +2382,17 @@
           beforeAfterHint: 'Desliza para comparar',
           beforeAfterAria: 'Comparar antes y despues',
           viewImage: 'Ver imagen',
+          instagramChip: 'Vista Instagram',
+          instagramEyebrow: 'Inspiracion del estudio',
+          instagramTitle: 'Ultimos trabajos',
+          instagramCopy: "Un vistazo visual a estilos, resultados y detalles de Angel's Lashes, integrado sin depender de aplicaciones externas.",
+          instagramOpenPreview: 'Ver preview',
+          instagramVisit: 'Abrir Instagram',
+          instagramModalTitle: 'Instagram Preview',
+          instagramModalCopy: 'Galeria visual preparada con fotos del negocio para que se sienta como parte de la pagina.',
+          instagramNext: 'Siguiente foto',
+          qrArrivalTitle: 'QR de llegada',
+          qrArrivalCopy: 'Presenta este QR al llegar para que el estudio confirme tu cita y agregue servicios extras si aplica.',
           browserNoticeTitle: 'Reserva segura',
           browserNoticeCopy: 'Si abriste esta pagina desde Instagram y la reserva no responde, abre el enlace en Chrome o Safari para completar tu cita.',
           openBrowser: 'Abrir en navegador',
@@ -1951,10 +2403,10 @@
           nextMonth: 'Mes siguiente',
           successTitle: 'Solicitud recibida',
           successCopy: "Gracias por reservar. Tu cita queda pendiente hasta ser confirmada por Angel's Lashes.",
-          emptyServices: 'Todavía no hay servicios visibles. Agrega servicios en la hoja Servicios y marca Visible como TRUE.',
+          emptyServices: 'TodavÃ­a no hay servicios visibles. Agrega servicios en la hoja Servicios y marca Visible como TRUE.',
           bookCategory: 'Reservar {category}',
           customService: 'Servicio personalizado.',
-          noServicesInCategory: 'No hay servicios disponibles en esta categoría.',
+          noServicesInCategory: 'No hay servicios disponibles en esta categorÃ­a.',
           chooseServiceDate: 'Selecciona servicio y fecha.',
           searchingSlots: 'Buscando horarios...',
           noSlots: 'No hay horarios disponibles para esa fecha.',
@@ -1973,8 +2425,8 @@
             todas: 'Todas',
             todos: 'Todos',
             cejas: 'Cejas',
-            pestanas: 'Pestañas',
-            'depilacion-facial': 'Depilación facial',
+            pestanas: 'PestaÃ±as',
+            'depilacion-facial': 'DepilaciÃ³n facial',
             maquillaje: 'Maquillaje'
           },
           statuses: {
@@ -1983,14 +2435,15 @@
             cancelada: 'Cancelada'
           },
           sectionCopy: {
-            cejas: 'Definición, simetría y acabado suave para enmarcar tu rostro.',
-            pestanas: 'Looks delicados o más expresivos, según tu estilo y tu rutina.',
+            cejas: 'DefiniciÃ³n, simetrÃ­a y acabado suave para enmarcar tu rostro.',
+            pestanas: 'Looks delicados o mÃ¡s expresivos, segÃºn tu estilo y tu rutina.',
             'depilacion-facial': 'Rostro limpio, piel cuidada y detalles precisos.',
             maquillaje: 'Piel luminosa, tonos elegantes y maquillaje listo para tu evento.'
           },
           defaultSectionCopy: 'Servicios personalizados con detalle y acabado elegante.'
         },
         en: {
+          introLoading: 'Preparing your beauty experience...',
           eyebrow: 'Brows, lashes and makeup',
           heroCopy: 'Beauty services with a delicate, modern finish designed to enhance your natural style.',
           quickBook: 'Quick booking',
@@ -2037,6 +2490,17 @@
           beforeAfterHint: 'Slide to compare',
           beforeAfterAria: 'Compare before and after',
           viewImage: 'View image',
+          instagramChip: 'Instagram view',
+          instagramEyebrow: 'Studio inspiration',
+          instagramTitle: 'Latest work',
+          instagramCopy: "A visual look at Angel's Lashes styles, results and details, built into the page without external apps.",
+          instagramOpenPreview: 'View preview',
+          instagramVisit: 'Open Instagram',
+          instagramModalTitle: 'Instagram Preview',
+          instagramModalCopy: 'A visual gallery prepared with business photos so it feels like part of the page.',
+          instagramNext: 'Next photo',
+          qrArrivalTitle: 'Arrival QR',
+          qrArrivalCopy: 'Show this QR when you arrive so the studio can confirm your appointment and add extra services if needed.',
           browserNoticeTitle: 'Secure booking',
           browserNoticeCopy: 'If you opened this page from Instagram and booking does not respond, open the link in Chrome or Safari to complete your appointment.',
           openBrowser: 'Open in browser',
@@ -2145,7 +2609,18 @@
           renderApp();
         } catch (error) {
           $('#content').innerHTML = `<div class="shell empty">${escapeHtml(error.message || error)}</div>`;
+        } finally {
+          finishIntro();
         }
+      }
+
+      function finishIntro() {
+        const loader = $('#introLoader');
+        if (!loader) return;
+        window.setTimeout(() => {
+          loader.classList.add('done');
+          document.body.classList.remove('loading-active');
+        }, 260);
       }
 
       function hasUsableAppData(data) {
@@ -2158,6 +2633,9 @@
         data.appSubtitle = data.appSubtitle || 'By Rocio Rivero';
         data.currency = data.currency || 'USD';
         data.contact = data.contact && typeof data.contact === 'object' ? data.contact : {};
+        data.brand = data.brand && typeof data.brand === 'object' ? data.brand : {};
+        data.brand.logoUrl = normalizeSafeImageUrl(data.brand.logoUrl) || 'assets/angels-lashes-logo-square.png?v=20260623-1';
+        data.brand.logoFullUrl = normalizeSafeImageUrl(data.brand.logoFullUrl) || 'assets/angels-lashes-logo.jpeg?v=20260623-1';
         data.siteStatus = data.siteStatus && typeof data.siteStatus === 'object' ? data.siteStatus : {};
         if (typeof data.siteStatus.publicEnabled === 'undefined') data.siteStatus.publicEnabled = true;
         data.agreementText = data.agreementText || '';
@@ -2191,6 +2669,20 @@
           } catch (error) {
             console.warn('API no disponible:', error.message || error);
             state.apiOffline = true;
+            try {
+              const localData = await loadLocalAppData();
+              localData.siteStatus = Object.assign({}, localData.siteStatus || {}, {
+                publicEnabled: true,
+                apiOffline: true,
+                maintenanceMessage: state.language === 'en'
+                  ? 'The page is showing the latest saved business information while the live booking connection responds.'
+                  : 'La pagina esta mostrando la ultima informacion real guardada mientras responde la conexion de reservas.'
+              });
+              writeCachedAppData(localData);
+              return localData;
+            } catch (localError) {
+              console.warn('Respaldo local no disponible:', localError.message || localError);
+            }
             if (cachedData) {
               cachedData.siteStatus = Object.assign({}, cachedData.siteStatus || {}, {
                 publicEnabled: true,
@@ -2285,14 +2777,21 @@
         $('#clearSignature').addEventListener('click', clearSignature);
         $('#copyPageLink').addEventListener('click', copyCurrentPageLink);
         $('#closeImageLightbox').addEventListener('click', closeImageLightbox);
+        $('#openInstagramPreview').addEventListener('click', openInstagramPreview);
+        $('#closeInstagramPreview').addEventListener('click', closeInstagramPreview);
+        $('#nextInstagramPreview').addEventListener('click', nextInstagramPreview);
         $('#imageLightbox').addEventListener('click', event => {
           if (event.target === $('#imageLightbox')) closeImageLightbox();
+        });
+        $('#instagramPreviewModal').addEventListener('click', event => {
+          if (event.target === $('#instagramPreviewModal')) closeInstagramPreview();
         });
         document.addEventListener('click', handleInternalNav);
         document.addEventListener('input', handleComparisonInput);
         document.addEventListener('keydown', event => {
           if (event.key === 'Escape') {
             closeImageLightbox();
+            closeInstagramPreview();
             closeReceipt();
             closeBooking();
           }
@@ -2334,6 +2833,7 @@
         $('#heroTitle').textContent = state.data.appName;
         $('#brandSubtitle').textContent = state.data.appSubtitle || '';
         $('#heroSubtitle').textContent = state.data.appSubtitle || '';
+        setBrandImages();
         applyTranslations();
         if (state.data.siteStatus && state.data.siteStatus.publicEnabled === false) {
           renderMaintenanceMode();
@@ -2355,6 +2855,7 @@
         renderDiscounts();
         renderSections();
         renderBeforeAfter();
+        renderInstagramPreview();
         renderPolicy();
         renderContact();
         renderBrowserNotice();
@@ -2362,11 +2863,28 @@
         refreshIcons();
       }
 
+      function setBrandImages() {
+        const logoUrl = normalizeSafeImageUrl(state.data.brand && state.data.brand.logoUrl) || 'assets/angels-lashes-logo-square.png?v=20260623-1';
+        const logoFullUrl = normalizeSafeImageUrl(state.data.brand && state.data.brand.logoFullUrl) || 'assets/angels-lashes-logo.jpeg?v=20260623-1';
+        const imageTargets = [
+          ['#brandLogo', logoUrl],
+          ['#heroLogo', logoUrl],
+          ['#heroLogoBackdrop', logoFullUrl],
+          ['.intro-logo img', logoUrl],
+          ['.ig-avatar img', logoUrl]
+        ];
+        imageTargets.forEach(([selector, url]) => {
+          const element = document.querySelector(selector);
+          if (element && url) element.src = url;
+        });
+      }
+
       function renderMaintenanceMode() {
         document.body.classList.add('maintenance-mode');
         $('#quickBook').hidden = true;
         $('#discountSection').hidden = true;
         $('#beforeAfterSection').hidden = true;
+        $('#instagramPreviewSection').hidden = true;
         $('#contactSection').hidden = true;
         $('#browserNotice').hidden = true;
         const trustBand = document.querySelector('.trust-band');
@@ -2490,6 +3008,154 @@
         document.querySelectorAll('[data-comparison-range]').forEach(updateComparisonSlider);
       }
 
+      function instagramMediaPool() {
+        if (!state.data) return [];
+        const media = [];
+        const add = (url, caption, type = 'POST') => {
+          const safeUrl = normalizeSafeImageUrl(url);
+          if (!safeUrl || media.some(item => item.url === safeUrl)) return;
+          media.push({
+            url: safeUrl,
+            caption: caption || state.data.appName || "Angel's Lashes",
+            type
+          });
+        };
+
+        (state.data.services || []).forEach(service => {
+          add(service.image, serviceName(service), 'SERVICE');
+        });
+
+        Object.keys(state.data.photos || {}).forEach(category => {
+          (state.data.photos[category] || []).forEach((url, index) => {
+            add(url, `${categoryLabel(category)} ${index + 1}`, 'POST');
+          });
+        });
+
+        (state.data.beforeAfter || []).forEach(pair => {
+          const title = state.language === 'en' && pair.titleEn ? pair.titleEn : pair.title;
+          add(pair.afterImageUrl, title || t('beforeAfterTitle'), 'RESULT');
+          add(pair.beforeImageUrl, title || t('beforeAfterTitle'), 'BEFORE');
+        });
+
+        const logoFullUrl = state.data.brand && state.data.brand.logoFullUrl;
+        if (!media.length) add(logoFullUrl, state.data.appName, 'BRAND');
+        return media.slice(0, 12);
+      }
+
+      function renderInstagramPreview() {
+        const section = $('#instagramPreviewSection');
+        const media = instagramMediaPool();
+        section.hidden = !media.length;
+        if (!media.length) return;
+
+        state.instagramIndex = Math.min(state.instagramIndex, Math.max(media.length - 1, 0));
+        const contact = state.data.contact || {};
+        const instagramUrl = normalizeInstagramUrl(contact.instagramUrl);
+        const username = instagramUsernameFromUrl(instagramUrl) || '@angelslashes';
+        const current = media[state.instagramIndex % media.length];
+
+        $('#instagramUser').textContent = username;
+        $('#instagramMainImage').alt = current.caption;
+        setInstagramImage('#instagramMainImage', current.url);
+        $('#instagramMiniRow').innerHTML = media.slice(0, 4).map((item, index) => `
+          <button type="button" onclick="selectInstagramPreview(${index})" aria-label="${escapeHtml(item.caption)}">
+            <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+          </button>
+        `).join('');
+
+        const profileLinks = ['#openInstagramProfile', '#modalInstagramProfile'];
+        profileLinks.forEach(selector => {
+          const link = $(selector);
+          if (!link) return;
+          link.href = instagramUrl || '#';
+          link.hidden = !instagramUrl;
+        });
+
+        startInstagramPreviewSlideshow();
+        setupReveal();
+      }
+
+      function setInstagramImage(selector, url) {
+        const image = $(selector);
+        if (!image || !url) return;
+        const frame = image.closest('.ig-phone');
+        if (frame) frame.classList.add('switching');
+        window.setTimeout(() => {
+          image.src = url;
+          if (frame) frame.classList.remove('switching');
+        }, frame ? 120 : 0);
+      }
+
+      function startInstagramPreviewSlideshow() {
+        if (state.instagramTimer) window.clearInterval(state.instagramTimer);
+        const media = instagramMediaPool();
+        if (media.length < 2) return;
+        state.instagramTimer = window.setInterval(() => {
+          state.instagramIndex = (state.instagramIndex + 1) % media.length;
+          renderInstagramPreview();
+          if ($('#instagramPreviewModal').classList.contains('open')) renderInstagramModal();
+        }, 5200);
+      }
+
+      window.selectInstagramPreview = index => {
+        const media = instagramMediaPool();
+        if (!media.length) return;
+        state.instagramIndex = Math.max(0, Math.min(index, media.length - 1));
+        renderInstagramPreview();
+        if ($('#instagramPreviewModal').classList.contains('open')) renderInstagramModal();
+      };
+
+      function openInstagramPreview() {
+        renderInstagramModal();
+        $('#instagramPreviewModal').classList.add('open');
+        $('#instagramPreviewModal').setAttribute('aria-hidden', 'false');
+        refreshIcons();
+      }
+
+      function closeInstagramPreview() {
+        const modal = $('#instagramPreviewModal');
+        if (!modal || !modal.classList.contains('open')) return;
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      function nextInstagramPreview() {
+        const media = instagramMediaPool();
+        if (!media.length) return;
+        state.instagramIndex = (state.instagramIndex + 1) % media.length;
+        renderInstagramPreview();
+        renderInstagramModal();
+      }
+
+      function renderInstagramModal() {
+        const media = instagramMediaPool();
+        if (!media.length) return;
+        const current = media[state.instagramIndex % media.length];
+        const contact = state.data.contact || {};
+        const username = instagramUsernameFromUrl(normalizeInstagramUrl(contact.instagramUrl)) || '@angelslashes';
+        $('#instagramModalImage').src = current.url;
+        $('#instagramModalImage').alt = current.caption;
+        $('#instagramModalType').textContent = current.type;
+        $('#instagramModalUser').textContent = username;
+        $('#instagramModalCaption').textContent = current.caption;
+        $('#instagramPostGrid').innerHTML = media.slice(0, 9).map((item, index) => `
+          <button class="${index === state.instagramIndex % media.length ? 'active' : ''}" type="button" onclick="selectInstagramPreview(${index})" aria-label="${escapeHtml(item.caption)}">
+            <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+          </button>
+        `).join('');
+        refreshIcons();
+      }
+
+      function instagramUsernameFromUrl(url) {
+        try {
+          const parsed = new URL(url);
+          const firstPath = parsed.pathname.split('/').filter(Boolean)[0];
+          return firstPath ? `@${firstPath}` : '';
+        } catch (error) {
+          return '';
+        }
+      }
+
       function setLanguage(language) {
         state.language = language === 'en' ? 'en' : 'es';
         storageSet('localStorage', 'lumina_language', state.language);
@@ -2536,6 +3202,7 @@
           `<a href="#${slug(category)}">${escapeHtml(categoryLabel(category))}</a>`
         ));
         links.unshift(`<a href="#inicio">${escapeHtml(t('home'))}</a>`);
+        if (instagramMediaPool().length) links.push(`<a href="#instagramPreviewSection">${escapeHtml(t('instagramTitle'))}</a>`);
         $('#nav').innerHTML = links.join('');
       }
 
@@ -2549,7 +3216,7 @@
           <article class="discount reveal">
             <div>
               <strong>${escapeHtml(discount.code)}</strong><br>
-              <span>${escapeHtml(categoryLabel(discount.category, discount.categoryEn))} · ${escapeHtml(discountDays(discount))}</span>
+              <span>${escapeHtml(categoryLabel(discount.category, discount.categoryEn))} Â· ${escapeHtml(discountDays(discount))}</span>
             </div>
             <strong>${escapeHtml(formatDiscountValue(discount))}</strong>
           </article>
@@ -2689,7 +3356,7 @@
       function fillServiceSelect(select, category) {
         const services = state.data.services.filter(service => service.category === category);
         select.innerHTML = services.map(service => (
-          `<option value="${escapeHtml(service.name)}">${escapeHtml(serviceName(service))} · ${formatMoney(service.price)}</option>`
+          `<option value="${escapeHtml(service.name)}">${escapeHtml(serviceName(service))} Â· ${formatMoney(service.price)}</option>`
         )).join('');
       }
 
@@ -2923,6 +3590,7 @@
         ));
         const displayService = selectedService ? serviceName(selectedService) : reservation.service;
         const receiptUrl = normalizeSafeUrl(reservation.receiptUrl, ['https:']);
+        const qrUrl = normalizeSafeUrl(reservation.qrUrl, ['https:']);
         $('#receiptBody').innerHTML = `
           <div class="receipt-success">
             <div class="success-hero">
@@ -2939,6 +3607,15 @@
               <div><span>${escapeHtml(t('receiptDiscount'))}</span><strong>${formatMoney(reservation.discount)}</strong></div>
               <div><span>${escapeHtml(t('receiptTotal'))}</span><strong>${formatMoney(reservation.total)}</strong></div>
             </div>
+            ${qrUrl ? `
+              <div class="receipt-qr">
+                <img src="${escapeHtml(qrUrl)}" alt="${escapeHtml(t('qrArrivalTitle'))}">
+                <div>
+                  <strong>${escapeHtml(t('qrArrivalTitle'))}</strong>
+                  <p class="section-copy">${escapeHtml(t('qrArrivalCopy'))}</p>
+                </div>
+              </div>
+            ` : ''}
           </div>
           <div class="dialog-actions">
             ${receiptUrl ? `<a class="btn" href="${escapeHtml(receiptUrl)}" target="_blank" rel="noopener"><i data-lucide="file-down" aria-hidden="true"></i> ${escapeHtml(t('viewPdf'))}</a>` : ''}
@@ -2951,7 +3628,9 @@
       }
 
       async function refreshData() {
-        state.data = await gas('getAppData');
+        const data = await gas('getAppData');
+        writeCachedAppData(data);
+        state.data = normalizeAppData(data);
         renderApp();
       }
 
@@ -3468,3 +4147,4 @@
     </script>
   </body>
 </html>
+
