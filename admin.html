@@ -3,9 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/favicon.png?v=20260623-1">
+    <link rel="apple-touch-icon" href="assets/angels-lashes-logo-square.png?v=20260623-1">
     <link rel="preconnect" href="https://script.google.com">
     <script src="assets/admin-config.js?v=20260622-1"></script>
     <script defer src="assets/lucide.min.js?v=20260622-1"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
       :root {
         --ink: #2c2528;
@@ -75,13 +78,14 @@
       }
 
       .brand-mark {
-        width: 34px;
-        height: 34px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        display: grid;
-        place-items: center;
-        color: #fff;
-        background: linear-gradient(135deg, var(--plum), var(--rose));
+        display: block;
+        object-fit: cover;
+        border: 1px solid rgba(183, 110, 121, 0.32);
+        box-shadow: 0 10px 22px rgba(67, 34, 51, 0.13);
+        background: #fff4f1;
       }
 
       .top-actions {
@@ -145,6 +149,17 @@
       .login-card {
         width: min(420px, 100%);
         padding: 24px;
+      }
+
+      .login-logo {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        margin: 0 auto 14px;
+        border: 1px solid rgba(183, 110, 121, 0.32);
+        box-shadow: 0 14px 30px rgba(67, 34, 51, 0.14);
       }
 
       h1,
@@ -362,6 +377,11 @@
         color: var(--danger);
       }
 
+      .status.completada {
+        background: rgba(67, 34, 51, 0.12);
+        color: var(--plum);
+      }
+
       .row-actions {
         display: flex;
         gap: 6px;
@@ -372,6 +392,103 @@
         min-width: 220px;
         min-height: 70px;
         margin-top: 8px;
+      }
+
+      .appointment-main {
+        display: grid;
+        gap: 3px;
+      }
+
+      .appointment-when {
+        color: var(--plum);
+        font-weight: 800;
+      }
+
+      .qr-layout {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.85fr) minmax(320px, 1.15fr);
+        gap: 16px;
+        align-items: start;
+      }
+
+      .qr-box,
+      .qr-result-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        padding: 14px;
+      }
+
+      .qr-video {
+        width: 100%;
+        max-height: 360px;
+        border-radius: var(--radius);
+        background: #1f1820;
+        object-fit: cover;
+      }
+
+      .qr-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin: 12px 0;
+      }
+
+      .qr-metric {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fffaf7;
+        padding: 10px;
+      }
+
+      .qr-metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .qr-metric strong {
+        color: var(--plum);
+        font-size: 18px;
+      }
+
+      .qr-completed-card {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        gap: 14px;
+        text-align: center;
+        background:
+          radial-gradient(circle at 50% 0, rgba(183, 110, 121, 0.18), transparent 34%),
+          #fff;
+      }
+
+      .qr-completed-logo {
+        width: 86px;
+        height: 86px;
+        margin: 0 auto;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid rgba(183, 110, 121, 0.28);
+        box-shadow: 0 14px 34px rgba(67, 34, 51, 0.16);
+      }
+
+      .qr-completed-card h2 {
+        margin: 0;
+      }
+
+      .qr-completed-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .qr-extra-form {
+        display: grid;
+        grid-template-columns: 1.2fr 0.6fr;
+        gap: 10px;
+        margin-top: 12px;
       }
 
       .history-grid {
@@ -586,6 +703,12 @@
           grid-template-columns: 1fr;
         }
 
+        .qr-layout,
+        .qr-extra-form,
+        .qr-metrics {
+          grid-template-columns: 1fr;
+        }
+
         .tabs {
           position: sticky;
           top: 66px;
@@ -606,7 +729,7 @@
     <header class="topbar">
       <div class="shell topbar-inner">
         <div class="brand">
-          <span class="brand-mark"><i data-lucide="sparkles" aria-hidden="true"></i></span>
+          <img class="brand-mark" src="assets/angels-lashes-logo-square.png?v=20260623-1" alt="">
           <span id="brandName">Angel's Lashes Admin</span>
         </div>
         <div class="top-actions">
@@ -620,6 +743,7 @@
     <main>
       <section id="login" class="login">
         <form id="loginForm" class="login-card">
+          <img class="login-logo" src="assets/angels-lashes-logo-square.png?v=20260623-1" alt="Angel's Lashes">
           <h1>Admin</h1>
           <p class="muted">Angel's Lashes</p>
           <div class="field">
@@ -636,6 +760,7 @@
           <button class="tab" type="button" data-tab="services">Servicios</button>
           <button class="tab" type="button" data-tab="photos">Fotos</button>
           <button class="tab" type="button" data-tab="discounts">Descuentos</button>
+          <button class="tab" type="button" data-tab="qr">Escanear QR</button>
           <button class="tab" type="button" data-tab="settings">Ajustes</button>
           <button class="tab" type="button" data-tab="help">Ayuda</button>
         </nav>
@@ -656,12 +781,45 @@
                 <option>Pendiente</option>
                 <option>Confirmada</option>
                 <option>Cancelada</option>
+                <option>Completada</option>
               </select>
               <input id="reservationFrom" type="date" aria-label="Desde">
               <input id="reservationTo" type="date" aria-label="Hasta">
             </div>
             <div id="reservationTable"></div>
             <div id="clientHistory"></div>
+          </div>
+        </section>
+
+        <section id="qr" class="tab-panel" hidden>
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Escanear QR</h2>
+                <div class="muted">Escanea el QR de la clienta, confirma llegada y agrega servicios extras si aplica.</div>
+              </div>
+            </div>
+            <div class="qr-layout">
+              <div class="qr-box">
+                <video id="qrVideo" class="qr-video" playsinline muted hidden></video>
+                <canvas id="qrCanvas" hidden></canvas>
+                <div class="field">
+                  <label for="qrText">Token o contenido del QR</label>
+                  <input id="qrText" placeholder="AL|LB-...|TOKEN">
+                </div>
+                <div class="field">
+                  <label for="qrImageFile">Foto del QR</label>
+                  <input id="qrImageFile" type="file" accept="image/*" capture="environment">
+                </div>
+                <div class="row-actions">
+                  <button class="btn" type="button" id="validateQrBtn"><i data-lucide="scan-line" aria-hidden="true"></i>Validar QR</button>
+                  <button class="btn secondary" type="button" id="startQrBtn"><i data-lucide="camera" aria-hidden="true"></i>Abrir camara</button>
+                  <button class="btn secondary" type="button" id="stopQrBtn"><i data-lucide="camera-off" aria-hidden="true"></i>Cerrar camara</button>
+                </div>
+                <p class="muted">Si el navegador bloquea la camara, sube una foto del QR o pega el token manualmente.</p>
+              </div>
+              <div id="qrResult"></div>
+            </div>
           </div>
         </section>
 
@@ -1131,7 +1289,10 @@
         tab: 'reservations',
         photoFile: null,
         beforeFile: null,
-        afterFile: null
+        afterFile: null,
+        qrStream: null,
+        qrTimer: null,
+        qrReservation: null
       };
 
       document.addEventListener('DOMContentLoaded', init);
@@ -1179,6 +1340,10 @@
         $('#sendRemindersBtn').addEventListener('click', runReminders);
         $('#installReminderTriggerBtn').addEventListener('click', installReminderTrigger);
         $('#clearPublicCacheBtn').addEventListener('click', clearPublicPageCache);
+        $('#validateQrBtn').addEventListener('click', () => validateQr($('#qrText').value));
+        $('#startQrBtn').addEventListener('click', startQrCamera);
+        $('#stopQrBtn').addEventListener('click', stopQrCamera);
+        $('#qrImageFile').addEventListener('change', scanQrImageFile);
         $('#photoFile').addEventListener('change', handlePhotoFile);
         $('#beforeFile').addEventListener('change', event => handleBeforeAfterFile(event, 'before'));
         $('#afterFile').addEventListener('change', event => handleBeforeAfterFile(event, 'after'));
@@ -1271,6 +1436,7 @@
       }
 
       function logoutAdmin() {
+        stopQrCamera();
         storageRemove('sessionStorage', 'angels_admin_secret');
         state.secret = '';
         state.data = null;
@@ -1305,6 +1471,7 @@
       }
 
       function setTab(tabName) {
+        if (state.tab === 'qr' && tabName !== 'qr') stopQrCamera();
         state.tab = tabName;
         $$('.tab').forEach(tab => tab.classList.toggle('active', tab.dataset.tab === tabName));
         $$('.tab-panel').forEach(panel => {
@@ -1319,7 +1486,7 @@
           <article class="metric-card"><span>Hoy</span><strong>${dashboard.todayCount || 0}</strong></article>
           <article class="metric-card"><span>Pendientes</span><strong>${dashboard.pendingCount || 0}</strong></article>
           <article class="metric-card"><span>Total de hoy</span><strong>${formatMoney(dashboard.todayTotal || 0)}</strong></article>
-          <article class="metric-card"><span>Proxima cita</span><strong>${next ? `${escapeHtml(next.date)} ${escapeHtml(next.time)}` : 'Sin cita'}</strong></article>
+          <article class="metric-card"><span>Proxima cita</span><strong>${next ? `${escapeHtml(next.dateLabel || next.date)} ${escapeHtml(next.timeLabel || next.time)}` : 'Sin cita'}</strong></article>
         `;
       }
 
@@ -1366,15 +1533,19 @@
                       <span class="muted">${escapeHtml(item.email || '')}</span>
                     </td>
                     <td>
-                      <strong>${escapeHtml(item.category)} - ${escapeHtml(item.service)}</strong><br>
-                      <span>${escapeHtml(item.date)} ${escapeHtml(item.time)}</span><br>
-                      <span class="muted">${item.duration} min - ${escapeHtml(item.id)}</span>
+                      <div class="appointment-main">
+                        <strong>${escapeHtml(item.category)} - ${escapeHtml(item.service)}</strong>
+                        <span class="appointment-when">${escapeHtml(item.dateLabel || item.date)} · ${escapeHtml(item.timeLabel || item.time)}</span>
+                        <span class="muted">${item.duration} min · ${escapeHtml(item.id)}</span>
+                        ${item.arrivalStatus || item.serviceStatus ? `<span class="muted">QR: ${escapeHtml(item.serviceStatus || item.arrivalStatus)}</span>` : ''}
+                      </div>
                       ${item.reminder24hSent ? `<br><span class="muted">Recordatorio 24h: ${escapeHtml(item.reminder24hSent)}</span>` : ''}
                       ${item.reminder1hSent ? `<br><span class="muted">Recordatorio 1h: ${escapeHtml(item.reminder1hSent)}</span>` : ''}
                     </td>
                     <td>
-                      <strong>${formatMoney(item.total)}</strong><br>
+                      <strong>${formatMoney(item.finalTotal || item.total)}</strong><br>
                       <span class="muted">Desc. ${formatMoney(item.discount)}</span>
+                      ${item.extraTotal ? `<br><span class="muted">Extras ${formatMoney(item.extraTotal)}</span>` : ''}
                     </td>
                     <td><span class="status ${slug(item.status)}">${escapeHtml(item.status)}</span></td>
                     <td>
@@ -1386,8 +1557,10 @@
                         <button class="btn soft mini" data-status-row="${item.rowNumber}" data-status="Confirmada" type="button">Confirmar</button>
                         <button class="btn danger mini" data-status-row="${item.rowNumber}" data-status="Cancelada" type="button">Cancelar</button>
                         <button class="btn secondary mini" data-status-row="${item.rowNumber}" data-status="Pendiente" type="button">Pendiente</button>
+                        <button class="btn secondary mini" data-status-row="${item.rowNumber}" data-status="Completada" type="button">Completada</button>
                         ${contactLinks(item)}
                         ${item.receiptUrl ? `<a class="btn secondary mini" href="${escapeHtml(item.receiptUrl)}" target="_blank" rel="noopener">PDF</a>` : ''}
+                        <button class="btn danger mini" data-delete-reservation="${item.rowNumber}" type="button">Borrar</button>
                       </div>
                     </td>
                   </tr>
@@ -1402,6 +1575,9 @@
         });
         $$('[data-note-row]').forEach(button => {
           button.addEventListener('click', () => saveReservationNote(button.dataset.noteRow));
+        });
+        $$('[data-delete-reservation]').forEach(button => {
+          button.addEventListener('click', () => deleteReservation(button.dataset.deleteReservation));
         });
       }
 
@@ -1900,6 +2076,11 @@
         await mutate('updateAdminReservationStatus', rowNumber, status, `Reserva marcada como ${status}.`);
       }
 
+      async function deleteReservation(rowNumber) {
+        if (!confirm('Borrar esta cita del admin? Esta accion tambien quitara sus extras registrados.')) return;
+        await mutate('deleteAdminReservation', rowNumber, null, 'Reserva borrada.');
+      }
+
       async function saveReservationNote(rowNumber) {
         const input = document.querySelector(`[data-note-input="${rowNumber}"]`);
         if (!input) return;
@@ -1913,6 +2094,282 @@
         } finally {
           setBusy(false);
         }
+      }
+
+      async function validateQr(rawValue) {
+        const value = String(rawValue || '').trim();
+        if (!value) {
+          showToast('Pega o escanea el token QR.');
+          return;
+        }
+        setBusy(true);
+        try {
+          const result = await gas('validateQrAppointment', state.secret, value);
+          state.qrReservation = result.reservation;
+          $('#qrText').value = value;
+          renderQrResult(result);
+          showToast('QR validado.');
+        } catch (error) {
+          state.qrReservation = null;
+          $('#qrResult').innerHTML = `<div class="empty">${escapeHtml(error.message || String(error))}</div>`;
+          showToast(error.message || String(error));
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function renderQrResult(result) {
+        const reservation = result.reservation || {};
+        const extras = Array.isArray(result.extras) ? result.extras : [];
+        const services = ((state.data && state.data.services) || []).filter(service => service.visible !== false);
+        const serviceOptions = ['<option value="">Seleccionar servicio guardado</option>'].concat(services.map(service => (
+          `<option value="${escapeHtml(service.id)}" data-name="${escapeHtml(service.name)}" data-price="${Number(service.price || 0)}">${escapeHtml(service.category)} - ${escapeHtml(service.name)} · ${formatMoney(service.price)}</option>`
+        ))).join('');
+        const extrasRows = extras.length
+          ? `<table><thead><tr><th>Extra</th><th>Pago</th><th>Precio</th></tr></thead><tbody>${extras.map(extra => `
+              <tr>
+                <td>${escapeHtml(extra.name || '')}${extra.notes ? `<br><span class="muted">${escapeHtml(extra.notes)}</span>` : ''}</td>
+                <td>${escapeHtml(extra.paymentMethod || 'Pago local')}</td>
+                <td>${formatMoney(extra.price || 0)}</td>
+              </tr>
+            `).join('')}</tbody></table>`
+          : '<div class="empty">No hay servicios extras agregados.</div>';
+
+        if (result.completed) {
+          renderQrCompletedResult(result, extrasRows);
+          return;
+        }
+
+        $('#qrResult').innerHTML = `
+          <div class="qr-result-card">
+            <div class="panel-head">
+              <div>
+                <h2>${escapeHtml(reservation.clientName || 'Clienta')}</h2>
+                <div class="muted">${escapeHtml(reservation.phone || '')} ${reservation.email ? '· ' + escapeHtml(reservation.email) : ''}</div>
+              </div>
+              <span class="status ${slug(reservation.status || 'Pendiente')}">${escapeHtml(reservation.status || 'Pendiente')}</span>
+            </div>
+            <p><strong>${escapeHtml(reservation.category || '')} - ${escapeHtml(reservation.service || '')}</strong><br>
+            <span class="appointment-when">${escapeHtml(reservation.dateLabel || reservation.date || '')} · ${escapeHtml(reservation.timeLabel || reservation.time || '')}</span><br>
+            <span class="muted">${escapeHtml(reservation.id || '')} · ${reservation.duration || 0} min</span></p>
+            <div class="qr-metrics">
+              <div class="qr-metric"><span>Base</span><strong>${formatMoney(reservation.total || 0)}</strong></div>
+              <div class="qr-metric"><span>Extras</span><strong>${formatMoney(result.extraTotal || 0)}</strong></div>
+              <div class="qr-metric"><span>Total final</span><strong>${formatMoney(result.finalTotal || reservation.finalTotal || reservation.total || 0)}</strong></div>
+            </div>
+            <div class="row-actions">
+              <button class="btn soft mini" data-qr-stage="Cliente llego" type="button">Cliente llego</button>
+              <button class="btn secondary mini" data-qr-stage="En servicio" type="button">Empezar servicio</button>
+              <button class="btn mini" id="qrFinishBtn" type="button">Finalizar cita</button>
+            </div>
+            <h3 style="margin-top:16px;">Servicios extras</h3>
+            ${extrasRows}
+            <div class="qr-extra-form">
+              <div class="field">
+                <label for="qrExtraService">Servicio extra activo</label>
+                <select id="qrExtraService">${serviceOptions}</select>
+              </div>
+              <div class="field">
+                <label for="qrExtraPrice">Precio</label>
+                <input id="qrExtraPrice" type="number" min="0" step="0.01" value="0">
+              </div>
+              <div class="field">
+                <label for="qrExtraName">Nombre extra</label>
+                <input id="qrExtraName" placeholder="Ej. Retoque adicional">
+              </div>
+              <div class="field">
+                <label for="qrExtraNotes">Notas</label>
+                <input id="qrExtraNotes" placeholder="Notas del extra">
+              </div>
+            </div>
+            <button class="btn secondary" id="qrAddExtraBtn" type="button"><i data-lucide="plus" aria-hidden="true"></i>Agregar extra al recibo</button>
+          </div>
+        `;
+        $$('[data-qr-stage]').forEach(button => button.addEventListener('click', () => updateQrStage(button.dataset.qrStage)));
+        $('#qrExtraService').addEventListener('change', fillQrExtraFromService);
+        $('#qrAddExtraBtn').addEventListener('click', saveQrExtra);
+        $('#qrFinishBtn').addEventListener('click', finishQrAppointment);
+        refreshIcons();
+      }
+
+      function renderQrCompletedResult(result, extrasRows) {
+        const reservation = result.reservation || {};
+        const followup = result.followup || {};
+        const logoUrl = normalizeSafeUrl(followup.logoUrl, ['https:']) || 'assets/angels-lashes-logo-square.png?v=20260623-1';
+        const bookingUrl = normalizeSafeUrl(followup.bookingUrl, ['https:']) || 'https://visualnetworkdev.github.io/angelslashesbyrocio/';
+        $('#qrResult').innerHTML = `
+          <div class="qr-result-card qr-completed-card">
+            <img class="qr-completed-logo" src="${escapeHtml(logoUrl)}" alt="Angel's Lashes">
+            <div>
+              <h2>${escapeHtml(followup.title || 'Cita completada')}</h2>
+              <p>${escapeHtml(followup.message || "Gracias por visitar Angel's Lashes. Esta cita ya fue completada.")}</p>
+            </div>
+            <div class="panel-head">
+              <div>
+                <h3>${escapeHtml(reservation.clientName || 'Clienta')}</h3>
+                <div class="muted">${escapeHtml(reservation.phone || '')} ${reservation.email ? '· ' + escapeHtml(reservation.email) : ''}</div>
+              </div>
+              <span class="status completada">Completada</span>
+            </div>
+            <p><strong>${escapeHtml(reservation.category || '')} - ${escapeHtml(reservation.service || '')}</strong><br>
+            <span class="appointment-when">${escapeHtml(reservation.dateLabel || reservation.date || '')} · ${escapeHtml(reservation.timeLabel || reservation.time || '')}</span><br>
+            <span class="muted">${escapeHtml(reservation.id || '')}</span></p>
+            <div class="qr-metrics">
+              <div class="qr-metric"><span>Base</span><strong>${formatMoney(reservation.total || 0)}</strong></div>
+              <div class="qr-metric"><span>Extras</span><strong>${formatMoney(result.extraTotal || 0)}</strong></div>
+              <div class="qr-metric"><span>Total final</span><strong>${formatMoney(result.finalTotal || reservation.finalTotal || reservation.total || 0)}</strong></div>
+            </div>
+            <h3>Servicios realizados</h3>
+            ${extrasRows}
+            <div class="row-actions" style="justify-content:center;">
+              <a class="btn" href="${escapeHtml(bookingUrl)}" target="_blank" rel="noopener"><i data-lucide="calendar-plus" aria-hidden="true"></i>${escapeHtml(followup.actionLabel || 'Reservar otra cita')}</a>
+            </div>
+          </div>
+        `;
+        refreshIcons();
+      }
+
+      function fillQrExtraFromService() {
+        const option = $('#qrExtraService').selectedOptions[0];
+        if (!option || !option.value) return;
+        $('#qrExtraName').value = option.dataset.name || option.textContent.split('·')[0].trim();
+        $('#qrExtraPrice').value = option.dataset.price || '0';
+      }
+
+      async function updateQrStage(stage) {
+        if (!state.qrReservation) return;
+        setBusy(true);
+        try {
+          state.data = await gas('updateQrReservationStage', state.secret, state.qrReservation.rowNumber, stage);
+          showToast(`QR actualizado: ${stage}.`);
+          await validateQr($('#qrText').value);
+          renderAll();
+        } catch (error) {
+          showToast(error.message || String(error));
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      async function saveQrExtra() {
+        if (!state.qrReservation) return;
+        const option = $('#qrExtraService').selectedOptions[0];
+        const payload = {
+          serviceId: option && option.value ? option.value : '',
+          name: $('#qrExtraName').value,
+          price: $('#qrExtraPrice').value,
+          notes: $('#qrExtraNotes').value
+        };
+        setBusy(true);
+        try {
+          state.data = await gas('saveQrAppointmentExtra', state.secret, state.qrReservation.rowNumber, payload);
+          showToast('Extra agregado.');
+          await validateQr($('#qrText').value);
+          renderAll();
+        } catch (error) {
+          showToast(error.message || String(error));
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      async function finishQrAppointment() {
+        if (!state.qrReservation) return;
+        if (!confirm('Finalizar esta cita como completada?')) return;
+        setBusy(true);
+        try {
+          state.data = await gas('finishQrAppointment', state.secret, state.qrReservation.rowNumber);
+          showToast('Cita completada y recibo actualizado.');
+          await validateQr($('#qrText').value);
+          renderAll();
+        } catch (error) {
+          showToast(error.message || String(error));
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      async function startQrCamera() {
+        if (!window.jsQR) {
+          showToast('El lector QR aun no esta listo. Intenta de nuevo o sube una foto.');
+          return;
+        }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          showToast('Este navegador no permite abrir la camara aqui.');
+          return;
+        }
+        try {
+          stopQrCamera();
+          const video = $('#qrVideo');
+          state.qrStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+          video.srcObject = state.qrStream;
+          video.hidden = false;
+          await video.play();
+          state.qrTimer = setInterval(scanQrFrame, 450);
+          showToast('Camara QR activa.');
+        } catch (error) {
+          showToast(`No se pudo abrir la camara: ${error.message || error}`);
+        }
+      }
+
+      function stopQrCamera() {
+        if (state.qrTimer) clearInterval(state.qrTimer);
+        state.qrTimer = null;
+        if (state.qrStream) state.qrStream.getTracks().forEach(track => track.stop());
+        state.qrStream = null;
+        const video = $('#qrVideo');
+        if (video) {
+          video.pause();
+          video.srcObject = null;
+          video.hidden = true;
+        }
+      }
+
+      function scanQrFrame() {
+        const video = $('#qrVideo');
+        const canvas = $('#qrCanvas');
+        if (!video || !canvas || !video.videoWidth || !window.jsQR) return;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext('2d', { willReadFrequently: true });
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const code = window.jsQR(imageData.data, imageData.width, imageData.height);
+        if (code && code.data) {
+          $('#qrText').value = code.data;
+          stopQrCamera();
+          validateQr(code.data);
+        }
+      }
+
+      function scanQrImageFile(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        if (!window.jsQR) {
+          showToast('El lector QR aun no esta listo.');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const image = new Image();
+          image.onload = () => {
+            const canvas = $('#qrCanvas');
+            const context = canvas.getContext('2d', { willReadFrequently: true });
+            canvas.width = image.naturalWidth;
+            canvas.height = image.naturalHeight;
+            context.drawImage(image, 0, 0);
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const code = window.jsQR(imageData.data, imageData.width, imageData.height);
+            if (code && code.data) {
+              $('#qrText').value = code.data;
+              validateQr(code.data);
+            } else {
+              showToast('No pude leer el QR de esa imagen.');
+            }
+          };
+          image.src = reader.result;
+        };
+        reader.readAsDataURL(file);
       }
 
       async function deletePhoto(rowNumber) {
