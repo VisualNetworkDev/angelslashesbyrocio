@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="assets/favicon.png?v=20260623-1">
-    <link rel="apple-touch-icon" href="assets/angels-lashes-logo-square.png?v=20260623-1">
+    <title>Angel's Lashes Admin</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png?v=20260623-2">
+    <link rel="apple-touch-icon" href="assets/angels-lashes-logo-square.png?v=20260623-2">
     <link rel="preconnect" href="https://script.google.com">
     <script src="assets/admin-config.js?v=20260622-1"></script>
     <script defer src="assets/lucide.min.js?v=20260622-1"></script>
@@ -729,7 +730,7 @@
     <header class="topbar">
       <div class="shell topbar-inner">
         <div class="brand">
-          <img class="brand-mark" src="assets/angels-lashes-logo-square.png?v=20260623-1" alt="">
+          <img class="brand-mark" src="assets/angels-lashes-logo-square.png?v=20260623-2" alt="">
           <span id="brandName">Angel's Lashes Admin</span>
         </div>
         <div class="top-actions">
@@ -743,7 +744,7 @@
     <main>
       <section id="login" class="login">
         <form id="loginForm" class="login-card">
-          <img class="login-logo" src="assets/angels-lashes-logo-square.png?v=20260623-1" alt="Angel's Lashes">
+          <img class="login-logo" src="assets/angels-lashes-logo-square.png?v=20260623-2" alt="Angel's Lashes">
           <h1>Admin</h1>
           <p class="muted">Angel's Lashes</p>
           <div class="field">
@@ -757,6 +758,7 @@
       <section id="admin" class="admin shell">
         <nav class="tabs" aria-label="Admin">
           <button class="tab active" type="button" data-tab="reservations">Reservas</button>
+          <button class="tab" type="button" data-tab="financials">Ganancias</button>
           <button class="tab" type="button" data-tab="services">Servicios</button>
           <button class="tab" type="button" data-tab="photos">Fotos</button>
           <button class="tab" type="button" data-tab="discounts">Descuentos</button>
@@ -788,6 +790,31 @@
             </div>
             <div id="reservationTable"></div>
             <div id="clientHistory"></div>
+          </div>
+        </section>
+
+        <section id="financials" class="tab-panel" hidden>
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Ganancias</h2>
+                <div class="muted">Resumen para revisar ingresos y preparar reportes de taxes.</div>
+              </div>
+              <div class="row-actions">
+                <button id="financialCsvBtn" class="btn secondary" type="button"><i data-lucide="download" aria-hidden="true"></i>CSV</button>
+                <button id="financialPaystubBtn" class="btn" type="button"><i data-lucide="file-down" aria-hidden="true"></i>Paystub</button>
+              </div>
+            </div>
+            <div id="financialSummary" class="dashboard-grid"></div>
+            <div class="filters">
+              <input id="financialFrom" type="date" aria-label="Ganancias desde">
+              <input id="financialTo" type="date" aria-label="Ganancias hasta">
+              <button id="financialTodayBtn" class="btn secondary" type="button">Hoy</button>
+              <button id="financialWeekBtn" class="btn secondary" type="button">Semana</button>
+              <button id="financialMonthBtn" class="btn secondary" type="button">Mes</button>
+              <button id="financialYearBtn" class="btn secondary" type="button">Ano</button>
+            </div>
+            <div id="financialTable"></div>
           </div>
         </section>
 
@@ -1324,6 +1351,14 @@
         $('#reservationStatus').addEventListener('change', renderReservations);
         $('#reservationFrom').addEventListener('change', renderReservations);
         $('#reservationTo').addEventListener('change', renderReservations);
+        $('#financialFrom').addEventListener('change', renderFinancials);
+        $('#financialTo').addEventListener('change', renderFinancials);
+        $('#financialTodayBtn').addEventListener('click', () => setFinancialRange('today'));
+        $('#financialWeekBtn').addEventListener('click', () => setFinancialRange('week'));
+        $('#financialMonthBtn').addEventListener('click', () => setFinancialRange('month'));
+        $('#financialYearBtn').addEventListener('click', () => setFinancialRange('year'));
+        $('#financialCsvBtn').addEventListener('click', downloadFinancialCsv);
+        $('#financialPaystubBtn').addEventListener('click', downloadFinancialPaystub);
         $('#serviceForm').addEventListener('submit', saveService);
         $('#discountForm').addEventListener('submit', saveDiscount);
         $('#photoForm').addEventListener('submit', savePhoto);
@@ -1426,6 +1461,7 @@
         renderCategoryList();
         renderDashboard();
         renderReservations();
+        renderFinancials();
         renderServices();
         renderPhotos();
         renderBeforeAfter();
@@ -1579,6 +1615,163 @@
         $$('[data-delete-reservation]').forEach(button => {
           button.addEventListener('click', () => deleteReservation(button.dataset.deleteReservation));
         });
+      }
+
+      function renderFinancials() {
+        const financials = state.data && state.data.financials ? state.data.financials : {};
+        const items = filteredFinancialItems();
+        const filteredTotal = items.reduce((sum, item) => sum + Number(item.finalAmount || 0), 0);
+        const totals = financials.totals || {};
+        $('#financialSummary').innerHTML = `
+          <article class="metric-card"><span>Hoy</span><strong>${formatMoney(totals.today && totals.today.total || 0)}</strong></article>
+          <article class="metric-card"><span>Semana</span><strong>${formatMoney(totals.week && totals.week.total || 0)}</strong></article>
+          <article class="metric-card"><span>Mes</span><strong>${formatMoney(totals.month && totals.month.total || 0)}</strong></article>
+          <article class="metric-card"><span>Ano</span><strong>${formatMoney(totals.year && totals.year.total || 0)}</strong></article>
+          <article class="metric-card"><span>Filtro</span><strong>${formatMoney(filteredTotal)}</strong></article>
+        `;
+
+        if (!items.length) {
+          $('#financialTable').innerHTML = '<div class="empty">No hay ganancias para este filtro.</div>';
+          return;
+        }
+
+        $('#financialTable').innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Clienta</th>
+                  <th>Servicio</th>
+                  <th>Original</th>
+                  <th>Monto final</th>
+                  <th>Nota</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                ${items.map(item => `
+                  <tr>
+                    <td><strong>${escapeHtml(item.dateLabel || item.date)}</strong><br><span class="muted">${escapeHtml(item.timeLabel || '')}</span></td>
+                    <td>${escapeHtml(item.clientName || '')}<br><span class="muted">${escapeHtml(item.reservationId || '')}</span></td>
+                    <td>${escapeHtml(item.category || '')} - ${escapeHtml(item.service || '')}<br><span class="status ${slug(item.status)}">${escapeHtml(item.status || '')}</span></td>
+                    <td>${formatMoney(item.originalAmount || 0)}</td>
+                    <td><input data-financial-amount="${escapeHtml(item.reservationId)}" value="${Number(item.finalAmount || 0).toFixed(2)}" inputmode="decimal"></td>
+                    <td><textarea class="note-box" data-financial-note="${escapeHtml(item.reservationId)}" placeholder="Nota para taxes o ajuste">${escapeHtml(item.note || '')}</textarea></td>
+                    <td><button class="btn secondary mini" data-save-financial="${escapeHtml(item.reservationId)}" type="button">Guardar</button></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        $$('[data-save-financial]').forEach(button => {
+          button.addEventListener('click', () => saveFinancialAdjustment(button.dataset.saveFinancial));
+        });
+      }
+
+      function financialItems() {
+        const financials = state.data && state.data.financials ? state.data.financials : {};
+        return Array.isArray(financials.items) ? financials.items : [];
+      }
+
+      function filteredFinancialItems() {
+        const from = $('#financialFrom').value;
+        const to = $('#financialTo').value;
+        return financialItems().filter(item => {
+          if (from && item.date < from) return false;
+          if (to && item.date > to) return false;
+          return true;
+        });
+      }
+
+      function setFinancialRange(period) {
+        const today = state.data && state.data.today ? state.data.today : new Date().toISOString().slice(0, 10);
+        const date = new Date(`${today}T00:00:00`);
+        let from = today;
+        if (period === 'week') {
+          const offset = (date.getDay() + 6) % 7;
+          date.setDate(date.getDate() - offset);
+          from = toIsoDateInput(date);
+        } else if (period === 'month') {
+          from = `${today.slice(0, 7)}-01`;
+        } else if (period === 'year') {
+          from = `${today.slice(0, 4)}-01-01`;
+        }
+        $('#financialFrom').value = from;
+        $('#financialTo').value = today;
+        renderFinancials();
+      }
+
+      async function saveFinancialAdjustment(reservationId) {
+        const amountInput = document.querySelector(`[data-financial-amount="${cssEscape(reservationId)}"]`);
+        const noteInput = document.querySelector(`[data-financial-note="${cssEscape(reservationId)}"]`);
+        await mutate('saveFinancialAdjustment', {
+          reservationId,
+          amount: amountInput ? amountInput.value : 0,
+          note: noteInput ? noteInput.value : ''
+        }, 'Ganancia actualizada.');
+      }
+
+      function downloadFinancialCsv() {
+        const items = filteredFinancialItems();
+        const rows = [['Fecha', 'Hora', 'Clienta', 'Servicio', 'Estado', 'Original', 'Final', 'Ajuste', 'Nota', 'ID']];
+        items.forEach(item => {
+          rows.push([
+            item.date,
+            item.timeLabel || '',
+            item.clientName || '',
+            `${item.category || ''} - ${item.service || ''}`,
+            item.status || '',
+            item.originalAmount || 0,
+            item.finalAmount || 0,
+            item.adjustment || 0,
+            item.note || '',
+            item.reservationId || ''
+          ]);
+        });
+        downloadTextFile(`angels-lashes-ganancias-${financialRangeName()}.csv`, rows.map(row => row.map(csvCell).join(',')).join('\n'), 'text/csv');
+      }
+
+      function downloadFinancialPaystub() {
+        const items = filteredFinancialItems();
+        const total = items.reduce((sum, item) => sum + Number(item.finalAmount || 0), 0);
+        const html = `<!doctype html><html><head><meta charset="utf-8"><title>Angel's Lashes Paystub</title><style>body{font-family:Arial,sans-serif;color:#2b2226;padding:28px}h1{color:#432233}table{width:100%;border-collapse:collapse;margin-top:18px}th,td{border:1px solid #eadde1;padding:9px;text-align:left}th{background:#fff4f1}.total{font-size:20px;font-weight:700}</style></head><body><h1>Angel's Lashes</h1><p>Reporte de ganancias: ${escapeHtml(financialRangeLabel())}</p><p class="total">Total: ${formatMoney(total)}</p><table><thead><tr><th>Fecha</th><th>Clienta</th><th>Servicio</th><th>Monto</th><th>Nota</th></tr></thead><tbody>${items.map(item => `<tr><td>${escapeHtml(item.date)} ${escapeHtml(item.timeLabel || '')}</td><td>${escapeHtml(item.clientName || '')}</td><td>${escapeHtml(item.category || '')} - ${escapeHtml(item.service || '')}</td><td>${formatMoney(item.finalAmount || 0)}</td><td>${escapeHtml(item.note || '')}</td></tr>`).join('')}</tbody></table></body></html>`;
+        downloadTextFile(`angels-lashes-paystub-${financialRangeName()}.html`, html, 'text/html');
+        showToast('Paystub descargado. Puedes abrirlo e imprimirlo o guardarlo como PDF.');
+      }
+
+      function financialRangeLabel() {
+        return `${$('#financialFrom').value || 'inicio'} a ${$('#financialTo').value || 'hoy'}`;
+      }
+
+      function financialRangeName() {
+        return financialRangeLabel().replace(/[^0-9a-zA-Z-]+/g, '-').replace(/^-|-$/g, '') || 'todo';
+      }
+
+      function toIsoDateInput(date) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      }
+
+      function csvCell(value) {
+        return `"${String(value == null ? '' : value).replace(/"/g, '""')}"`;
+      }
+
+      function downloadTextFile(fileName, contents, type) {
+        const blob = new Blob([contents], { type: type || 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function cssEscape(value) {
+        if (window.CSS && CSS.escape) return CSS.escape(value);
+        return String(value || '').replace(/"/g, '\\"');
       }
 
       function contactLinks(item) {
@@ -2195,7 +2388,7 @@
       function renderQrCompletedResult(result, extrasRows) {
         const reservation = result.reservation || {};
         const followup = result.followup || {};
-        const logoUrl = normalizeSafeUrl(followup.logoUrl, ['https:']) || 'assets/angels-lashes-logo-square.png?v=20260623-1';
+        const logoUrl = normalizeSafeUrl(followup.logoUrl, ['https:']) || 'assets/angels-lashes-logo-square.png?v=20260623-2';
         const bookingUrl = normalizeSafeUrl(followup.bookingUrl, ['https:']) || 'https://visualnetworkdev.github.io/angelslashesbyrocio/';
         $('#qrResult').innerHTML = `
           <div class="qr-result-card qr-completed-card">
