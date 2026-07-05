@@ -152,13 +152,6 @@
         padding: 24px;
       }
 
-      .login-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-      }
-
       .login-logo {
         width: 84px;
         height: 84px;
@@ -241,151 +234,6 @@
 
       .admin.open {
         display: block;
-      }
-
-      .desktop-loader {
-        position: fixed;
-        inset: 0;
-        z-index: 1000;
-        display: none;
-        place-items: center;
-        padding: 24px;
-        background:
-          linear-gradient(115deg, rgba(67, 34, 51, 0.98) 0%, rgba(120, 54, 75, 0.9) 42%, rgba(183, 110, 121, 0.72) 72%, rgba(255, 250, 247, 0.92) 100%),
-          repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0 1px, transparent 1px 18px);
-        overflow: hidden;
-      }
-
-      .desktop-loader.show {
-        display: grid;
-      }
-
-      .desktop-loader::before,
-      .desktop-loader::after {
-        content: "";
-        position: absolute;
-        border-radius: 999px;
-        pointer-events: none;
-      }
-
-      .desktop-loader::before {
-        width: 520px;
-        height: 520px;
-        left: -160px;
-        top: -180px;
-        background: radial-gradient(circle, rgba(244, 216, 191, 0.26), transparent 66%);
-        animation: introFloat 7s ease-in-out infinite;
-      }
-
-      .desktop-loader::after {
-        width: 640px;
-        height: 640px;
-        right: -220px;
-        bottom: -260px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 62%);
-        animation: introFloat 8s ease-in-out infinite reverse;
-      }
-
-      .desktop-loader-card {
-        position: relative;
-        z-index: 1;
-        width: min(560px, 100%);
-        border: 1px solid rgba(255, 255, 255, 0.26);
-        border-radius: 24px;
-        background: rgba(255, 250, 247, 0.12);
-        box-shadow: 0 34px 100px rgba(24, 12, 18, 0.32);
-        padding: 38px 34px;
-        text-align: center;
-        backdrop-filter: blur(20px);
-        color: #fff;
-        overflow: hidden;
-        animation: introCard 720ms cubic-bezier(0.2, 0.72, 0.18, 1) both;
-      }
-
-      .desktop-loader-card::before {
-        content: "";
-        position: absolute;
-        inset: -45% -80%;
-        background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.24) 48%, transparent 58%);
-        animation: introSheen 2.4s ease-in-out infinite;
-      }
-
-      .desktop-loader-mark {
-        width: 86px;
-        height: 86px;
-        margin: 0 auto 18px;
-        border-radius: 50%;
-        background: url("assets/angels-lashes-logo-square.png?v=20260623-2") center / cover no-repeat;
-        box-shadow: 0 18px 46px rgba(24, 12, 18, 0.26), inset 0 0 0 1px rgba(255, 255, 255, 0.38);
-        animation: introPulse 1.7s ease-in-out infinite;
-      }
-
-      .desktop-loader-mark::after {
-        content: "";
-        display: block;
-        width: 100%;
-        height: 100%;
-        border-radius: inherit;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.42), 0 0 30px rgba(244, 216, 191, 0.35);
-      }
-
-      .desktop-loader-spinner {
-        width: min(320px, 100%);
-        height: 5px;
-        margin: 24px auto 0;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.2);
-        overflow: hidden;
-      }
-
-      .desktop-loader-spinner::before {
-        content: "";
-        display: block;
-        width: 44%;
-        height: 100%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.32), #fff, rgba(244, 216, 191, 0.92));
-        animation: introProgress 1.15s ease-in-out infinite;
-      }
-
-      .desktop-loader h2 {
-        position: relative;
-        margin: 0 0 10px;
-        color: #fff;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(34px, 5vw, 58px);
-        line-height: 0.95;
-      }
-
-      .desktop-loader p {
-        position: relative;
-        margin: 0;
-        color: rgba(255, 255, 255, 0.84);
-        line-height: 1.5;
-      }
-
-      @keyframes introCard {
-        from { opacity: 0; transform: translateY(18px) scale(0.97); filter: blur(8px); }
-        to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-      }
-
-      @keyframes introFloat {
-        50% { transform: translate3d(26px, 18px, 0) scale(1.05); }
-      }
-
-      @keyframes introPulse {
-        50% { transform: scale(1.045); box-shadow: 0 22px 54px rgba(24, 12, 18, 0.34), inset 0 0 0 1px rgba(255, 255, 255, 0.52); }
-      }
-
-      @keyframes introProgress {
-        0% { transform: translateX(-120%); }
-        100% { transform: translateX(260%); }
-      }
-
-      @keyframes introSheen {
-        0% { transform: translateX(-40%) rotate(8deg); opacity: 0; }
-        35% { opacity: 0.8; }
-        100% { transform: translateX(42%) rotate(8deg); opacity: 0; }
       }
 
       .tabs {
@@ -895,15 +743,6 @@
     </style>
   </head>
   <body>
-    <div id="desktopLoader" class="desktop-loader" role="status" aria-live="polite" aria-hidden="true">
-      <div class="desktop-loader-card">
-        <div class="desktop-loader-mark" aria-hidden="true"></div>
-        <h2 id="desktopLoaderTitle">Preparando el admin</h2>
-        <p id="desktopLoaderMessage">Conectando con Angel's Lashes y cargando la informacion actualizada.</p>
-        <div class="desktop-loader-spinner" aria-hidden="true"></div>
-      </div>
-    </div>
-
     <header class="topbar">
       <div class="shell topbar-inner">
         <div class="brand">
@@ -929,10 +768,9 @@
             <label for="secret">Contrasena</label>
             <input id="secret" name="password" type="password" autocomplete="current-password" required>
           </div>
-          <div class="login-actions">
-            <button id="loginSubmitBtn" class="btn" type="submit"><i data-lucide="lock-keyhole" aria-hidden="true"></i><span>Entrar</span></button>
-            <button id="credentialLoginBtn" class="btn secondary" type="button" hidden><i data-lucide="fingerprint" aria-hidden="true"></i><span>Face ID / huella</span></button>
-          </div>
+          <button class="btn" type="submit"><i data-lucide="lock-keyhole" aria-hidden="true"></i>Entrar</button>
+          <button id="credentialLoginBtn" class="btn secondary" type="button" hidden><i data-lucide="fingerprint" aria-hidden="true"></i>Face ID / huella</button>
+          <p id="credentialHint" class="muted">Puedes guardar la contrasena del admin en el telefono o PC y desbloquearla con Face ID, huella o PIN del dispositivo.</p>
         </form>
       </section>
 
@@ -1632,14 +1470,9 @@
 
       async function loadAdminData(options = {}) {
         if (!state.secret) return;
-        let loaderDelayTimer = null;
         setBusy(true);
-        showDesktopLoader('Preparando el admin', "Conectando con Angel's Lashes y cargando la informacion actualizada.");
         try {
           const loginSecret = state.secret;
-          loaderDelayTimer = setTimeout(() => {
-            showDesktopLoader('Sincronizando datos', 'La conexion esta tomando unos segundos. Mantengo la carga abierta para terminar.');
-          }, 4500);
           state.data = await gas('getAdminData', state.secret);
           $('#brandName').textContent = `${state.data.appName} Admin`;
           $('#login').classList.add('hidden');
@@ -1656,8 +1489,6 @@
           $('#logoutBtn').hidden = true;
           showToast(error.message || String(error));
         } finally {
-          clearTimeout(loaderDelayTimer);
-          hideDesktopLoader();
           setBusy(false);
         }
       }
@@ -2544,23 +2375,9 @@
       function setupCredentialLogin() {
         const supported = Boolean(window.PasswordCredential && navigator.credentials);
         $('#credentialLoginBtn').hidden = !supported;
-      }
-
-      function showDesktopLoader(title, message) {
-        const loader = $('#desktopLoader');
-        if (!loader) return;
-        $('#desktopLoaderTitle').textContent = title || 'Cargando';
-        $('#desktopLoaderMessage').textContent = message || 'Preparando la informacion.';
-        loader.classList.add('show');
-        loader.setAttribute('aria-hidden', 'false');
-        refreshIcons();
-      }
-
-      function hideDesktopLoader() {
-        const loader = $('#desktopLoader');
-        if (!loader) return;
-        loader.classList.remove('show');
-        loader.setAttribute('aria-hidden', 'true');
+        if (!supported) {
+          $('#credentialHint').textContent = 'Este navegador puede guardar la contrasena con su administrador de contrasenas si lo ofrece al iniciar sesion.';
+        }
       }
 
       async function loginWithSavedCredential() {
