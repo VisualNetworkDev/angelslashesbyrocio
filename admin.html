@@ -220,6 +220,18 @@
         display: none;
       }
 
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
       .admin.open {
         display: block;
       }
@@ -321,6 +333,10 @@
       .check input {
         width: 18px;
         height: 18px;
+      }
+
+      .is-disabled {
+        opacity: .55;
       }
 
       .table-wrap {
@@ -743,15 +759,18 @@
 
     <main>
       <section id="login" class="login">
-        <form id="loginForm" class="login-card">
+        <form id="loginForm" class="login-card" autocomplete="on">
           <img class="login-logo" src="assets/angels-lashes-logo-square.png?v=20260623-2" alt="Angel's Lashes">
           <h1>Admin</h1>
           <p class="muted">Angel's Lashes</p>
+          <input id="adminUsername" class="visually-hidden" name="username" autocomplete="username" value="angels-lashes-admin" tabindex="-1" aria-hidden="true">
           <div class="field">
             <label for="secret">Contrasena</label>
-            <input id="secret" type="password" autocomplete="current-password" required>
+            <input id="secret" name="password" type="password" autocomplete="current-password" required>
           </div>
           <button class="btn" type="submit"><i data-lucide="lock-keyhole" aria-hidden="true"></i>Entrar</button>
+          <button id="credentialLoginBtn" class="btn secondary" type="button" hidden><i data-lucide="fingerprint" aria-hidden="true"></i>Face ID / huella</button>
+          <p id="credentialHint" class="muted">Puedes guardar la contrasena del admin en el telefono o PC y desbloquearla con Face ID, huella o PIN del dispositivo.</p>
         </form>
       </section>
 
@@ -887,6 +906,19 @@
                   <input id="serviceVisible" type="checkbox" checked>
                   Visible
                 </label>
+                <label class="check full">
+                  <input id="servicePermanent" type="checkbox" checked>
+                  Servicio permanente
+                </label>
+                <p class="muted full">Dejalo marcado para que el servicio no tenga fecha de vencimiento. Desmarcalo solo si quieres usar Disponible desde/hasta.</p>
+                <div class="field" data-service-date-field>
+                  <label for="serviceAvailableFrom">Disponible desde</label>
+                  <input id="serviceAvailableFrom" type="date">
+                </div>
+                <div class="field" data-service-date-field>
+                  <label for="serviceAvailableUntil">Disponible hasta</label>
+                  <input id="serviceAvailableUntil" type="date">
+                </div>
                 <div class="field full">
                   <label for="serviceImage">Imagen principal</label>
                   <input id="serviceImage">
@@ -1104,11 +1136,11 @@
                 </div>
                 <label class="check full">
                   <input id="instagramVisible" type="checkbox">
-                  Mostrar boton de Instagram
+                  Mostrar Instagram en Contactame
                 </label>
                 <div class="field full">
-                  <label for="instagramUrl">Instagram URL</label>
-                  <input id="instagramUrl" placeholder="https://instagram.com/...">
+                  <label for="instagramUrl">Link de Instagram</label>
+                  <input id="instagramUrl" placeholder="@usuario o https://instagram.com/...">
                 </div>
                 <div class="field">
                   <label for="businessStart">Hora de inicio</label>
@@ -1250,7 +1282,7 @@
               <article class="help-card">
                 <h3>Ajustes</h3>
                 <ol>
-                  <li>Cambia telefono, email, Instagram y horario.</li>
+                  <li>Cambia telefono, email, link de Instagram y horario.</li>
                   <li>Bloquea dias cerrados o vacaciones.</li>
                   <li>Usa Actualizar pagina clientas despues de editar fotos o servicios.</li>
                   <li>Usa Cerrar sesion cuando termines.</li>
@@ -1311,7 +1343,7 @@
       }
 
       const state = {
-        secret: storageGet('sessionStorage', 'angels_admin_secret', ''),
+        secret: '',
         data: null,
         tab: 'reservations',
         photoFile: null,
@@ -1327,6 +1359,8 @@
       function init() {
         bindEvents();
         setPublicLink();
+        setupCredentialLogin();
+        syncServiceAvailabilityFields();
         refreshIcons();
         if (state.secret) loadAdminData();
       }
@@ -1335,9 +1369,9 @@
         $('#loginForm').addEventListener('submit', event => {
           event.preventDefault();
           state.secret = $('#secret').value.trim();
-          storageSet('sessionStorage', 'angels_admin_secret', state.secret);
-          loadAdminData();
+          loadAdminData({ offerCredentialSave: true });
         });
+        $('#credentialLoginBtn').addEventListener('click', loginWithSavedCredential);
         $('#publicLink').addEventListener('click', event => {
           if ($('#publicLink').dataset.missing === 'true') {
             event.preventDefault();
@@ -1368,6 +1402,7 @@
         $('#passwordForm').addEventListener('submit', changePassword);
         $('#developerPinForm').addEventListener('submit', changeDeveloperPin);
         $('#newServiceBtn').addEventListener('click', resetServiceForm);
+        $('#servicePermanent').addEventListener('change', syncServiceAvailabilityFields);
         $('#newDiscountBtn').addEventListener('click', resetDiscountForm);
         $('#newPhotoBtn').addEventListener('click', resetPhotoForm);
         $('#newBeforeAfterBtn').addEventListener('click', resetBeforeAfterForm);
@@ -1433,10 +1468,11 @@
         }
       }
 
-      async function loadAdminData() {
+      async function loadAdminData(options = {}) {
         if (!state.secret) return;
         setBusy(true);
         try {
+          const loginSecret = state.secret;
           state.data = await gas('getAdminData', state.secret);
           $('#brandName').textContent = `${state.data.appName} Admin`;
           $('#login').classList.add('hidden');
@@ -1445,8 +1481,8 @@
           document.body.classList.toggle('developer-mode', state.data.authRole === 'developer');
           showLoginGreeting();
           renderAll();
+          if (options.offerCredentialSave) storeSavedCredential(loginSecret);
         } catch (error) {
-          storageRemove('sessionStorage', 'angels_admin_secret');
           state.secret = '';
           $('#login').classList.remove('hidden');
           $('#admin').classList.remove('open');
@@ -1473,7 +1509,6 @@
 
       function logoutAdmin() {
         stopQrCamera();
-        storageRemove('sessionStorage', 'angels_admin_secret');
         state.secret = '';
         state.data = null;
         $('#secret').value = '';
@@ -1838,7 +1873,7 @@
         $('#serviceTable').innerHTML = `
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Servicio</th><th>Precio</th><th>Visible</th><th></th></tr></thead>
+              <thead><tr><th>Servicio</th><th>Precio</th><th>Vigencia</th><th>Visible</th><th></th></tr></thead>
               <tbody>
                 ${services.map(item => `
                   <tr>
@@ -1847,6 +1882,7 @@
                       <span class="muted">${escapeHtml(item.description || '')}</span>
                     </td>
                     <td>${formatMoney(item.price)}<br><span class="muted">${item.duration} min</span></td>
+                    <td>${serviceAvailabilityLabel(item)}</td>
                     <td>${item.visible ? 'Si' : 'No'}</td>
                     <td><button class="btn secondary mini" data-edit-service="${item.rowNumber}" type="button">Editar</button></td>
                   </tr>
@@ -1858,6 +1894,25 @@
         $$('[data-edit-service]').forEach(button => {
           button.addEventListener('click', () => editService(Number(button.dataset.editService)));
         });
+      }
+
+      function serviceAvailabilityLabel(item) {
+        const from = item.availableFrom || '';
+        const until = item.availableUntil || '';
+        if (!from && !until) return '<span class="muted">Permanente</span>';
+        if (from && until) return `<span class="muted">${escapeHtml(from)} a ${escapeHtml(until)}</span>`;
+        if (from) return `<span class="muted">Desde ${escapeHtml(from)}</span>`;
+        return `<span class="muted">Hasta ${escapeHtml(until)}</span>`;
+      }
+
+      function syncServiceAvailabilityFields() {
+        const permanent = $('#servicePermanent').checked;
+        ['serviceAvailableFrom', 'serviceAvailableUntil'].forEach(id => {
+          const input = $(`#${id}`);
+          input.disabled = permanent;
+          if (permanent) input.value = '';
+        });
+        $$('[data-service-date-field]').forEach(field => field.classList.toggle('is-disabled', permanent));
       }
 
       function renderPhotos() {
@@ -2052,6 +2107,10 @@
         $('#serviceOrder').value = item.order === 9999 ? '' : item.order;
         $('#serviceImage').value = item.image;
         $('#serviceVisible').checked = item.visible;
+        $('#servicePermanent').checked = !item.availableFrom && !item.availableUntil;
+        $('#serviceAvailableFrom').value = item.availableFrom || '';
+        $('#serviceAvailableUntil').value = item.availableUntil || '';
+        syncServiceAvailabilityFields();
       }
 
       function editPhoto(rowNumber) {
@@ -2125,6 +2184,8 @@
           duration: $('#serviceDuration').value,
           order: $('#serviceOrder').value,
           image: $('#serviceImage').value,
+          availableFrom: $('#servicePermanent').checked ? '' : $('#serviceAvailableFrom').value,
+          availableUntil: $('#servicePermanent').checked ? '' : $('#serviceAvailableUntil').value,
           visible: $('#serviceVisible').checked
         }, 'Servicio guardado.');
         if (ok) resetServiceForm();
@@ -2178,8 +2239,8 @@
         if (ok) {
           if (state.data.authRole !== 'developer') {
             state.secret = newPassword;
-            storageSet('sessionStorage', 'angels_admin_secret', state.secret);
           }
+          storeSavedCredential(newPassword);
           $('#passwordForm').reset();
         }
       }
@@ -2194,7 +2255,7 @@
         const ok = await mutate('changeDeveloperPin', { newDeveloperPin }, 'PIN developer actualizado.');
         if (ok) {
           state.secret = newDeveloperPin;
-          storageSet('sessionStorage', 'angels_admin_secret', state.secret);
+          storeSavedCredential(newDeveloperPin);
           $('#developerPinForm').reset();
         }
       }
@@ -2309,6 +2370,51 @@
         } finally {
           setBusy(false);
         }
+      }
+
+      function setupCredentialLogin() {
+        const supported = Boolean(window.PasswordCredential && navigator.credentials);
+        $('#credentialLoginBtn').hidden = !supported;
+        if (!supported) {
+          $('#credentialHint').textContent = 'Este navegador puede guardar la contrasena con su administrador de contrasenas si lo ofrece al iniciar sesion.';
+        }
+      }
+
+      async function loginWithSavedCredential() {
+        if (!window.PasswordCredential || !navigator.credentials) {
+          showToast('Este dispositivo no permite leer contrasenas guardadas desde la pagina.');
+          return;
+        }
+        setBusy(true);
+        try {
+          const credential = await navigator.credentials.get({
+            password: true,
+            mediation: 'optional'
+          });
+          if (!credential || !credential.password) {
+            showToast('No hay una contrasena guardada para este admin.');
+            return;
+          }
+          $('#secret').value = credential.password;
+          state.secret = credential.password;
+          await loadAdminData();
+        } catch (error) {
+          showToast('No se pudo usar la contrasena guardada.');
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      async function storeSavedCredential(secret) {
+        if (!secret || !window.PasswordCredential || !navigator.credentials) return;
+        try {
+          const credential = new PasswordCredential({
+            id: $('#adminUsername').value || 'angels-lashes-admin',
+            name: "Angel's Lashes Admin",
+            password: secret
+          });
+          await navigator.credentials.store(credential);
+        } catch (error) {}
       }
 
       function renderQrResult(result) {
@@ -2650,6 +2756,10 @@
         $('#serviceDuration').value = 60;
         $('#serviceOrder').value = 1;
         $('#serviceVisible').checked = true;
+        $('#servicePermanent').checked = true;
+        $('#serviceAvailableFrom').value = '';
+        $('#serviceAvailableUntil').value = '';
+        syncServiceAvailabilityFields();
       }
 
       function resetDiscountForm() {
@@ -2896,6 +3006,7 @@
           addHiddenField(form, 'args', JSON.stringify(args || []));
 
           function onMessage(event) {
+            if (!isTrustedBackendMessageOrigin(event.origin, endpoint)) return;
             const message = event.data || {};
             if (!message.angelsApi || message.requestId !== requestId) return;
             if (message.ok) finish(message.data);
@@ -2924,6 +3035,15 @@
         input.name = name;
         input.value = value;
         form.appendChild(input);
+      }
+
+      function isTrustedBackendMessageOrigin(origin, endpoint) {
+        if (!origin) return false;
+        try {
+          if (origin === new URL(endpoint).origin) return true;
+        } catch (error) {}
+        return /^https:\/\/script\.google\.com$/i.test(origin) ||
+          /^https:\/\/([a-z0-9-]+\.)?script\.googleusercontent\.com$/i.test(origin);
       }
 
       function removeNode(node) {
