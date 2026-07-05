@@ -3805,7 +3805,6 @@
           try {
             return await callBackendJsonp(functionName, args);
           } catch (jsonpError) {
-            console.warn('JSONP no disponible, probando bridge:', jsonpError.message || jsonpError);
             return callBackend(functionName, args);
           }
         }
@@ -3813,7 +3812,6 @@
         try {
           return await callBackend(functionName, args);
         } catch (bridgeError) {
-          console.warn('Bridge no disponible, probando JSONP:', bridgeError.message || bridgeError);
           return callBackendJsonp(functionName, args);
         }
       }
@@ -3827,7 +3825,7 @@
           try {
             const isPublicRead = functionName === 'getAppData' || functionName === 'getAvailableSlots';
             const result = isPublicRead
-              ? await callReadBackend(functionName, args, { preferJsonp: isLikelyInAppBrowser() })
+              ? await callReadBackend(functionName, args, { preferJsonp: true })
               : await callBackend(functionName, args);
             state.apiOffline = false;
             if (functionName === 'getAppData') writeCachedAppData(result);
