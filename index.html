@@ -762,6 +762,7 @@
       }
 
       .category-section::before,
+      .instagram-section::before,
       .policy-section::before {
         content: "";
         position: absolute;
@@ -778,6 +779,7 @@
       }
 
       .category-section > .shell,
+      .instagram-section > .shell,
       .policy-section > .shell {
         position: relative;
         z-index: 1;
@@ -1077,34 +1079,15 @@
       }
 
       .service-card {
-        position: relative;
         border: 1px solid var(--line);
         border-radius: var(--radius);
-        background:
-          linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,250,247,0.94)),
-          #fff;
+        background: #fff;
         min-height: 224px;
         padding: 18px;
         display: flex;
         flex-direction: column;
         gap: 14px;
-        overflow: hidden;
         box-shadow: 0 12px 30px rgba(67, 34, 51, 0.08);
-        transition: transform 240ms ease, box-shadow 240ms ease, border-color 240ms ease;
-      }
-
-      .service-card::before {
-        content: "";
-        position: absolute;
-        inset: 0 0 auto;
-        height: 3px;
-        background: linear-gradient(90deg, var(--plum), var(--rose), var(--sage));
-      }
-
-      .service-card:hover {
-        border-color: rgba(183, 110, 121, 0.32);
-        box-shadow: 0 18px 42px rgba(67, 34, 51, 0.13);
-        transform: translateY(-3px);
       }
 
       .service-card h3 {
@@ -1117,7 +1100,6 @@
         color: var(--muted);
         line-height: 1.6;
         margin: 0;
-        flex: 1;
       }
 
       .service-meta {
@@ -1134,22 +1116,9 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        align-self: flex-start;
-        border: 1px solid rgba(139, 154, 131, 0.26);
-        border-radius: 999px;
-        padding: 7px 10px;
         color: var(--sage);
-        background: rgba(139, 154, 131, 0.08);
         font-weight: 800;
         font-size: 13px;
-      }
-
-      .service-price {
-        border: 1px solid rgba(183, 110, 121, 0.2);
-        border-radius: 999px;
-        padding: 8px 11px;
-        color: var(--plum);
-        background: rgba(255, 244, 241, 0.74);
       }
 
       .loading {
@@ -1476,54 +1445,187 @@
 
       .contact-section {
         border-top: 1px solid var(--line);
-        padding: 64px 0 76px;
-        background:
-          linear-gradient(135deg, rgba(255, 250, 247, 0.96), rgba(255, 244, 241, 0.94)),
-          #fff;
+        padding: 54px 0 70px;
+        background: #fff;
       }
 
-      .contact-card {
+      .instagram-section {
+        border-top: 1px solid var(--line);
+        background:
+          radial-gradient(circle at 12% 18%, rgba(183, 110, 121, 0.15), transparent 26%),
+          linear-gradient(135deg, #fffaf7, #fff4f1);
+      }
+
+      .instagram-showcase {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.88fr) minmax(0, 1.12fr);
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .ig-phone {
         position: relative;
-        display: grid;
-        grid-template-columns: minmax(240px, 0.86fr) minmax(280px, 1.14fr);
-        align-items: center;
-        gap: clamp(18px, 4vw, 42px);
-        border: 1px solid rgba(183, 110, 121, 0.22);
-        border-radius: var(--radius);
+        min-height: 500px;
+        border: 1px solid rgba(67, 34, 51, 0.16);
+        border-radius: 32px;
         overflow: hidden;
-        padding: clamp(22px, 4vw, 38px);
-        background:
-          linear-gradient(135deg, rgba(255,255,255,0.94), rgba(255,244,241,0.86)),
-          #fff;
-        box-shadow: 0 22px 58px rgba(67, 34, 51, 0.12);
+        background: var(--plum);
+        box-shadow: 0 26px 70px rgba(67, 34, 51, 0.18);
       }
 
-      .contact-card::before {
-        content: "";
+      .ig-phone img {
+        width: 100%;
+        height: 100%;
+        min-height: 500px;
+        object-fit: cover;
+        opacity: 0.95;
+        transform: scale(1.02);
+        transition: opacity 300ms ease, transform 650ms ease;
+      }
+
+      .ig-phone.switching img {
+        opacity: 0.58;
+        transform: scale(1.08);
+      }
+
+      .ig-topbar {
         position: absolute;
-        inset: 0 0 auto;
-        height: 4px;
-        background: linear-gradient(90deg, var(--plum), var(--rose), var(--champagne));
+        inset: 14px 14px auto;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 20px;
+        padding: 10px 12px;
+        color: #fff;
+        background: rgba(43, 34, 38, 0.45);
+        backdrop-filter: blur(14px);
       }
 
-      .contact-links {
+      .ig-account {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 900;
+      }
+
+      .ig-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .ig-live-chip {
+        position: absolute;
+        left: 16px;
+        bottom: 16px;
+        z-index: 2;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 999px;
+        padding: 8px 11px;
+        color: #fff;
+        background: rgba(67, 34, 51, 0.62);
+        font-size: 12px;
+        font-weight: 900;
+        backdrop-filter: blur(12px);
+      }
+
+      .ig-copy-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        align-content: center;
+        gap: 16px;
+        padding: clamp(20px, 4vw, 36px);
+        background: rgba(255, 255, 255, 0.74);
+        box-shadow: 0 18px 44px rgba(67, 34, 51, 0.1);
+      }
+
+      .ig-mini-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
       }
 
-      .contact-links .btn {
-        justify-content: flex-start;
-        min-height: 52px;
-        min-width: 0;
-        text-align: left;
-        white-space: normal;
+      .ig-mini-row button,
+      .ig-post-grid button {
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: #fff;
+        box-shadow: none;
       }
 
-      .contact-links .btn span {
-        min-width: 0;
-        line-height: 1.2;
-        overflow-wrap: anywhere;
+      .ig-mini-row img,
+      .ig-post-grid img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+      }
+
+      .ig-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .ig-dialog {
+        width: min(1040px, 100%);
+      }
+
+      .ig-modal-layout {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.08fr);
+        gap: 18px;
+      }
+
+      .ig-modal-main {
+        position: relative;
+        min-height: min(620px, 68vh);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: var(--plum);
+      }
+
+      .ig-modal-main img {
+        width: 100%;
+        height: 100%;
+        min-height: inherit;
+        object-fit: cover;
+      }
+
+      .ig-modal-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 2;
+        border-radius: 999px;
+        padding: 8px 10px;
+        color: #fff;
+        background: rgba(67, 34, 51, 0.68);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .ig-modal-side {
+        display: grid;
+        align-content: start;
+        gap: 14px;
+      }
+
+      .ig-post-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .ig-post-grid button.active {
+        outline: 3px solid rgba(183, 110, 121, 0.34);
       }
 
       .before-after-grid {
@@ -1895,6 +1997,23 @@
         background: #fff;
       }
 
+      .contact-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 20px;
+        background: var(--cream);
+      }
+
+      .contact-links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
       .reveal {
         opacity: 0;
         transform: translateY(34px) scale(0.985);
@@ -1921,6 +2040,7 @@
 
         .hero,
         .category-section,
+        .instagram-section,
         .policy-section,
         .contact-section {
           scroll-snap-align: start;
@@ -1949,11 +2069,9 @@
         }
 
         .hero-layout,
-        .category-layout {
-          grid-template-columns: 1fr;
-        }
-
-        .contact-card {
+        .category-layout,
+        .instagram-showcase,
+        .ig-modal-layout {
           grid-template-columns: 1fr;
         }
 
@@ -2014,6 +2132,11 @@
 
         .photo-grid {
           grid-template-columns: 1fr;
+        }
+
+        .ig-phone,
+        .ig-phone img {
+          min-height: 380px;
         }
 
         .photo-frame:first-child {
@@ -2179,6 +2302,32 @@
         </div>
       </section>
 
+      <section id="instagramPreviewSection" class="section instagram-section" hidden>
+        <div class="shell instagram-showcase">
+          <div class="ig-phone reveal" id="instagramPhone">
+            <img id="instagramMainImage" src="assets/angels-lashes-logo.jpeg?v=20260623-2" alt="Instagram preview">
+            <div class="ig-topbar">
+              <span class="ig-account">
+                <span class="ig-avatar"><img src="assets/angels-lashes-logo-square.png?v=20260623-2" alt=""></span>
+                <span id="instagramUser">@angelslashes</span>
+              </span>
+              <i data-lucide="heart" aria-hidden="true"></i>
+            </div>
+            <span class="ig-live-chip" data-i18n="instagramChip">Vista Instagram</span>
+          </div>
+          <div class="ig-copy-card reveal">
+            <div class="eyebrow"><i data-lucide="camera" aria-hidden="true"></i><span data-i18n="instagramEyebrow">Inspiracion del estudio</span></div>
+            <h2 class="section-title" data-i18n="instagramTitle">Ultimos trabajos</h2>
+            <p class="section-copy" data-i18n="instagramCopy">Un vistazo visual a estilos, resultados y detalles de Angel's Lashes, integrado sin depender de aplicaciones externas.</p>
+            <div id="instagramMiniRow" class="ig-mini-row"></div>
+            <div class="ig-actions">
+              <button id="openInstagramPreview" class="btn" type="button"><i data-lucide="maximize-2" aria-hidden="true"></i><span data-i18n="instagramOpenPreview">Ver preview</span></button>
+              <a id="openInstagramProfile" class="btn secondary" href="#" target="_blank" rel="noopener"><i data-lucide="camera" aria-hidden="true"></i><span data-i18n="instagramVisit">Abrir Instagram</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="section policy-section">
         <div class="shell">
           <div class="section-head reveal">
@@ -2199,7 +2348,6 @@
           <div class="contact-links">
             <a id="phoneLink" class="btn secondary" href="#"><i data-lucide="phone" aria-hidden="true"></i><span id="contactPhoneText"></span></a>
             <a id="emailLink" class="btn secondary" href="#"><i data-lucide="mail" aria-hidden="true"></i><span id="contactEmailText"></span></a>
-            <a id="instagramLink" class="btn secondary" href="#" target="_blank" rel="noopener"><i data-lucide="camera" aria-hidden="true"></i><span id="contactInstagramText">Instagram</span></a>
           </div>
         </div>
       </section>
@@ -2296,6 +2444,33 @@
       </div>
     </section>
 
+    <section id="instagramPreviewModal" class="modal" aria-hidden="true">
+      <div class="dialog ig-dialog" role="dialog" aria-modal="true" aria-labelledby="instagramPreviewTitle">
+        <div class="dialog-head">
+          <h2 id="instagramPreviewTitle" class="dialog-title" data-i18n="instagramModalTitle">Instagram Preview</h2>
+          <button class="btn secondary icon" type="button" id="closeInstagramPreview" aria-label="Cerrar" data-i18n-aria="close">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="dialog-body ig-modal-layout">
+          <div class="ig-modal-main">
+            <img id="instagramModalImage" src="assets/angels-lashes-logo.jpeg?v=20260623-2" alt="Instagram preview">
+            <span id="instagramModalType" class="ig-modal-badge">POST</span>
+          </div>
+          <div class="ig-modal-side">
+            <div class="eyebrow"><i data-lucide="camera" aria-hidden="true"></i><span id="instagramModalUser">@angelslashes</span></div>
+            <h3 id="instagramModalCaption" class="section-title">Angel's Lashes</h3>
+            <p class="section-copy" data-i18n="instagramModalCopy">Feed conectado directamente al Instagram del estudio.</p>
+            <div id="instagramPostGrid" class="ig-post-grid"></div>
+            <div class="ig-actions">
+              <button id="nextInstagramPreview" class="btn" type="button"><i data-lucide="arrow-right" aria-hidden="true"></i><span data-i18n="instagramNext">Siguiente foto</span></button>
+              <a id="modalInstagramProfile" class="btn secondary" href="#" target="_blank" rel="noopener"><i data-lucide="camera" aria-hidden="true"></i><span data-i18n="instagramVisit">Abrir Instagram</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="receiptModal" class="modal" aria-hidden="true">
       <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
         <div class="dialog-head">
@@ -2348,8 +2523,8 @@
       }
 
       const INITIAL_APP_DATA = readJsonElement('initialAppData', null);
-      const APP_VERSION = '20260704-1';
-      const APP_DATA_CACHE_KEY = 'angels_public_data_cache_v20260704_1';
+      const APP_VERSION = '20260623-2';
+      const APP_DATA_CACHE_KEY = 'angels_public_data_cache_v20260623_1';
       const APP_DATA_CACHE_TTL = 10 * 60 * 1000;
       const APP_CONFIG = Object.assign({
         apiBaseUrl: 'https://script.google.com/macros/s/AKfycbwgK38IEFSorraDiy3p2o_xa32zMqC7NoWeHkraVunped0N4enjIKpfP1AVra461R6CQQ/exec',
@@ -2364,7 +2539,9 @@
         language: storageGet('localStorage', 'lumina_language', 'es'),
         calendarDate: new Date(),
         backgroundRefreshRunning: false,
-        apiOffline: false
+        apiOffline: false,
+        instagramIndex: 0,
+        instagramTimer: null
       };
 
       const I18N = {
@@ -2418,6 +2595,15 @@
           beforeAfterHint: 'Desliza para comparar',
           beforeAfterAria: 'Comparar antes y despues',
           viewImage: 'Ver imagen',
+          instagramChip: 'Vista Instagram',
+          instagramEyebrow: 'Inspiracion del estudio',
+          instagramTitle: 'Ultimos trabajos',
+          instagramCopy: "Posts reales del Instagram del estudio, mostrados dentro de la pagina sin widgets externos.",
+          instagramOpenPreview: 'Ver preview',
+          instagramVisit: 'Abrir Instagram',
+          instagramModalTitle: 'Instagram Preview',
+          instagramModalCopy: 'Feed conectado directamente al Instagram del estudio.',
+          instagramNext: 'Siguiente foto',
           qrArrivalTitle: 'QR de llegada',
           qrArrivalCopy: 'Presenta este QR al llegar para que el estudio confirme tu cita y agregue servicios extras si aplica.',
           browserNoticeTitle: 'Reserva segura',
@@ -2434,7 +2620,6 @@
           bookCategory: 'Reservar {category}',
           customService: 'Servicio personalizado.',
           noServicesInCategory: 'No hay servicios disponibles en esta categoría.',
-          serviceUnavailable: 'El servicio seleccionado no está disponible para esa fecha.',
           chooseServiceDate: 'Selecciona servicio y fecha.',
           searchingSlots: 'Buscando horarios...',
           noSlots: 'No hay horarios disponibles para esa fecha.',
@@ -2518,6 +2703,15 @@
           beforeAfterHint: 'Slide to compare',
           beforeAfterAria: 'Compare before and after',
           viewImage: 'View image',
+          instagramChip: 'Instagram view',
+          instagramEyebrow: 'Studio inspiration',
+          instagramTitle: 'Latest work',
+          instagramCopy: "Real posts from the studio Instagram, displayed inside the page without external widgets.",
+          instagramOpenPreview: 'View preview',
+          instagramVisit: 'Open Instagram',
+          instagramModalTitle: 'Instagram Preview',
+          instagramModalCopy: 'Feed connected directly to the studio Instagram.',
+          instagramNext: 'Next photo',
           qrArrivalTitle: 'Arrival QR',
           qrArrivalCopy: 'Show this QR when you arrive so the studio can confirm your appointment and add extra services if needed.',
           browserNoticeTitle: 'Secure booking',
@@ -2536,7 +2730,6 @@
           bookCategory: 'Book {category}',
           customService: 'Personalized service.',
           noServicesInCategory: 'There are no services available in this category.',
-          serviceUnavailable: 'The selected service is not available for that date.',
           chooseServiceDate: 'Select a service and date.',
           searchingSlots: 'Searching available times...',
           noSlots: 'No available times for that date.',
@@ -2663,6 +2856,8 @@
         data.hours = data.hours && typeof data.hours === 'object' ? data.hours : {};
         data.blockedDates = Array.isArray(data.blockedDates) ? data.blockedDates : [];
         data.beforeAfter = Array.isArray(data.beforeAfter) ? data.beforeAfter : [];
+        data.instagramFeed = data.instagramFeed && typeof data.instagramFeed === 'object' ? data.instagramFeed : {};
+        data.instagramFeed.items = Array.isArray(data.instagramFeed.items) ? data.instagramFeed.items : [];
         data.policyText = data.policyText && typeof data.policyText === 'object' ? data.policyText : {};
         data.categories = Array.isArray(data.categories) ? data.categories : [];
         data.categoryTranslations = data.categoryTranslations && typeof data.categoryTranslations === 'object' ? data.categoryTranslations : {};
@@ -2674,10 +2869,6 @@
       }
 
       async function loadAppData() {
-        if (isLocalDevelopmentHost()) {
-          return loadLocalAppData();
-        }
-
         if (APP_CONFIG.apiBaseUrl) {
           const cachedData = readCachedAppData();
           if (cachedData && !isLikelyInAppBrowser()) {
@@ -2724,10 +2915,6 @@
         }
 
         return loadLocalAppData();
-      }
-
-      function isLocalDevelopmentHost() {
-        return /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname || '');
       }
 
       async function refreshAppDataInBackground() {
@@ -2790,12 +2977,11 @@
         });
         $('#quickCategory').addEventListener('change', () => fillServiceSelect($('#quickService'), $('#quickCategory').value));
         $('#modalCategory').addEventListener('change', () => {
-          fillServiceSelect($('#modalService'), $('#modalCategory').value, $('#date').value || state.data.today);
+          fillServiceSelect($('#modalService'), $('#modalCategory').value);
           loadSlots();
         });
         $('#modalService').addEventListener('change', loadSlots);
         $('#date').addEventListener('change', () => {
-          fillServiceSelect($('#modalService'), $('#modalCategory').value, $('#date').value || state.data.today, $('#modalService').value);
           renderCalendar();
           loadSlots();
         });
@@ -2806,8 +2992,14 @@
         $('#clearSignature').addEventListener('click', clearSignature);
         $('#copyPageLink').addEventListener('click', copyCurrentPageLink);
         $('#closeImageLightbox').addEventListener('click', closeImageLightbox);
+        $('#openInstagramPreview').addEventListener('click', openInstagramPreview);
+        $('#closeInstagramPreview').addEventListener('click', closeInstagramPreview);
+        $('#nextInstagramPreview').addEventListener('click', nextInstagramPreview);
         $('#imageLightbox').addEventListener('click', event => {
           if (event.target === $('#imageLightbox')) closeImageLightbox();
+        });
+        $('#instagramPreviewModal').addEventListener('click', event => {
+          if (event.target === $('#instagramPreviewModal')) closeInstagramPreview();
         });
         document.addEventListener('click', handleInternalNav);
         document.addEventListener('input', handleComparisonInput);
@@ -2815,6 +3007,7 @@
           if (event.key === 'Escape') {
             closeCustomSelects();
             closeImageLightbox();
+            closeInstagramPreview();
             closeReceipt();
             closeBooking();
           }
@@ -2879,6 +3072,7 @@
         renderDiscounts();
         renderSections();
         renderBeforeAfter();
+        renderInstagramPreview();
         renderPolicy();
         renderContact();
         renderBrowserNotice();
@@ -2893,7 +3087,8 @@
           ['#brandLogo', logoUrl],
           ['#heroLogo', logoUrl],
           ['#heroLogoBackdrop', logoFullUrl],
-          ['.intro-logo img', logoUrl]
+          ['.intro-logo img', logoUrl],
+          ['.ig-avatar img', logoUrl]
         ];
         imageTargets.forEach(([selector, url]) => {
           const element = document.querySelector(selector);
@@ -2906,6 +3101,7 @@
         $('#quickBook').hidden = true;
         $('#discountSection').hidden = true;
         $('#beforeAfterSection').hidden = true;
+        $('#instagramPreviewSection').hidden = true;
         $('#contactSection').hidden = true;
         $('#browserNotice').hidden = true;
         const trustBand = document.querySelector('.trust-band');
@@ -2966,20 +3162,16 @@
         const contact = state.data.contact || {};
         const phoneHref = normalizePhoneHref(contact.phone);
         const emailHref = normalizeEmailHref(contact.email);
-        const instagramHref = contact.showInstagram ? normalizeInstagramUrl(contact.instagramUrl) : '';
-        const showSection = Boolean(contact.showContact && (phoneHref || emailHref || instagramHref));
+        const showSection = Boolean(contact.showContact && (phoneHref || emailHref));
         $('#contactSection').hidden = !showSection;
         if (!showSection) return;
 
         $('#contactPhoneText').textContent = contact.phone || '';
         $('#contactEmailText').textContent = contact.email || '';
-        $('#contactInstagramText').textContent = instagramUsernameFromUrl(instagramHref) || 'Instagram';
         $('#phoneLink').href = phoneHref || '#';
         $('#emailLink').href = emailHref || '#';
-        $('#instagramLink').href = instagramHref || '#';
         $('#phoneLink').hidden = !phoneHref || !contact.showContact;
         $('#emailLink').hidden = !emailHref || !contact.showContact;
-        $('#instagramLink').hidden = !instagramHref || !contact.showContact;
       }
 
       function renderPolicy() {
@@ -3028,6 +3220,129 @@
 
       function setupComparisonSliders() {
         document.querySelectorAll('[data-comparison-range]').forEach(updateComparisonSlider);
+      }
+
+      function instagramMediaPool() {
+        if (!state.data) return [];
+        const feed = state.data.instagramFeed || {};
+        return (feed.items || []).map(item => {
+          const safeUrl = normalizeSafeImageUrl(item.imageUrl || item.mediaUrl || item.thumbnailUrl);
+          if (!safeUrl) return null;
+          return {
+            url: safeUrl,
+            caption: item.caption || state.data.appName || "Angel's Lashes",
+            type: item.mediaType || 'POST',
+            permalink: normalizeInstagramUrl(item.permalink) || item.permalink || '',
+            timestamp: item.timestamp || ''
+          };
+        }).filter(Boolean).slice(0, 12);
+      }
+
+      function renderInstagramPreview() {
+        const section = $('#instagramPreviewSection');
+        const media = instagramMediaPool();
+        section.hidden = !media.length;
+        if (!media.length) return;
+
+        state.instagramIndex = Math.min(state.instagramIndex, Math.max(media.length - 1, 0));
+        const feed = state.data.instagramFeed || {};
+        const contact = state.data.contact || {};
+        const instagramUrl = normalizeInstagramUrl(feed.profileUrl || contact.instagramUrl);
+        const username = feed.username || instagramUsernameFromUrl(instagramUrl) || '@angelslashes';
+        const current = media[state.instagramIndex % media.length];
+
+        $('#instagramUser').textContent = username;
+        $('#instagramMainImage').alt = current.caption;
+        setInstagramImage('#instagramMainImage', current.url);
+        $('#instagramMiniRow').innerHTML = media.slice(0, 4).map((item, index) => `
+          <button type="button" onclick="selectInstagramPreview(${index})" aria-label="${escapeHtml(item.caption)}">
+            <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+          </button>
+        `).join('');
+
+        const profileLinks = ['#openInstagramProfile', '#modalInstagramProfile'];
+        profileLinks.forEach(selector => {
+          const link = $(selector);
+          if (!link) return;
+          link.href = instagramUrl || '#';
+          link.hidden = !instagramUrl;
+        });
+
+        startInstagramPreviewSlideshow();
+        setupReveal();
+      }
+
+      function setInstagramImage(selector, url) {
+        const image = $(selector);
+        if (!image || !url) return;
+        const frame = image.closest('.ig-phone');
+        if (frame) frame.classList.add('switching');
+        window.setTimeout(() => {
+          image.src = url;
+          if (frame) frame.classList.remove('switching');
+        }, frame ? 120 : 0);
+      }
+
+      function startInstagramPreviewSlideshow() {
+        if (state.instagramTimer) window.clearInterval(state.instagramTimer);
+        const media = instagramMediaPool();
+        if (media.length < 2) return;
+        state.instagramTimer = window.setInterval(() => {
+          state.instagramIndex = (state.instagramIndex + 1) % media.length;
+          renderInstagramPreview();
+          if ($('#instagramPreviewModal').classList.contains('open')) renderInstagramModal();
+        }, 5200);
+      }
+
+      window.selectInstagramPreview = index => {
+        const media = instagramMediaPool();
+        if (!media.length) return;
+        state.instagramIndex = Math.max(0, Math.min(index, media.length - 1));
+        renderInstagramPreview();
+        if ($('#instagramPreviewModal').classList.contains('open')) renderInstagramModal();
+      };
+
+      function openInstagramPreview() {
+        renderInstagramModal();
+        $('#instagramPreviewModal').classList.add('open');
+        $('#instagramPreviewModal').setAttribute('aria-hidden', 'false');
+        refreshIcons();
+      }
+
+      function closeInstagramPreview() {
+        const modal = $('#instagramPreviewModal');
+        if (!modal || !modal.classList.contains('open')) return;
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      function nextInstagramPreview() {
+        const media = instagramMediaPool();
+        if (!media.length) return;
+        state.instagramIndex = (state.instagramIndex + 1) % media.length;
+        renderInstagramPreview();
+        renderInstagramModal();
+      }
+
+      function renderInstagramModal() {
+        const media = instagramMediaPool();
+        if (!media.length) return;
+        const current = media[state.instagramIndex % media.length];
+        const feed = state.data.instagramFeed || {};
+        const contact = state.data.contact || {};
+        const instagramUrl = normalizeInstagramUrl(feed.profileUrl || contact.instagramUrl);
+        const username = feed.username || instagramUsernameFromUrl(instagramUrl) || '@angelslashes';
+        $('#instagramModalImage').src = current.url;
+        $('#instagramModalImage').alt = current.caption;
+        $('#instagramModalType').textContent = current.type;
+        $('#instagramModalUser').textContent = username;
+        $('#instagramModalCaption').textContent = current.caption;
+        $('#instagramPostGrid').innerHTML = media.slice(0, 9).map((item, index) => `
+          <button class="${index === state.instagramIndex % media.length ? 'active' : ''}" type="button" onclick="selectInstagramPreview(${index})" aria-label="${escapeHtml(item.caption)}">
+            <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+          </button>
+        `).join('');
+        refreshIcons();
       }
 
       function instagramUsernameFromUrl(url) {
@@ -3086,6 +3401,7 @@
           `<a href="#${slug(category)}">${escapeHtml(categoryLabel(category))}</a>`
         ));
         links.unshift(`<a href="#inicio">${escapeHtml(t('home'))}</a>`);
+        if (instagramMediaPool().length) links.push(`<a href="#instagramPreviewSection">${escapeHtml(t('instagramTitle'))}</a>`);
         $('#nav').innerHTML = links.join('');
       }
 
@@ -3167,7 +3483,7 @@
             <p>${escapeHtml(serviceDescription(service) || t('customService'))}</p>
             <div class="duration"><i data-lucide="clock-3" aria-hidden="true"></i>${service.duration} min</div>
             <div class="service-meta">
-              <span class="service-price">${formatMoney(service.price)}</span>
+              <span>${formatMoney(service.price)}</span>
               <button class="btn icon" type="button" aria-label="${escapeHtml(t('book'))} ${escapeHtml(serviceName(service))}" title="${escapeHtml(t('book'))}" onclick="openBookingById('${escapeAttrJs(service.id)}')">
                 <i data-lucide="calendar-plus" aria-hidden="true"></i>
               </button>
@@ -3237,21 +3553,11 @@
         syncCustomSelect(select);
       }
 
-      function fillServiceSelect(select, category, dateIso = '', preferredValue = '') {
-        const services = state.data.services
-          .filter(service => service.category === category)
-          .filter(service => !dateIso || isServiceAvailableForDate(service, dateIso));
-        if (!services.length) {
-          select.innerHTML = `<option value="">${escapeHtml(t('noServicesInCategory'))}</option>`;
-          syncCustomSelect(select);
-          return;
-        }
+      function fillServiceSelect(select, category) {
+        const services = state.data.services.filter(service => service.category === category);
         select.innerHTML = services.map(service => (
           `<option value="${escapeHtml(service.name)}">${escapeHtml(serviceOptionLabel(service))}</option>`
         )).join('');
-        if (preferredValue && services.some(service => service.name === preferredValue)) {
-          select.value = preferredValue;
-        }
         syncCustomSelect(select);
       }
 
@@ -3391,9 +3697,10 @@
 
         $('#modalCategory').value = service.category;
         syncCustomSelect($('#modalCategory'));
-        $('#date').value = $('#date').value || state.data.today;
-        fillServiceSelect($('#modalService'), service.category, $('#date').value, service.name);
+        fillServiceSelect($('#modalService'), service.category);
+        $('#modalService').value = service.name;
         syncCustomSelect($('#modalService'));
+        $('#date').value = $('#date').value || state.data.today;
         state.calendarDate = makeLocalDate($('#date').value);
         state.selectedTime = '';
         renderCalendar();
@@ -3819,10 +4126,6 @@
       }
 
       async function gas(functionName, ...args) {
-        if (isLocalDevelopmentHost()) {
-          return runLocalBackend(functionName, args);
-        }
-
         if (APP_CONFIG.apiBaseUrl) {
           try {
             const isPublicRead = functionName === 'getAppData' || functionName === 'getAvailableSlots';
@@ -3845,10 +4148,6 @@
           }
         }
 
-        return runLocalBackend(functionName, args);
-      }
-
-      async function runLocalBackend(functionName, args) {
         if (functionName === 'getAppData') return loadAppData();
         if (functionName === 'getAvailableSlots') return getAvailableSlotsStatic(args[0], args[1], args[2]);
         if (functionName === 'createReservation') return createReservationStatic(args[0]);
@@ -3926,7 +4225,6 @@
           addHiddenField(form, 'args', JSON.stringify(args || []));
 
           function onMessage(event) {
-            if (!isTrustedBackendMessageOrigin(event.origin, endpoint)) return;
             const message = event.data || {};
             if (!message.angelsApi || message.requestId !== requestId) return;
             if (message.ok) finish(message.data);
@@ -3957,15 +4255,6 @@
         form.appendChild(input);
       }
 
-      function isTrustedBackendMessageOrigin(origin, endpoint) {
-        if (!origin) return false;
-        try {
-          if (origin === new URL(endpoint).origin) return true;
-        } catch (error) {}
-        return /^https:\/\/script\.google\.com$/i.test(origin) ||
-          /^https:\/\/([a-z0-9-]+\.)?script\.googleusercontent\.com$/i.test(origin);
-      }
-
       function removeNode(node) {
         if (node && node.parentNode) node.parentNode.removeChild(node);
       }
@@ -3978,7 +4267,7 @@
       function getAvailableSlotsStatic(category, serviceName, dateIso) {
         if (!state.data || !dateIso) return [];
         const service = findService(category, serviceName);
-        if (!service || !isServiceAvailableForDate(service, dateIso) || isDateBlocked(dateIso)) return [];
+        if (!service || isDateBlocked(dateIso)) return [];
 
         const hours = state.data.hours || {};
         const openDays = hours.openDays || [1, 2, 3, 4, 5, 6];
@@ -4003,7 +4292,6 @@
         payload = payload || {};
         const service = findService(payload.category, payload.service);
         if (!service) throw new Error(t('noServicesInCategory'));
-        if (!isServiceAvailableForDate(service, payload.date || state.data.today)) throw new Error(t('serviceUnavailable'));
         if (!payload.agreementAccepted) throw new Error(t('acceptAgreement'));
 
         const price = Number(service.price || 0);
@@ -4025,13 +4313,6 @@
 
       function findService(category, serviceName) {
         return (state.data.services || []).find(service => service.category === category && service.name === serviceName);
-      }
-
-      function isServiceAvailableForDate(service, dateIso) {
-        const date = dateIso || (state.data && state.data.today) || '';
-        if (!service || !date) return true;
-        return (!service.availableFrom || date >= service.availableFrom) &&
-          (!service.availableUntil || date <= service.availableUntil);
       }
 
       function applyStaticCoupon(code, category, price) {

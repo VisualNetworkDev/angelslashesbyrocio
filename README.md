@@ -1,70 +1,2508 @@
-# Angel's Lashes
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://unpkg.com">
+    <script src="assets/site-data.js"></script>
+    <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+      :root {
+        --ink: #2b2226;
+        --muted: #7c6b70;
+        --rose: #b76e79;
+        --rose-dark: #78364b;
+        --plum: #432233;
+        --champagne: #f4d8bf;
+        --blush: #fff4f1;
+        --cream: #fffaf7;
+        --sage: #8b9a83;
+        --line: rgba(67, 34, 51, 0.14);
+        --shadow: 0 18px 50px rgba(67, 34, 51, 0.14);
+        --radius: 8px;
+      }
 
-Sitio publico y panel de administracion para Angel's Lashes By Rocio Rivero.
+      * {
+        box-sizing: border-box;
+      }
 
-El proyecto esta pensado para publicarse con GitHub Pages y conectarse a Google Apps Script para reservas, servicios, fotos, cupones, horarios y administracion.
+      html {
+        scroll-behavior: smooth;
+      }
 
-## Estructura
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: var(--cream);
+      }
 
-- `index.html`: pagina publica para clientas, servicios, reservas, antes/despues, politica y contacto.
-- `admin.html`: panel web de administracion.
-- `code.gs`: backend de Google Apps Script.
-- `appsscript.json`: configuracion del proyecto de Apps Script.
-- `assets/`: logos, favicon, iconos y configuracion publica/admin.
-- `data/site-data.json`: datos locales de respaldo cuando la API no responde.
-- `PC Admin Aplication/`: aplicacion de escritorio para administrar el negocio en Windows.
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
 
-## Instagram
+      button {
+        cursor: pointer;
+      }
 
-Instagram ya no usa Meta Graph API ni feed conectado.
+      img {
+        display: block;
+        max-width: 100%;
+      }
 
-El admin solo configura:
+      .shell {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
 
-- si se muestra Instagram en `Contactame`;
-- el link o usuario de Instagram.
+      .topbar {
+        position: sticky;
+        z-index: 30;
+        top: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        background: rgba(255, 250, 247, 0.86);
+        backdrop-filter: blur(18px);
+      }
 
-Ejemplos validos:
+      .topbar-inner {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
 
-- `@rocy_lashes.jax`
-- `https://www.instagram.com/rocy_lashes.jax`
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--plum);
+        text-decoration: none;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
 
-El enlace aparece como un boton dentro de la seccion de contacto de la pagina publica.
+      .brand-text {
+        display: grid;
+        gap: 1px;
+      }
 
-## Seguridad y anti-spam
+      .brand-subtitle {
+        color: var(--rose-dark);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 12px;
+        font-style: italic;
+        font-weight: 700;
+        line-height: 1;
+      }
 
-- `code.gs` ya no debe llevar password admin ni PIN developer escritos en el archivo.
-- Para una instalacion nueva, agrega temporalmente `ADMIN_PASSWORD` y `DEVELOPER_PIN` en Script Properties de Apps Script y ejecuta `initializePrivateSettings()`. La funcion los convierte a `ADMIN_PASSWORD_HASH` y `DEVELOPER_PIN_HASH`, y borra los valores en texto plano.
-- El login bloquea intentos fallidos despues de varios errores.
-- Las reservas tienen limites anti-spam por contacto, por fecha y por volumen global reciente.
-- La pagina solo acepta respuestas de Apps Script desde origenes confiables.
-- El admin ya no guarda la clave de acceso en `sessionStorage`.
-- El login puede usar la contrasena guardada por el navegador o dispositivo. En telefonos y computadoras compatibles, el desbloqueo lo maneja Face ID, huella, PIN o la clave del equipo.
+      .brand-heart {
+        color: var(--rose);
+        font-size: 10px;
+        margin-left: 4px;
+      }
 
-## Servicios
+      .brand-mark {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--rose), var(--champagne));
+        color: #fff;
+        box-shadow: 0 10px 28px rgba(183, 110, 121, 0.32);
+      }
 
-La hoja `Servicios` ahora incluye:
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
 
-- `DisponibleDesde`
-- `DisponibleHasta`
+      .nav::-webkit-scrollbar {
+        display: none;
+      }
 
-Estos campos son opcionales. Sirven para activar o retirar servicios por fecha sin crear grupos nuevos. Si quedan vacios, el servicio funciona siempre que este marcado como visible.
+      .nav a {
+        color: var(--muted);
+        text-decoration: none;
+        border-radius: 999px;
+        padding: 10px 13px;
+        font-size: 14px;
+        white-space: nowrap;
+      }
 
-En el admin tambien existe la opcion `Servicio permanente`. Cuando esta marcada, las fechas se limpian y el servicio queda disponible sin vencimiento.
+      .nav a:hover {
+        background: rgba(183, 110, 121, 0.12);
+        color: var(--rose-dark);
+      }
 
-## Publicacion
+      .language-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.74);
+      }
 
-1. Subir los archivos del sitio a GitHub.
-2. Activar GitHub Pages para servir `index.html`.
-3. Subir solo `code.gs` y `appsscript.json` al proyecto de Google Apps Script.
-4. Publicar Apps Script como Web App.
-5. Actualizar:
-   - `assets/site-data.js` con el URL `/exec` de Apps Script.
-   - `assets/admin-config.js` con el URL `/exec` y el URL publico de GitHub Pages.
-   - `PC Admin Aplication/web/assets/admin-config.js` si se usa la app de PC.
+      .language-switch button {
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+        padding: 8px 10px;
+      }
 
-## Antes de hacerlo publico
+      .language-switch button.active {
+        background: var(--plum);
+        color: #fff;
+      }
 
-- Configurar `ADMIN_PASSWORD` y `DEVELOPER_PIN` en Script Properties, ejecutar `initializePrivateSettings()` y confirmar que queden como hash.
-- Confirmar que los archivos de fotos de Google Drive sean accesibles para cualquiera con el enlace.
-- Probar una reserva completa desde Chrome/Safari y desde el navegador interno de Instagram.
-- Revisar que la seccion `Contactame` tenga telefono, email o Instagram configurado.
+      .hero {
+        min-height: calc(100vh - 72px);
+        display: grid;
+        align-items: center;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding: 70px 0 92px;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        background:
+          linear-gradient(115deg, rgba(67, 34, 51, 0.96) 0%, rgba(120, 54, 75, 0.78) 38%, rgba(183, 110, 121, 0.56) 68%, rgba(255, 250, 247, 0.92) 100%),
+          repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0 1px, transparent 1px 18px);
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0 0;
+        height: 28%;
+        z-index: -1;
+        background: linear-gradient(180deg, transparent, var(--cream));
+      }
+
+      .hero-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(320px, 430px);
+        gap: 40px;
+        align-items: center;
+      }
+
+      .hero-copy {
+        color: #fff;
+        padding: 24px 0;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #ffe8dc;
+      }
+
+      .hero h1 {
+        margin: 0;
+        max-width: 760px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(44px, 8vw, 94px);
+        line-height: 0.9;
+        letter-spacing: 0;
+      }
+
+      .hero p {
+        max-width: 590px;
+        margin: 22px 0 0;
+        color: rgba(255, 255, 255, 0.84);
+        font-size: 18px;
+        line-height: 1.65;
+      }
+
+      .hero-subtitle {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 14px;
+        color: #ffe8dc;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(22px, 3vw, 34px);
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      .quick-book {
+        border: 1px solid rgba(255, 255, 255, 0.36);
+        border-radius: var(--radius);
+        background: rgba(255, 250, 247, 0.9);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(20px);
+        padding: 18px;
+      }
+
+      .quick-book h2 {
+        margin: 0 0 14px;
+        color: var(--plum);
+        font-size: 18px;
+      }
+
+      .field {
+        display: grid;
+        gap: 7px;
+        margin-bottom: 12px;
+      }
+
+      label {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.82);
+        color: var(--ink);
+        padding: 12px 13px;
+        outline: none;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 84px;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: rgba(183, 110, 121, 0.75);
+        box-shadow: 0 0 0 4px rgba(183, 110, 121, 0.14);
+      }
+
+      .btn {
+        min-height: 46px;
+        border: 0;
+        border-radius: var(--radius);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 12px 16px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--rose-dark), var(--rose));
+        font-weight: 800;
+        text-decoration: none;
+        box-shadow: 0 14px 30px rgba(120, 54, 75, 0.24);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn.secondary {
+        color: var(--plum);
+        background: #fff;
+        border: 1px solid var(--line);
+        box-shadow: none;
+      }
+
+      .btn.ghost {
+        color: var(--rose-dark);
+        background: rgba(183, 110, 121, 0.12);
+        box-shadow: none;
+      }
+
+      .btn.icon {
+        width: 42px;
+        min-height: 42px;
+        padding: 0;
+      }
+
+      .section {
+        padding: 82px 0;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 28px;
+      }
+
+      .section-title {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        color: var(--plum);
+        font-size: clamp(32px, 4vw, 56px);
+        line-height: 1;
+      }
+
+      .section-copy {
+        max-width: 520px;
+        color: var(--muted);
+        line-height: 1.7;
+        margin: 10px 0 0;
+      }
+
+      .discounts {
+        padding: 34px 0 0;
+      }
+
+      .trust-band {
+        padding: 42px 0 18px;
+      }
+
+      .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .trust-item {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        padding: 16px;
+        min-height: 128px;
+      }
+
+      .trust-item i {
+        color: var(--rose-dark);
+      }
+
+      .trust-item h3 {
+        margin: 10px 0 6px;
+        color: var(--plum);
+        font-size: 16px;
+      }
+
+      .trust-item p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 14px;
+      }
+
+      .discount-track {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+      }
+
+      .discount {
+        border: 1px solid rgba(183, 110, 121, 0.22);
+        border-radius: var(--radius);
+        background: #fff;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .discount strong {
+        color: var(--rose-dark);
+      }
+
+      .discount span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .category-section {
+        border-top: 1px solid var(--line);
+      }
+
+      .category-layout {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.86fr) minmax(0, 1.14fr);
+        gap: 32px;
+        align-items: start;
+      }
+
+      .photo-grid {
+        display: grid;
+        grid-template-columns: 1fr 0.82fr;
+        gap: 12px;
+        min-height: 430px;
+      }
+
+      .photo-grid img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: var(--radius);
+        box-shadow: 0 16px 36px rgba(67, 34, 51, 0.12);
+        opacity: 0;
+        transition: transform 600ms ease, filter 600ms ease;
+      }
+
+      .photo-grid img:first-child {
+        grid-row: span 2;
+      }
+
+      .photo-grid img:hover {
+        transform: scale(1.018);
+        filter: saturate(1.08);
+      }
+
+      .photo-grid.visible img.motion-left {
+        animation: photoFromLeft 900ms cubic-bezier(0.2, 0.72, 0.18, 1) forwards;
+      }
+
+      .photo-grid.visible img.motion-right {
+        animation: photoFromRight 920ms cubic-bezier(0.2, 0.72, 0.18, 1) 120ms forwards;
+      }
+
+      .photo-grid.visible img.motion-rise {
+        animation: photoRise 940ms cubic-bezier(0.2, 0.72, 0.18, 1) 220ms forwards;
+      }
+
+      .photo-grid.visible img.motion-depth {
+        animation: photoDepth 1000ms cubic-bezier(0.2, 0.72, 0.18, 1) 180ms forwards;
+      }
+
+      @keyframes photoFromLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-46px) rotate(-1.8deg) scale(0.96);
+          filter: blur(8px) saturate(0.92);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) rotate(0) scale(1);
+          filter: blur(0) saturate(1);
+        }
+      }
+
+      @keyframes photoFromRight {
+        from {
+          opacity: 0;
+          transform: translateX(46px) rotate(1.8deg) scale(0.96);
+          filter: blur(8px) saturate(0.92);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) rotate(0) scale(1);
+          filter: blur(0) saturate(1);
+        }
+      }
+
+      @keyframes photoRise {
+        from {
+          opacity: 0;
+          transform: translateY(54px) scale(0.97);
+          filter: blur(8px) saturate(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: blur(0) saturate(1);
+        }
+      }
+
+      @keyframes photoDepth {
+        from {
+          opacity: 0;
+          transform: perspective(900px) translateZ(-120px) translateY(34px) scale(0.9);
+          filter: blur(10px) saturate(0.86);
+        }
+        to {
+          opacity: 1;
+          transform: perspective(900px) translateZ(0) translateY(0) scale(1);
+          filter: blur(0) saturate(1);
+        }
+      }
+
+      .photo-grid.empty-gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-placeholder {
+        min-height: 430px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background:
+          linear-gradient(135deg, rgba(255, 244, 241, 0.98), rgba(244, 216, 191, 0.46) 48%, rgba(139, 154, 131, 0.24));
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 16px 36px rgba(67, 34, 51, 0.12);
+        opacity: 0;
+      }
+
+      .photo-placeholder::before,
+      .photo-placeholder::after {
+        content: "";
+        position: absolute;
+        inset: 28px;
+        border: 1px solid rgba(120, 54, 75, 0.16);
+        border-radius: var(--radius);
+      }
+
+      .photo-placeholder::after {
+        inset: 52px;
+        border-color: rgba(139, 154, 131, 0.22);
+      }
+
+      .photo-placeholder-icon {
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: linear-gradient(135deg, var(--rose-dark), var(--rose));
+        box-shadow: 0 18px 40px rgba(120, 54, 75, 0.24);
+        z-index: 1;
+      }
+
+      .photo-grid.visible .photo-placeholder {
+        animation: photoDepth 850ms cubic-bezier(0.2, 0.72, 0.18, 1) forwards;
+      }
+
+      .services {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .service-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        min-height: 224px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        box-shadow: 0 12px 30px rgba(67, 34, 51, 0.08);
+      }
+
+      .service-card h3 {
+        margin: 0;
+        color: var(--plum);
+        font-size: 20px;
+      }
+
+      .service-card p {
+        color: var(--muted);
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      .service-meta {
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--rose-dark);
+        font-weight: 800;
+      }
+
+      .duration {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--sage);
+        font-weight: 800;
+        font-size: 13px;
+      }
+
+      .loading {
+        min-height: 50vh;
+        display: grid;
+        place-items: center;
+        color: var(--muted);
+      }
+
+      .empty {
+        border: 1px dashed rgba(183, 110, 121, 0.36);
+        border-radius: var(--radius);
+        padding: 28px;
+        color: var(--muted);
+        background: rgba(255, 244, 241, 0.7);
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        background: rgba(43, 34, 38, 0.58);
+      }
+
+      .modal.open {
+        display: flex;
+      }
+
+      .dialog {
+        width: min(900px, 100%);
+        max-height: min(92vh, 980px);
+        overflow: auto;
+        border-radius: var(--radius);
+        background: var(--cream);
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.24);
+      }
+
+      .dialog-head {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 250, 247, 0.94);
+        backdrop-filter: blur(14px);
+      }
+
+      .dialog-title {
+        margin: 0;
+        color: var(--plum);
+        font-size: 22px;
+      }
+
+      .dialog-body {
+        padding: 20px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .full {
+        grid-column: 1 / -1;
+      }
+
+      .slot-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+        gap: 9px;
+      }
+
+      .calendar {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        padding: 12px;
+      }
+
+      .calendar-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .calendar-title {
+        color: var(--plum);
+        font-weight: 900;
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .calendar-weekday {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 900;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      .calendar-day {
+        min-height: 38px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        color: var(--plum);
+        font-weight: 800;
+      }
+
+      .calendar-day.outside {
+        opacity: 0.24;
+      }
+
+      .calendar-day.unavailable {
+        color: #b8aeb2;
+        background: #faf4f2;
+        text-decoration: line-through;
+        cursor: not-allowed;
+      }
+
+      .calendar-day.selected {
+        color: #fff;
+        background: var(--rose-dark);
+        border-color: var(--rose-dark);
+      }
+
+      .slot {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 10px;
+        background: #fff;
+        color: var(--plum);
+        font-weight: 800;
+      }
+
+      .slot.selected {
+        color: #fff;
+        background: var(--rose-dark);
+        border-color: var(--rose-dark);
+      }
+
+      .agreement {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        padding: 14px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .agreement p {
+        white-space: pre-line;
+      }
+
+      .agreement .cancel-policy {
+        display: block;
+        margin: 12px 0;
+        padding: 12px;
+        border-left: 4px solid var(--rose);
+        border-radius: var(--radius);
+        background: rgba(183, 110, 121, 0.1);
+        color: var(--rose-dark);
+        font-weight: 900;
+      }
+
+      .check-row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        color: var(--ink);
+      }
+
+      .check-row input {
+        width: 18px;
+        min-width: 18px;
+        height: 18px;
+        margin-top: 2px;
+      }
+
+      .signature-box {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        overflow: hidden;
+      }
+
+      canvas {
+        width: 100%;
+        height: 160px;
+        display: block;
+        touch-action: none;
+        background:
+          linear-gradient(transparent 94%, rgba(183, 110, 121, 0.22) 95%),
+          #fff;
+      }
+
+      .dialog-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        z-index: 100;
+        transform: translateX(-50%) translateY(140%);
+        max-width: min(520px, calc(100% - 24px));
+        border-radius: var(--radius);
+        background: var(--plum);
+        color: #fff;
+        padding: 13px 16px;
+        box-shadow: var(--shadow);
+        transition: transform 240ms ease;
+      }
+
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .contact-section {
+        border-top: 1px solid var(--line);
+        padding: 54px 0 70px;
+        background: #fff;
+      }
+
+      .before-after-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 14px;
+      }
+
+      .before-after-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(67, 34, 51, 0.08);
+      }
+
+      .comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .comparison figure {
+        margin: 0;
+        position: relative;
+        min-height: 220px;
+      }
+
+      .comparison img {
+        width: 100%;
+        height: 100%;
+        min-height: 220px;
+        object-fit: cover;
+      }
+
+      .comparison figcaption {
+        position: absolute;
+        left: 8px;
+        bottom: 8px;
+        border-radius: 999px;
+        background: rgba(67, 34, 51, 0.78);
+        color: #fff;
+        padding: 5px 8px;
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .before-after-card h3 {
+        margin: 0;
+        padding: 13px;
+        color: var(--plum);
+      }
+
+      .policy-section {
+        border-top: 1px solid var(--line);
+        background: #fff4f1;
+      }
+
+      .policy-panel {
+        border-left: 5px solid var(--rose);
+        padding: 22px;
+        background: #fff;
+        border-radius: var(--radius);
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .receipt-success {
+        display: grid;
+        gap: 14px;
+      }
+
+      .success-hero {
+        border-radius: var(--radius);
+        padding: 24px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--plum), var(--rose));
+      }
+
+      .success-hero h3 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+
+      .receipt-summary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .receipt-summary div {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        padding: 12px;
+      }
+
+      .receipt-summary span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .receipt-summary strong {
+        color: var(--plum);
+      }
+
+      .contact-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 20px;
+        background: var(--cream);
+      }
+
+      .contact-links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(22px);
+        transition: opacity 700ms ease, transform 700ms ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 860px) {
+        .topbar-inner {
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 14px 0;
+        }
+
+        .hero {
+          padding: 42px 0 76px;
+        }
+
+        .hero-layout,
+        .category-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .photo-grid {
+          min-height: 300px;
+        }
+
+        .services,
+        .form-grid,
+        .trust-grid,
+        .receipt-summary {
+          grid-template-columns: 1fr;
+        }
+
+        .section {
+          padding: 60px 0;
+        }
+      }
+
+      @media (max-width: 540px) {
+        .shell {
+          width: min(100% - 22px, 1180px);
+        }
+
+        .hero h1 {
+          font-size: 43px;
+        }
+
+        .section-head {
+          display: block;
+        }
+
+        .contact-card {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .photo-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .photo-grid img:first-child {
+          grid-row: auto;
+        }
+
+        .dialog-body {
+          padding: 16px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .photo-grid img,
+        .photo-placeholder,
+        .reveal {
+          animation: none !important;
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a href="#inicio" class="brand" aria-label="Inicio" data-i18n-aria="home">
+          <span class="brand-mark"><i data-lucide="sparkles" aria-hidden="true"></i></span>
+          <span class="brand-text">
+            <span id="brandName">Angel's Lashes</span>
+            <span class="brand-subtitle"><span id="brandSubtitle">By Rocio Rivero</span><span class="brand-heart">&hearts;</span></span>
+          </span>
+        </a>
+        <nav id="nav" class="nav" aria-label="Secciones" data-i18n-aria="sections"></nav>
+        <div class="language-switch" aria-label="Language" data-i18n-aria="languageLabel">
+          <button type="button" data-lang="es" class="active">ES</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="app">
+      <section id="inicio" class="hero">
+        <div class="shell hero-layout">
+          <div class="hero-copy reveal">
+            <div class="eyebrow"><i data-lucide="flower-2" aria-hidden="true"></i><span data-i18n="eyebrow">Cejas, pestañas y maquillaje</span></div>
+            <h1 id="heroTitle">Angel's Lashes</h1>
+            <div class="hero-subtitle"><span id="heroSubtitle">By Rocio Rivero</span><span class="brand-heart">&hearts;</span></div>
+            <p data-i18n="heroCopy">Servicios de belleza con un acabado delicado, moderno y pensado para resaltar tu estilo natural.</p>
+          </div>
+
+          <form id="quickBook" class="quick-book reveal">
+            <h2 data-i18n="quickBook">Reserva rápida</h2>
+            <div class="field">
+              <label for="quickCategory" data-i18n="category">Categoría</label>
+              <select id="quickCategory" required></select>
+            </div>
+            <div class="field">
+              <label for="quickService" data-i18n="service">Servicio</label>
+              <select id="quickService" required></select>
+            </div>
+            <button class="btn" type="submit">
+              <i data-lucide="calendar-plus" aria-hidden="true"></i>
+              <span data-i18n="book">Reservar</span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <section class="trust-band shell">
+        <div class="trust-grid">
+          <article class="trust-item reveal">
+            <i data-lucide="sparkles" aria-hidden="true"></i>
+            <h3 data-i18n="trustPersonal">Atencion personalizada</h3>
+            <p data-i18n="trustPersonalCopy">Cada servicio se adapta a tu estilo y rasgos naturales.</p>
+          </article>
+          <article class="trust-item reveal">
+            <i data-lucide="calendar-check" aria-hidden="true"></i>
+            <h3 data-i18n="trustAppointment">Servicios por cita</h3>
+            <p data-i18n="trustAppointmentCopy">Tu espacio se reserva con tiempo y cuidado.</p>
+          </article>
+          <article class="trust-item reveal">
+            <i data-lucide="shield-check" aria-hidden="true"></i>
+            <h3 data-i18n="trustClean">Ambiente profesional</h3>
+            <p data-i18n="trustCleanCopy">Detalles limpios, delicados y organizados.</p>
+          </article>
+          <article class="trust-item reveal">
+            <i data-lucide="heart" aria-hidden="true"></i>
+            <h3 data-i18n="trustNatural">Resultados naturales</h3>
+            <p data-i18n="trustNaturalCopy">Acabados femeninos, elegantes y pensados para ti.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="discountSection" class="discounts shell" hidden>
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" data-i18n="activePromos">Promos activas</h2>
+            <p class="section-copy" data-i18n="promosCopy">Cupones disponibles para reservas elegibles.</p>
+          </div>
+        </div>
+        <div id="discountTrack" class="discount-track"></div>
+      </section>
+
+      <div id="content" class="loading" data-i18n="loadingServices">Cargando servicios...</div>
+
+      <section id="beforeAfterSection" class="section category-section" hidden>
+        <div class="shell">
+          <div class="section-head reveal">
+            <div>
+              <h2 class="section-title" data-i18n="beforeAfterTitle">Antes y despues</h2>
+              <p class="section-copy" data-i18n="beforeAfterCopy">Resultados reales compartidos desde el estudio.</p>
+            </div>
+          </div>
+          <div id="beforeAfterGrid" class="before-after-grid"></div>
+        </div>
+      </section>
+
+      <section class="section policy-section">
+        <div class="shell">
+          <div class="section-head reveal">
+            <div>
+              <h2 class="section-title" data-i18n="policyTitle">Politica de citas</h2>
+            </div>
+          </div>
+          <div id="policyPanel" class="policy-panel reveal"></div>
+        </div>
+      </section>
+
+      <section id="contactSection" class="contact-section" hidden>
+        <div class="shell contact-card">
+          <div>
+            <h2 class="section-title" data-i18n="contactTitle">Contactame</h2>
+            <p class="section-copy" data-i18n="contactCopy">Para preguntas o ayuda con tu cita.</p>
+          </div>
+          <div class="contact-links">
+            <a id="phoneLink" class="btn secondary" href="#"><i data-lucide="phone" aria-hidden="true"></i><span id="contactPhoneText"></span></a>
+            <a id="emailLink" class="btn secondary" href="#"><i data-lucide="mail" aria-hidden="true"></i><span id="contactEmailText"></span></a>
+            <a id="instagramLink" class="btn" href="#" target="_blank" rel="noopener" hidden><i data-lucide="instagram" aria-hidden="true"></i>Instagram</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section id="bookingModal" class="modal" aria-hidden="true">
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+        <div class="dialog-head">
+          <h2 id="bookingTitle" class="dialog-title" data-i18n="newBooking">Nueva reserva</h2>
+          <button class="btn secondary icon" type="button" id="closeBooking" aria-label="Cerrar" data-i18n-aria="close">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <form id="bookingForm" class="dialog-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="modalCategory" data-i18n="category">Categoría</label>
+              <select id="modalCategory" required></select>
+            </div>
+            <div class="field">
+              <label for="modalService" data-i18n="service">Servicio</label>
+              <select id="modalService" required></select>
+            </div>
+            <div class="field">
+              <label for="clientName" data-i18n="name">Nombre</label>
+              <input id="clientName" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="phone" data-i18n="phone">Teléfono</label>
+              <input id="phone" autocomplete="tel" required>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" type="email" autocomplete="email">
+            </div>
+            <div class="field">
+              <label for="date" data-i18n="date">Fecha</label>
+              <input id="date" type="date" required hidden>
+              <div id="calendar" class="calendar"></div>
+            </div>
+            <div class="field full">
+              <label data-i18n="time">Hora</label>
+              <div id="slotGrid" class="slot-grid"></div>
+            </div>
+            <div class="field">
+              <label for="coupon" data-i18n="coupon">Cupón</label>
+              <input id="coupon" autocomplete="off" placeholder="Opcional" data-i18n-placeholder="optional">
+            </div>
+            <label class="check-row">
+              <input id="firstVisit" type="checkbox">
+              <span data-i18n="firstVisit">Es mi primera cita</span>
+            </label>
+            <div class="field full">
+              <label for="notes" data-i18n="notes">Notas</label>
+              <textarea id="notes" placeholder="Preferencias, alergias o detalles importantes" data-i18n-placeholder="notesPlaceholder"></textarea>
+            </div>
+            <div class="field full">
+              <label data-i18n="agreement">Acuerdo</label>
+              <div class="agreement">
+                <p id="agreementText"></p>
+                <label class="check-row">
+                  <input id="agreementAccepted" type="checkbox" required>
+                  <span data-i18n="acceptAgreement">Acepto el acuerdo de servicio</span>
+                </label>
+              </div>
+            </div>
+            <div class="field full">
+              <label data-i18n="signature">Firma</label>
+              <div class="signature-box">
+                <canvas id="signatureCanvas"></canvas>
+              </div>
+              <button class="btn ghost" type="button" id="clearSignature">
+                <i data-lucide="eraser" aria-hidden="true"></i>
+                <span data-i18n="clearSignature">Limpiar firma</span>
+              </button>
+            </div>
+          </div>
+          <div class="dialog-actions">
+            <button class="btn secondary" type="button" id="cancelBooking" data-i18n="cancel">Cancelar</button>
+            <button class="btn" type="submit" id="submitBooking">
+              <i data-lucide="send" aria-hidden="true"></i>
+              <span data-i18n="createBooking">Crear reserva</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="receiptModal" class="modal" aria-hidden="true">
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
+        <div class="dialog-head">
+          <h2 id="receiptTitle" class="dialog-title" data-i18n="bookingReceived">Reserva recibida</h2>
+          <button class="btn secondary icon" type="button" id="closeReceipt" aria-label="Cerrar" data-i18n-aria="close">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div id="receiptBody" class="dialog-body"></div>
+      </div>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script id="initialAppData" type="application/json">null</script>
+
+    <script>
+      const $ = selector => document.querySelector(selector);
+
+      if (window.NodeList && !NodeList.prototype.forEach) {
+        NodeList.prototype.forEach = Array.prototype.forEach;
+      }
+
+      function storageGet(type, key, fallback) {
+        try {
+          const storage = window[type];
+          return storage ? storage.getItem(key) || fallback : fallback;
+        } catch (error) {
+          return fallback;
+        }
+      }
+
+      function storageSet(type, key, value) {
+        try {
+          const storage = window[type];
+          if (storage) storage.setItem(key, value);
+        } catch (error) {
+          console.warn('Storage no disponible:', key);
+        }
+      }
+
+      function readJsonElement(id, fallback) {
+        try {
+          const element = document.getElementById(id);
+          return element ? JSON.parse(element.textContent || 'null') : fallback;
+        } catch (error) {
+          return fallback;
+        }
+      }
+
+      const INITIAL_APP_DATA = readJsonElement('initialAppData', null);
+      const APP_CONFIG = Object.assign({
+        apiBaseUrl: '',
+        dataUrl: 'data/site-data.json',
+        mode: 'static'
+      }, window.ANGELS_SITE_DATA || {});
+
+      const state = {
+        data: null,
+        selectedTime: '',
+        signatureDrawn: false,
+        language: storageGet('localStorage', 'lumina_language', 'es'),
+        calendarDate: new Date()
+      };
+
+      const I18N = {
+        es: {
+          eyebrow: 'Cejas, pestañas y maquillaje',
+          heroCopy: 'Servicios de belleza con un acabado delicado, moderno y pensado para resaltar tu estilo natural.',
+          quickBook: 'Reserva rápida',
+          category: 'Categoría',
+          service: 'Servicio',
+          book: 'Reservar',
+          activePromos: 'Promos activas',
+          promosCopy: 'Cupones disponibles para reservas elegibles.',
+          loadingServices: 'Cargando servicios...',
+          newBooking: 'Nueva reserva',
+          close: 'Cerrar',
+          name: 'Nombre',
+          phone: 'Teléfono',
+          date: 'Fecha',
+          time: 'Hora',
+          coupon: 'Cupón',
+          optional: 'Opcional',
+          firstVisit: 'Es mi primera cita',
+          notes: 'Notas',
+          notesPlaceholder: 'Preferencias, alergias o detalles importantes',
+          agreement: 'Acuerdo',
+          acceptAgreement: 'Acepto el acuerdo de servicio',
+          signature: 'Firma',
+          clearSignature: 'Limpiar firma',
+          cancel: 'Cancelar',
+          createBooking: 'Crear reserva',
+          bookingReceived: 'Reserva recibida',
+          home: 'Inicio',
+          sections: 'Secciones',
+          languageLabel: 'Idioma',
+          contactTitle: 'Contactame',
+          contactCopy: 'Para preguntas o ayuda con tu cita.',
+          trustPersonal: 'Atencion personalizada',
+          trustPersonalCopy: 'Cada servicio se adapta a tu estilo y rasgos naturales.',
+          trustAppointment: 'Servicios por cita',
+          trustAppointmentCopy: 'Tu espacio se reserva con tiempo y cuidado.',
+          trustClean: 'Ambiente profesional',
+          trustCleanCopy: 'Detalles limpios, delicados y organizados.',
+          trustNatural: 'Resultados naturales',
+          trustNaturalCopy: 'Acabados femeninos, elegantes y pensados para ti.',
+          beforeAfterTitle: 'Antes y despues',
+          beforeAfterCopy: 'Resultados reales compartidos desde el estudio.',
+          policyTitle: 'Politica de citas',
+          before: 'Antes',
+          after: 'Despues',
+          prevMonth: 'Mes anterior',
+          nextMonth: 'Mes siguiente',
+          successTitle: 'Solicitud recibida',
+          successCopy: "Gracias por reservar. Tu cita queda pendiente hasta ser confirmada por Angel's Lashes.",
+          emptyServices: 'Todavía no hay servicios visibles. Agrega servicios en la hoja Servicios y marca Visible como TRUE.',
+          bookCategory: 'Reservar {category}',
+          customService: 'Servicio personalizado.',
+          noServicesInCategory: 'No hay servicios disponibles en esta categoría.',
+          chooseServiceDate: 'Selecciona servicio y fecha.',
+          searchingSlots: 'Buscando horarios...',
+          noSlots: 'No hay horarios disponibles para esa fecha.',
+          chooseTime: 'Selecciona una hora disponible.',
+          missingSignature: 'Falta tu firma.',
+          creating: 'Creando...',
+          receiptService: 'Servicio',
+          receiptDate: 'Fecha',
+          receiptPrice: 'Precio',
+          receiptDiscount: 'Descuento',
+          receiptTotal: 'Total',
+          receiptStatus: 'Estado',
+          at: 'a las',
+          viewPdf: 'Ver PDF',
+          categories: {
+            todas: 'Todas',
+            todos: 'Todos',
+            cejas: 'Cejas',
+            pestanas: 'Pestañas',
+            'depilacion-facial': 'Depilación facial',
+            maquillaje: 'Maquillaje'
+          },
+          statuses: {
+            pendiente: 'Pendiente',
+            confirmada: 'Confirmada',
+            cancelada: 'Cancelada'
+          },
+          sectionCopy: {
+            cejas: 'Definición, simetría y acabado suave para enmarcar tu rostro.',
+            pestanas: 'Looks delicados o más expresivos, según tu estilo y tu rutina.',
+            'depilacion-facial': 'Rostro limpio, piel cuidada y detalles precisos.',
+            maquillaje: 'Piel luminosa, tonos elegantes y maquillaje listo para tu evento.'
+          },
+          defaultSectionCopy: 'Servicios personalizados con detalle y acabado elegante.'
+        },
+        en: {
+          eyebrow: 'Brows, lashes and makeup',
+          heroCopy: 'Beauty services with a delicate, modern finish designed to enhance your natural style.',
+          quickBook: 'Quick booking',
+          category: 'Category',
+          service: 'Service',
+          book: 'Book',
+          activePromos: 'Active promos',
+          promosCopy: 'Coupons available for eligible bookings.',
+          loadingServices: 'Loading services...',
+          newBooking: 'New booking',
+          close: 'Close',
+          name: 'Name',
+          phone: 'Phone',
+          date: 'Date',
+          time: 'Time',
+          coupon: 'Coupon',
+          optional: 'Optional',
+          firstVisit: 'This is my first visit',
+          notes: 'Notes',
+          notesPlaceholder: 'Preferences, allergies or important details',
+          agreement: 'Agreement',
+          acceptAgreement: 'I accept the service agreement',
+          signature: 'Signature',
+          clearSignature: 'Clear signature',
+          cancel: 'Cancel',
+          createBooking: 'Create booking',
+          bookingReceived: 'Booking received',
+          home: 'Home',
+          sections: 'Sections',
+          languageLabel: 'Language',
+          contactTitle: 'Contact me',
+          contactCopy: 'For questions or help with your appointment.',
+          trustPersonal: 'Personalized care',
+          trustPersonalCopy: 'Each service is adapted to your style and natural features.',
+          trustAppointment: 'Appointment based',
+          trustAppointmentCopy: 'Your time is reserved with care and attention.',
+          trustClean: 'Professional space',
+          trustCleanCopy: 'Clean, delicate and organized details.',
+          trustNatural: 'Natural results',
+          trustNaturalCopy: 'Feminine, elegant finishes designed for you.',
+          beforeAfterTitle: 'Before and after',
+          beforeAfterCopy: 'Real results shared from the studio.',
+          policyTitle: 'Appointment policy',
+          before: 'Before',
+          after: 'After',
+          prevMonth: 'Previous month',
+          nextMonth: 'Next month',
+          successTitle: 'Request received',
+          successCopy: "Thank you for booking. Your appointment remains pending until confirmed by Angel's Lashes.",
+          emptyServices: 'There are no visible services yet. Add services in the Servicios sheet and mark Visible as TRUE.',
+          bookCategory: 'Book {category}',
+          customService: 'Personalized service.',
+          noServicesInCategory: 'There are no services available in this category.',
+          chooseServiceDate: 'Select a service and date.',
+          searchingSlots: 'Searching available times...',
+          noSlots: 'No available times for that date.',
+          chooseTime: 'Select an available time.',
+          missingSignature: 'Your signature is missing.',
+          creating: 'Creating...',
+          receiptService: 'Service',
+          receiptDate: 'Date',
+          receiptPrice: 'Price',
+          receiptDiscount: 'Discount',
+          receiptTotal: 'Total',
+          receiptStatus: 'Status',
+          at: 'at',
+          viewPdf: 'View PDF',
+          categories: {
+            todas: 'All',
+            todos: 'All',
+            cejas: 'Brows',
+            pestanas: 'Lashes',
+            'depilacion-facial': 'Facial waxing',
+            maquillaje: 'Makeup'
+          },
+          statuses: {
+            pendiente: 'Pending',
+            confirmada: 'Confirmed',
+            cancelada: 'Cancelled'
+          },
+          sectionCopy: {
+            cejas: 'Definition, symmetry and a soft finish to frame your face.',
+            pestanas: 'Delicate or more expressive looks, shaped around your style and routine.',
+            'depilacion-facial': 'A clean face, cared-for skin and precise details.',
+            maquillaje: 'Glowing skin, elegant tones and makeup ready for your event.'
+          },
+          defaultSectionCopy: 'Personalized services with detail and an elegant finish.'
+        }
+      };
+
+      document.addEventListener('DOMContentLoaded', init);
+
+      async function init() {
+        bindEvents();
+        applyTranslations();
+        setupReveal();
+        try {
+          const initialData = INITIAL_APP_DATA && typeof INITIAL_APP_DATA === 'object' ? INITIAL_APP_DATA : null;
+          state.data = normalizeAppData(hasUsableAppData(initialData) ? initialData : await loadAppData());
+          renderApp();
+        } catch (error) {
+          $('#content').innerHTML = `<div class="shell empty">${escapeHtml(error.message || error)}</div>`;
+        }
+      }
+
+      function hasUsableAppData(data) {
+        return Boolean(data && typeof data === 'object' && (data.appName || data.today || Array.isArray(data.categories) || Array.isArray(data.services)));
+      }
+
+      function normalizeAppData(data) {
+        data = data && typeof data === 'object' ? data : {};
+        data.appName = data.appName || "Angel's Lashes";
+        data.appSubtitle = data.appSubtitle || 'By Rocio Rivero';
+        data.currency = data.currency || 'USD';
+        data.contact = data.contact && typeof data.contact === 'object' ? data.contact : {};
+        data.agreementText = data.agreementText || '';
+        data.agreementTexts = data.agreementTexts && typeof data.agreementTexts === 'object' ? data.agreementTexts : {};
+        data.hours = data.hours && typeof data.hours === 'object' ? data.hours : {};
+        data.blockedDates = Array.isArray(data.blockedDates) ? data.blockedDates : [];
+        data.beforeAfter = Array.isArray(data.beforeAfter) ? data.beforeAfter : [];
+        data.policyText = data.policyText && typeof data.policyText === 'object' ? data.policyText : {};
+        data.categories = Array.isArray(data.categories) ? data.categories : [];
+        data.categoryTranslations = data.categoryTranslations && typeof data.categoryTranslations === 'object' ? data.categoryTranslations : {};
+        data.services = Array.isArray(data.services) ? data.services : [];
+        data.photos = data.photos && typeof data.photos === 'object' ? data.photos : {};
+        data.publicDiscounts = Array.isArray(data.publicDiscounts) ? data.publicDiscounts : [];
+        data.today = data.today || toIsoDate(new Date());
+        return data;
+      }
+
+      async function loadAppData() {
+        if (APP_CONFIG.apiBaseUrl) {
+          return callBackend('getAppData', []);
+        }
+
+        const response = await fetch(APP_CONFIG.dataUrl, { cache: 'no-store' });
+        if (!response.ok) throw new Error('No se pudo cargar la informacion de la pagina.');
+        return response.json();
+      }
+
+      function bindEvents() {
+        $('#quickBook').addEventListener('submit', event => {
+          event.preventDefault();
+          openBooking(getSelectedQuickService());
+        });
+        $('#quickCategory').addEventListener('change', () => fillServiceSelect($('#quickService'), $('#quickCategory').value));
+        $('#modalCategory').addEventListener('change', () => {
+          fillServiceSelect($('#modalService'), $('#modalCategory').value);
+          loadSlots();
+        });
+        $('#modalService').addEventListener('change', loadSlots);
+        $('#date').addEventListener('change', () => {
+          renderCalendar();
+          loadSlots();
+        });
+        $('#bookingForm').addEventListener('submit', submitReservation);
+        $('#closeBooking').addEventListener('click', closeBooking);
+        $('#cancelBooking').addEventListener('click', closeBooking);
+        $('#closeReceipt').addEventListener('click', closeReceipt);
+        $('#clearSignature').addEventListener('click', clearSignature);
+        document.addEventListener('click', handleInternalNav);
+        document.querySelectorAll('[data-lang]').forEach(button => {
+          button.addEventListener('click', () => setLanguage(button.dataset.lang));
+        });
+        window.addEventListener('resize', debounce(resizeSignatureCanvas, 180));
+      }
+
+      function handleInternalNav(event) {
+        let link = event.target;
+        while (link && link !== document && (!link.matches || !link.matches('a[href^="#"]'))) {
+          link = link.parentNode;
+        }
+        if (!link || link === document) return;
+
+        const targetId = link.getAttribute('href').slice(1);
+        const target = document.getElementById(targetId);
+        if (!target) return;
+
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function renderApp() {
+        $('#brandName').textContent = state.data.appName;
+        $('#heroTitle').textContent = state.data.appName;
+        $('#brandSubtitle').textContent = state.data.appSubtitle || '';
+        $('#heroSubtitle').textContent = state.data.appSubtitle || '';
+        applyTranslations();
+        $('#date').min = state.data.today;
+
+        renderNav();
+        fillCategorySelect($('#quickCategory'));
+        fillServiceSelect($('#quickService'), $('#quickCategory').value);
+        fillCategorySelect($('#modalCategory'));
+        fillServiceSelect($('#modalService'), $('#modalCategory').value);
+        renderDiscounts();
+        renderSections();
+        renderBeforeAfter();
+        renderPolicy();
+        renderContact();
+        renderCalendar();
+        refreshIcons();
+      }
+
+      function renderContact() {
+        const contact = state.data.contact || {};
+        const instagramUrl = normalizeInstagramUrl(contact.instagramUrl);
+        const showSection = Boolean(contact.showContact || (contact.showInstagram && instagramUrl));
+        $('#contactSection').hidden = !showSection;
+        if (!showSection) return;
+
+        $('#contactPhoneText').textContent = contact.phone || '';
+        $('#contactEmailText').textContent = contact.email || '';
+        $('#phoneLink').href = contact.phone ? `tel:${contact.phone}` : '#';
+        $('#emailLink').href = contact.email ? `mailto:${contact.email}` : '#';
+        $('#phoneLink').hidden = !contact.phone || !contact.showContact;
+        $('#emailLink').hidden = !contact.email || !contact.showContact;
+        $('#instagramLink').hidden = !contact.showInstagram || !instagramUrl;
+        $('#instagramLink').href = instagramUrl || '#';
+      }
+
+      function renderPolicy() {
+        const policyText = state.data && state.data.policyText ? state.data.policyText : {};
+        const text = policyText[state.language] || '';
+        $('#policyPanel').textContent = text;
+      }
+
+      function renderBeforeAfter() {
+        const pairs = state.data.beforeAfter || [];
+        $('#beforeAfterSection').hidden = !pairs.length;
+        if (!pairs.length) return;
+        $('#beforeAfterGrid').innerHTML = pairs.map(pair => `
+          <article class="before-after-card reveal">
+            <div class="comparison">
+              <figure>
+                ${renderPublicImage(pair.beforeImageUrl, t('before'), '')}
+                <figcaption>${escapeHtml(t('before'))}</figcaption>
+              </figure>
+              <figure>
+                ${renderPublicImage(pair.afterImageUrl, t('after'), '')}
+                <figcaption>${escapeHtml(t('after'))}</figcaption>
+              </figure>
+            </div>
+            <h3>${escapeHtml(state.language === 'en' && pair.titleEn ? pair.titleEn : pair.title)}</h3>
+          </article>
+        `).join('');
+      }
+
+      function setLanguage(language) {
+        state.language = language === 'en' ? 'en' : 'es';
+        storageSet('localStorage', 'lumina_language', state.language);
+        if (state.data) renderApp();
+        else applyTranslations();
+      }
+
+      function applyTranslations() {
+        document.documentElement.lang = state.language;
+        document.querySelectorAll('[data-lang]').forEach(button => {
+          button.classList.toggle('active', button.dataset.lang === state.language);
+        });
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+          element.textContent = t(element.dataset.i18n);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+          element.placeholder = t(element.dataset.i18nPlaceholder);
+        });
+        document.querySelectorAll('[data-i18n-aria]').forEach(element => {
+          element.setAttribute('aria-label', t(element.dataset.i18nAria));
+        });
+        const agreementTexts = state.data && state.data.agreementTexts ? state.data.agreementTexts : {};
+        const agreementText = state.data ? state.data.agreementText : '';
+        $('#agreementText').innerHTML = formatAgreement(agreementTexts[state.language] || agreementText || '');
+      }
+
+      function formatAgreement(text) {
+        const escaped = escapeHtml(text);
+        const label = state.language === 'en' ? 'CANCELLATION POLICY:' : 'POLITICA DE CANCELACION:';
+        return escaped.replace(label, `<span class="cancel-policy">${label}</span>`);
+      }
+
+      function t(key, values = {}) {
+        const dictionary = I18N[state.language] || I18N.es;
+        let value = dictionary[key] || I18N.es[key] || key;
+        Object.keys(values).forEach(name => {
+          value = value.replace(`{${name}}`, values[name]);
+        });
+        return value;
+      }
+
+      function renderNav() {
+        const links = state.data.categories.map(category => (
+          `<a href="#${slug(category)}">${escapeHtml(categoryLabel(category))}</a>`
+        ));
+        links.unshift(`<a href="#inicio">${escapeHtml(t('home'))}</a>`);
+        $('#nav').innerHTML = links.join('');
+      }
+
+      function renderDiscounts() {
+        const discounts = state.data.publicDiscounts || [];
+        $('#discountTrack').innerHTML = '';
+        $('#discountSection').hidden = !discounts.length;
+        if (!discounts.length) return;
+
+        $('#discountTrack').innerHTML = discounts.map(discount => `
+          <article class="discount reveal">
+            <div>
+              <strong>${escapeHtml(discount.code)}</strong><br>
+              <span>${escapeHtml(categoryLabel(discount.category, discount.categoryEn))} · ${escapeHtml(discountDays(discount))}</span>
+            </div>
+            <strong>${discount.value ? `${discount.value}%` : 'Promo'}</strong>
+          </article>
+        `).join('');
+      }
+
+      function renderSections() {
+        const content = $('#content');
+        const categories = state.data.categories;
+
+        if (!categories.length) {
+          content.className = 'shell section';
+          content.innerHTML = `<div class="empty">${escapeHtml(t('emptyServices'))}</div>`;
+          return;
+        }
+
+        content.className = '';
+        content.innerHTML = categories.map(category => renderCategory(category)).join('');
+        refreshIcons();
+        setupReveal();
+      }
+
+      function renderCategory(category) {
+        const services = state.data.services.filter(service => service.category === category);
+        const servicePhotos = services.map(service => service.image).filter(Boolean);
+        const photos = uniqueValues([...servicePhotos, ...(state.data.photos[category] || [])]).slice(0, 3);
+        while (photos.length < 3 && photos.length > 0) photos.push(photos[0]);
+        const label = categoryLabel(category);
+        const motions = ['motion-left', 'motion-depth', 'motion-right', 'motion-rise'];
+        const galleryHtml = photos.length
+          ? photos.map((photo, index) => renderPublicImage(photo, `${label} ${index + 1}`, motions[index % motions.length])).join('')
+          : '<div class="photo-placeholder" aria-hidden="true"><span class="photo-placeholder-icon"><i data-lucide="sparkles" aria-hidden="true"></i></span></div>';
+        const galleryClass = photos.length ? 'photo-grid reveal' : 'photo-grid empty-gallery reveal';
+
+        return `
+          <section id="${slug(category)}" class="section category-section">
+            <div class="shell">
+              <div class="section-head reveal">
+                <div>
+                  <h2 class="section-title">${escapeHtml(label)}</h2>
+                  <p class="section-copy">${sectionCopy(category)}</p>
+                </div>
+                <button class="btn secondary" type="button" onclick="openBookingByCategory('${escapeAttrJs(category)}')">
+                  <i data-lucide="calendar-heart" aria-hidden="true"></i>
+                  ${escapeHtml(t('bookCategory', { category: label }))}
+                </button>
+              </div>
+
+              <div class="category-layout">
+                <div class="${galleryClass}">
+                  ${galleryHtml}
+                </div>
+                <div class="services">
+                  ${services.map(renderServiceCard).join('')}
+                </div>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      function renderServiceCard(service) {
+        return `
+          <article class="service-card reveal">
+            <h3>${escapeHtml(serviceName(service))}</h3>
+            <p>${escapeHtml(serviceDescription(service) || t('customService'))}</p>
+            <div class="duration"><i data-lucide="clock-3" aria-hidden="true"></i>${service.duration} min</div>
+            <div class="service-meta">
+              <span>${formatMoney(service.price)}</span>
+              <button class="btn icon" type="button" aria-label="${escapeHtml(t('book'))} ${escapeHtml(serviceName(service))}" title="${escapeHtml(t('book'))}" onclick="openBookingById('${escapeAttrJs(service.id)}')">
+                <i data-lucide="calendar-plus" aria-hidden="true"></i>
+              </button>
+            </div>
+          </article>
+        `;
+      }
+
+      function renderPublicImage(url, alt, className) {
+        const driveId = extractDriveImageId(url);
+        const classAttr = className ? ` class="${escapeHtml(className)}"` : '';
+        const fallbackAttrs = driveId
+          ? ` data-drive-id="${escapeHtml(driveId)}" data-fallback-step="0" onerror="handlePublicImageError(this)"`
+          : '';
+        return `<img${classAttr} src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async"${fallbackAttrs}>`;
+      }
+
+      window.handlePublicImageError = function(image) {
+        const driveId = image && image.dataset ? image.dataset.driveId : '';
+        if (!driveId) return;
+        const fallbacks = [
+          `https://drive.google.com/thumbnail?id=${encodeURIComponent(driveId)}&sz=w1600`,
+          `https://lh3.googleusercontent.com/d/${encodeURIComponent(driveId)}=w1600`,
+          `https://drive.google.com/uc?export=view&id=${encodeURIComponent(driveId)}`
+        ];
+        let step = Number(image.dataset.fallbackStep || 0);
+        while (step < fallbacks.length) {
+          const nextUrl = fallbacks[step];
+          step += 1;
+          image.dataset.fallbackStep = String(step);
+          if (image.src !== nextUrl) {
+            image.src = nextUrl;
+            return;
+          }
+        }
+        image.onerror = null;
+        image.classList.add('image-unavailable');
+      };
+
+      function extractDriveImageId(value) {
+        const text = String(value || '');
+        const patterns = [
+          /\/d\/([a-zA-Z0-9_-]+)/,
+          /[?&]id=([a-zA-Z0-9_-]+)/,
+          /\/file\/d\/([a-zA-Z0-9_-]+)/
+        ];
+        for (let index = 0; index < patterns.length; index++) {
+          const match = text.match(patterns[index]);
+          if (match) return match[1];
+        }
+        return '';
+      }
+
+      function fillCategorySelect(select) {
+        select.innerHTML = state.data.categories.map(category => (
+          `<option value="${escapeHtml(category)}">${escapeHtml(categoryLabel(category))}</option>`
+        )).join('');
+      }
+
+      function fillServiceSelect(select, category) {
+        const services = state.data.services.filter(service => service.category === category);
+        select.innerHTML = services.map(service => (
+          `<option value="${escapeHtml(service.name)}">${escapeHtml(serviceName(service))} · ${formatMoney(service.price)}</option>`
+        )).join('');
+      }
+
+      function getSelectedQuickService() {
+        return state.data.services.find(service =>
+          service.category === $('#quickCategory').value && service.name === $('#quickService').value
+        );
+      }
+
+      window.openBookingById = serviceId => {
+        const service = state.data.services.find(item => item.id === serviceId);
+        openBooking(service);
+      };
+
+      window.openBookingByCategory = category => {
+        const service = state.data.services.find(item => item.category === category);
+        openBooking(service);
+      };
+
+      function openBooking(service) {
+        if (!service) {
+          showToast(t('noServicesInCategory'));
+          return;
+        }
+
+        $('#modalCategory').value = service.category;
+        fillServiceSelect($('#modalService'), service.category);
+        $('#modalService').value = service.name;
+        $('#date').value = $('#date').value || state.data.today;
+        state.calendarDate = makeLocalDate($('#date').value);
+        state.selectedTime = '';
+        renderCalendar();
+        $('#bookingModal').classList.add('open');
+        $('#bookingModal').setAttribute('aria-hidden', 'false');
+        setTimeout(() => {
+          resizeSignatureCanvas();
+          loadSlots();
+        }, 80);
+      }
+
+      function closeBooking() {
+        $('#bookingModal').classList.remove('open');
+        $('#bookingModal').setAttribute('aria-hidden', 'true');
+      }
+
+      function closeReceipt() {
+        $('#receiptModal').classList.remove('open');
+        $('#receiptModal').setAttribute('aria-hidden', 'true');
+      }
+
+      async function loadSlots() {
+        const date = $('#date').value;
+        const category = $('#modalCategory').value;
+        const service = $('#modalService').value;
+        const slotGrid = $('#slotGrid');
+
+        state.selectedTime = '';
+        if (!date || !category || !service) {
+          slotGrid.innerHTML = `<div class="empty">${escapeHtml(t('chooseServiceDate'))}</div>`;
+          return;
+        }
+
+        slotGrid.innerHTML = `<div class="empty">${escapeHtml(t('searchingSlots'))}</div>`;
+        try {
+          const slots = await gas('getAvailableSlots', category, service, date, state.language);
+          if (!slots.length) {
+            slotGrid.innerHTML = `<div class="empty">${escapeHtml(t('noSlots'))}</div>`;
+            return;
+          }
+
+          slotGrid.innerHTML = slots.map(slot => (
+            `<button class="slot" type="button" data-time="${escapeHtml(slot.value)}">${escapeHtml(slot.label)}</button>`
+          )).join('');
+
+          slotGrid.querySelectorAll('.slot').forEach(button => {
+            button.addEventListener('click', () => {
+              slotGrid.querySelectorAll('.slot').forEach(item => item.classList.remove('selected'));
+              button.classList.add('selected');
+              state.selectedTime = button.dataset.time;
+            });
+          });
+        } catch (error) {
+          slotGrid.innerHTML = `<div class="empty">${escapeHtml(error.message || error)}</div>`;
+        }
+      }
+
+      function formatMonthTitle(date) {
+        try {
+          return new Intl.DateTimeFormat(state.language === 'en' ? 'en-US' : 'es-US', { month: 'long', year: 'numeric' }).format(date);
+        } catch (error) {
+          return `${date.getMonth() + 1}/${date.getFullYear()}`;
+        }
+      }
+
+      function renderCalendar() {
+        if (!state.data) return;
+        const calendar = $('#calendar');
+        if (!calendar) return;
+        const viewDate = state.calendarDate || new Date();
+        const year = viewDate.getFullYear();
+        const month = viewDate.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const startOffset = firstDay.getDay();
+        const start = new Date(year, month, 1 - startOffset);
+        const selected = $('#date').value;
+        const today = state.data.today;
+        const blocked = state.data.blockedDates || [];
+        const openDays = state.data.hours && state.data.hours.openDays ? state.data.hours.openDays : [1, 2, 3, 4, 5, 6];
+        const monthTitle = formatMonthTitle(firstDay);
+        const weekdays = state.language === 'en'
+          ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+          : ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+        const days = [];
+
+        for (let index = 0; index < 42; index++) {
+          const date = new Date(start);
+          date.setDate(start.getDate() + index);
+          const iso = toIsoDate(date);
+          const outside = date.getMonth() !== month;
+          const unavailable = iso < today || blocked.indexOf(iso) !== -1 || openDays.indexOf(date.getDay()) === -1;
+          days.push(`
+            <button class="calendar-day ${outside ? 'outside' : ''} ${unavailable ? 'unavailable' : ''} ${selected === iso ? 'selected' : ''}" type="button" data-date="${iso}" ${unavailable ? 'disabled' : ''}>
+              ${date.getDate()}
+            </button>
+          `);
+        }
+
+        calendar.innerHTML = `
+          <div class="calendar-head">
+            <button class="btn secondary icon" type="button" data-calendar-prev aria-label="${escapeHtml(t('prevMonth'))}"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+            <div class="calendar-title">${escapeHtml(monthTitle)}</div>
+            <button class="btn secondary icon" type="button" data-calendar-next aria-label="${escapeHtml(t('nextMonth'))}"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
+          </div>
+          <div class="calendar-grid">
+            ${weekdays.map(day => `<div class="calendar-weekday">${escapeHtml(day)}</div>`).join('')}
+            ${days.join('')}
+          </div>
+        `;
+
+        calendar.querySelector('[data-calendar-prev]').addEventListener('click', () => {
+          state.calendarDate = new Date(year, month - 1, 1);
+          renderCalendar();
+          refreshIcons();
+        });
+        calendar.querySelector('[data-calendar-next]').addEventListener('click', () => {
+          state.calendarDate = new Date(year, month + 1, 1);
+          renderCalendar();
+          refreshIcons();
+        });
+        calendar.querySelectorAll('[data-date]').forEach(button => {
+          button.addEventListener('click', () => {
+            $('#date').value = button.dataset.date;
+            state.calendarDate = makeLocalDate(button.dataset.date);
+            renderCalendar();
+            loadSlots();
+            refreshIcons();
+          });
+        });
+      }
+
+      async function submitReservation(event) {
+        event.preventDefault();
+        if (!state.selectedTime) {
+          showToast(t('chooseTime'));
+          return;
+        }
+        if (!state.signatureDrawn) {
+          showToast(t('missingSignature'));
+          return;
+        }
+
+        const submitButton = $('#submitBooking');
+        submitButton.disabled = true;
+        submitButton.innerHTML = `<i data-lucide="loader-circle" aria-hidden="true"></i> ${escapeHtml(t('creating'))}`;
+        refreshIcons();
+
+        const payload = {
+          language: state.language,
+          category: $('#modalCategory').value,
+          service: $('#modalService').value,
+          clientName: $('#clientName').value,
+          phone: $('#phone').value,
+          email: $('#email').value,
+          date: $('#date').value,
+          time: state.selectedTime,
+          coupon: $('#coupon').value,
+          notes: $('#notes').value,
+          firstVisit: $('#firstVisit').checked,
+          agreementAccepted: $('#agreementAccepted').checked,
+          signatureDataUrl: $('#signatureCanvas').toDataURL('image/png')
+        };
+
+        try {
+          const reservation = await gas('createReservation', payload);
+          closeBooking();
+          showReceipt(reservation);
+          $('#bookingForm').reset();
+          $('#date').min = state.data.today;
+          clearSignature();
+          await refreshData();
+        } catch (error) {
+          showToast(error.message || String(error));
+        } finally {
+          submitButton.disabled = false;
+          submitButton.innerHTML = `<i data-lucide="send" aria-hidden="true"></i> <span data-i18n="createBooking">${escapeHtml(t('createBooking'))}</span>`;
+          refreshIcons();
+        }
+      }
+
+      function showReceipt(reservation) {
+        const selectedService = state.data.services.find(service => (
+          service.category === reservation.category && service.name === reservation.service
+        ));
+        const displayService = selectedService ? serviceName(selectedService) : reservation.service;
+        $('#receiptBody').innerHTML = `
+          <div class="receipt-success">
+            <div class="success-hero">
+              <i data-lucide="badge-check" aria-hidden="true"></i>
+              <h3>${escapeHtml(t('successTitle'))}</h3>
+              <p>${escapeHtml(t('successCopy'))}</p>
+            </div>
+            <div class="receipt-summary">
+              <div><span>ID</span><strong>${escapeHtml(reservation.id)}</strong></div>
+              <div><span>${escapeHtml(t('receiptService'))}</span><strong>${escapeHtml(categoryLabel(reservation.category))} - ${escapeHtml(displayService)}</strong></div>
+              <div><span>${escapeHtml(t('receiptDate'))}</span><strong>${escapeHtml(reservation.date)} ${escapeHtml(t('at'))} ${escapeHtml(reservation.time)}</strong></div>
+              <div><span>${escapeHtml(t('receiptStatus'))}</span><strong>${escapeHtml(statusLabel(reservation.status))}</strong></div>
+              <div><span>${escapeHtml(t('receiptPrice'))}</span><strong>${formatMoney(reservation.price)}</strong></div>
+              <div><span>${escapeHtml(t('receiptDiscount'))}</span><strong>${formatMoney(reservation.discount)}</strong></div>
+              <div><span>${escapeHtml(t('receiptTotal'))}</span><strong>${formatMoney(reservation.total)}</strong></div>
+            </div>
+          </div>
+          <div class="dialog-actions">
+            ${reservation.receiptUrl ? `<a class="btn" href="${escapeHtml(reservation.receiptUrl)}" target="_blank" rel="noopener"><i data-lucide="file-down" aria-hidden="true"></i> ${escapeHtml(t('viewPdf'))}</a>` : ''}
+            <button class="btn secondary" type="button" onclick="document.querySelector('#closeReceipt').click()">${escapeHtml(t('close'))}</button>
+          </div>
+        `;
+        $('#receiptModal').classList.add('open');
+        $('#receiptModal').setAttribute('aria-hidden', 'false');
+        refreshIcons();
+      }
+
+      async function refreshData() {
+        state.data = await gas('getAppData');
+        renderApp();
+      }
+
+      function resizeSignatureCanvas() {
+        const canvas = $('#signatureCanvas');
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width) return;
+        const ratio = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(rect.width * ratio);
+        canvas.height = Math.floor(160 * ratio);
+        const context = canvas.getContext('2d');
+        context.scale(ratio, ratio);
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        context.lineWidth = 2.4;
+        context.strokeStyle = '#432233';
+        state.signatureDrawn = false;
+      }
+
+      function clearSignature() {
+        resizeSignatureCanvas();
+      }
+
+      let drawing = false;
+      let lastPoint = null;
+
+      $('#signatureCanvas').addEventListener('pointerdown', event => {
+        drawing = true;
+        lastPoint = getCanvasPoint(event);
+        $('#signatureCanvas').setPointerCapture(event.pointerId);
+      });
+
+      $('#signatureCanvas').addEventListener('pointermove', event => {
+        if (!drawing) return;
+        const point = getCanvasPoint(event);
+        const context = $('#signatureCanvas').getContext('2d');
+        context.beginPath();
+        context.moveTo(lastPoint.x, lastPoint.y);
+        context.lineTo(point.x, point.y);
+        context.stroke();
+        lastPoint = point;
+        state.signatureDrawn = true;
+      });
+
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(type => {
+        $('#signatureCanvas').addEventListener(type, () => {
+          drawing = false;
+          lastPoint = null;
+        });
+      });
+
+      function getCanvasPoint(event) {
+        const rect = $('#signatureCanvas').getBoundingClientRect();
+        return {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top
+        };
+      }
+
+      function setupReveal() {
+        const items = document.querySelectorAll('.reveal:not(.visible)');
+        if (!('IntersectionObserver' in window)) {
+          items.forEach(item => item.classList.add('visible'));
+          return;
+        }
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        items.forEach(item => observer.observe(item));
+      }
+
+      function categoryLabel(category, categoryEn = '') {
+        if (state.language === 'en' && categoryEn) return categoryEn;
+        const categoryTranslations = state.data && state.data.categoryTranslations ? state.data.categoryTranslations : {};
+        const translations = categoryTranslations[category] || {};
+        const sheetTranslation = translations[state.language];
+        if (state.language === 'en' && sheetTranslation) return sheetTranslation;
+        const key = slug(category);
+        const languagePack = I18N[state.language] || {};
+        return languagePack.categories && languagePack.categories[key] ? languagePack.categories[key] : category;
+      }
+
+      function discountDays(discount) {
+        return state.language === 'en' && discount.daysEn ? discount.daysEn : discount.days;
+      }
+
+      function serviceName(service) {
+        return state.language === 'en' && service.nameEn ? service.nameEn : service.name;
+      }
+
+      function serviceDescription(service) {
+        return state.language === 'en' && service.descriptionEn ? service.descriptionEn : service.description;
+      }
+
+      function statusLabel(status) {
+        const languagePack = I18N[state.language] || {};
+        return languagePack.statuses && languagePack.statuses[slug(status)] ? languagePack.statuses[slug(status)] : status;
+      }
+
+      function sectionCopy(category) {
+        const languagePack = I18N[state.language] || {};
+        return languagePack.sectionCopy && languagePack.sectionCopy[slug(category)] ? languagePack.sectionCopy[slug(category)] : t('defaultSectionCopy');
+      }
+
+      function normalizeInstagramUrl(value) {
+        let text = String(value || '').replace(/\s+/g, '');
+        if (!text) return '';
+        if (text.charAt(0) === '@') {
+          text = `https://www.instagram.com/${text.slice(1)}`;
+        } else if (/^instagram\.com\//i.test(text)) {
+          text = `https://www.${text}`;
+        } else if (/^www\.instagram\.com\//i.test(text)) {
+          text = `https://${text}`;
+        } else if (/^[a-zA-Z0-9._]{2,30}$/.test(text)) {
+          text = `https://www.instagram.com/${text}`;
+        }
+        return /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._/?=&%-]*$/i.test(text) ? text : '';
+      }
+
+      async function gas(functionName, ...args) {
+        if (APP_CONFIG.apiBaseUrl) {
+          return callBackend(functionName, args);
+        }
+
+        if (functionName === 'getAppData') return loadAppData();
+        if (functionName === 'getAvailableSlots') return getAvailableSlotsStatic(args[0], args[1], args[2]);
+        if (functionName === 'createReservation') return createReservationStatic(args[0]);
+        throw new Error('Esta funcion todavia necesita backend.');
+      }
+
+      async function callBackend(functionName, args) {
+        return postToAppsScript(functionName, args);
+      }
+
+      function postToAppsScript(functionName, args) {
+        const endpoint = String(APP_CONFIG.apiBaseUrl || '').trim();
+        if (!endpoint) throw new Error('La conexion con el backend todavia no esta configurada.');
+
+        return new Promise((resolve, reject) => {
+          const requestId = `angels_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+          const iframeName = `frame_${requestId}`;
+          const iframe = document.createElement('iframe');
+          const form = document.createElement('form');
+          const timeout = setTimeout(() => finish(null, new Error('La conexion esta tardando mas de lo normal.')), 120000);
+
+          iframe.name = iframeName;
+          iframe.hidden = true;
+          iframe.style.display = 'none';
+
+          form.method = 'POST';
+          form.action = endpoint;
+          form.target = iframeName;
+          form.style.display = 'none';
+
+          addHiddenField(form, 'requestId', requestId);
+          addHiddenField(form, 'fn', functionName);
+          addHiddenField(form, 'args', JSON.stringify(args || []));
+
+          function onMessage(event) {
+            const message = event.data || {};
+            if (!message.angelsApi || message.requestId !== requestId) return;
+            if (message.ok) finish(message.data);
+            else finish(null, new Error(message.error || 'No se pudo completar la solicitud.'));
+          }
+
+          function finish(data, error) {
+            clearTimeout(timeout);
+            window.removeEventListener('message', onMessage);
+            form.remove();
+            iframe.remove();
+            if (error) reject(error);
+            else resolve(data);
+          }
+
+          window.addEventListener('message', onMessage);
+          document.body.appendChild(iframe);
+          document.body.appendChild(form);
+          form.submit();
+        });
+      }
+
+      function addHiddenField(form, name, value) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      }
+
+      function getAvailableSlotsStatic(category, serviceName, dateIso) {
+        if (!state.data || !dateIso) return [];
+        const service = findService(category, serviceName);
+        if (!service || isDateBlocked(dateIso)) return [];
+
+        const hours = state.data.hours || {};
+        const openDays = hours.openDays || [1, 2, 3, 4, 5, 6];
+        const date = makeLocalDate(dateIso);
+        if (openDays.indexOf(date.getDay()) === -1) return [];
+
+        const start = timeToMinutes(hours.start || '09:00');
+        const end = timeToMinutes(hours.end || '18:00');
+        const interval = Number(hours.intervalMinutes || 30);
+        const duration = Number(service.duration || 60);
+        const slots = [];
+
+        for (let minutes = start; minutes + duration <= end; minutes += interval) {
+          const time24 = minutesToTime24(minutes);
+          if (isPastSlot(dateIso, time24)) continue;
+          slots.push({ value: time24, label: formatAmPm(time24) });
+        }
+        return slots;
+      }
+
+      function createReservationStatic(payload) {
+        payload = payload || {};
+        const service = findService(payload.category, payload.service);
+        if (!service) throw new Error(t('noServicesInCategory'));
+        if (!payload.agreementAccepted) throw new Error(t('acceptAgreement'));
+
+        const price = Number(service.price || 0);
+        const coupon = applyStaticCoupon(payload.coupon, service.category, price);
+        return {
+          id: `AL-${Date.now()}`,
+          category: service.category,
+          service: service.name,
+          date: payload.date,
+          time: formatAmPm(payload.time),
+          status: 'Pendiente',
+          price,
+          discount: coupon.discount,
+          total: coupon.total,
+          coupon: coupon.code,
+          receiptUrl: ''
+        };
+      }
+
+      function findService(category, serviceName) {
+        return (state.data.services || []).find(service => service.category === category && service.name === serviceName);
+      }
+
+      function applyStaticCoupon(code, category, price) {
+        const couponCode = String(code || '').trim().toUpperCase();
+        if (!couponCode) return { code: '', discount: 0, total: price };
+
+        const discount = (state.data.publicDiscounts || []).find(item => {
+          const categoryMatches = !item.category || item.category === 'Todas' || item.category === category;
+          return String(item.code || '').toUpperCase() === couponCode && categoryMatches;
+        });
+        if (!discount) throw new Error(state.language === 'en' ? 'This coupon is not available.' : 'Este cupon no esta disponible.');
+
+        const value = Number(discount.value || 0);
+        const amount = value <= 100 ? roundMoney(price * (value / 100)) : Math.min(price, roundMoney(value));
+        return { code: couponCode, discount: amount, total: roundMoney(Math.max(0, price - amount)) };
+      }
+
+      function isDateBlocked(dateIso) {
+        return (state.data.blockedDates || []).indexOf(dateIso) !== -1;
+      }
+
+      function isPastSlot(dateIso, time24) {
+        const now = new Date();
+        const slot = makeLocalDate(dateIso);
+        const minutes = timeToMinutes(time24);
+        slot.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
+        return slot.getTime() <= now.getTime();
+      }
+
+      function timeToMinutes(time24) {
+        const parts = String(time24 || '00:00').split(':').map(Number);
+        return (parts[0] || 0) * 60 + (parts[1] || 0);
+      }
+
+      function minutesToTime24(minutes) {
+        return `${pad2(Math.floor(minutes / 60))}:${pad2(minutes % 60)}`;
+      }
+
+      function formatAmPm(time24) {
+        const minutes = timeToMinutes(time24);
+        const hour24 = Math.floor(minutes / 60);
+        const minute = minutes % 60;
+        const suffix = hour24 >= 12 ? 'PM' : 'AM';
+        const hour12 = hour24 % 12 || 12;
+        return `${hour12}:${pad2(minute)} ${suffix}`;
+      }
+
+      function roundMoney(value) {
+        return Math.round((Number(value) || 0) * 100) / 100;
+      }
+
+      function formatMoney(value) {
+        const currency = state.data && state.data.currency ? state.data.currency : 'USD';
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(Number(value || 0));
+      }
+
+      function refreshIcons() {
+        if (window.lucide) lucide.createIcons();
+      }
+
+      function showToast(message) {
+        const toast = $('#toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.remove('show'), 4200);
+      }
+
+      function slug(value) {
+        const text = String(value || '');
+        const normalized = text.normalize ? text.normalize('NFD') : text;
+        return normalized
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '');
+      }
+
+      function escapeHtml(value) {
+        return String(value == null ? '' : value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function escapeJs(value) {
+        return String(value == null ? '' : value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      }
+
+      function escapeAttrJs(value) {
+        return escapeHtml(escapeJs(value));
+      }
+
+      function uniqueValues(values) {
+        return values.filter((value, index, list) => value && list.indexOf(value) === index);
+      }
+
+      function makeLocalDate(dateIso) {
+        if (!dateIso) return new Date();
+        const parts = String(dateIso).split('-').map(Number);
+        if (parts.length !== 3 || parts.some(part => isNaN(part))) return new Date();
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
+
+      function toIsoDate(date) {
+        const year = date.getFullYear();
+        const month = pad2(date.getMonth() + 1);
+        const day = pad2(date.getDate());
+        return `${year}-${month}-${day}`;
+      }
+
+      function pad2(value) {
+        value = String(value);
+        return value.length < 2 ? `0${value}` : value;
+      }
+
+      function debounce(callback, delay) {
+        let timer;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => callback(...args), delay);
+        };
+      }
+    </script>
+  </body>
+</html>
