@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angel's Lashes Bridge</title>
+  </head>
+  <body>
+    <script>
+      (function() {
+        var payload = '';
+        try {
+          payload = window.name || '';
+        } catch (error) {}
+
+        function send() {
+          try {
+            window.parent.postMessage({ angelsBridge: true, payload: payload }, window.location.origin);
+          } catch (error) {}
+        }
+
+        send();
+        setTimeout(send, 80);
+        setTimeout(send, 300);
+      })();
+    </script>
+  </body>
+</html>
