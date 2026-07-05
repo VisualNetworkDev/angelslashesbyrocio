@@ -3920,45 +3920,18 @@
 
           addHiddenField(form, 'requestId', requestId);
           addHiddenField(form, 'origin', window.location.origin || 'null');
-          addHiddenField(form, 'returnUrl', getBridgeReturnUrl());
           addHiddenField(form, 'fn', functionName);
           addHiddenField(form, 'args', JSON.stringify(args || []));
 
           function onMessage(event) {
-            if (event.origin === window.location.origin && event.data && event.data.angelsBridge) {
-              handleBridgePayload(event.data.payload);
-              return;
-            }
             if (!isTrustedBackendMessageOrigin(event.origin, endpoint)) return;
             const message = event.data || {};
-            handleApiMessage(message);
-          }
-
-          function handleApiMessage(message) {
-            if (!message || !message.angelsApi || message.requestId !== requestId) return;
+            if (!message.angelsApi || message.requestId !== requestId) return;
             if (message.ok) finish(message.data);
             else finish(null, new Error(message.error || 'No se pudo completar la solicitud.'));
           }
 
-          function handleBridgePayload(rawPayload) {
-            if (!rawPayload) return;
-            try {
-              handleApiMessage(JSON.parse(rawPayload));
-            } catch (error) {}
-          }
-
-          iframe.addEventListener('load', () => {
-            try {
-              if (iframe.contentWindow && iframe.contentWindow.location.origin === window.location.origin) {
-                handleBridgePayload(iframe.contentWindow.name || '');
-              }
-            } catch (error) {}
-          });
-
-          let settled = false;
           function finish(data, error) {
-            if (settled) return;
-            settled = true;
             clearTimeout(timeout);
             window.removeEventListener('message', onMessage);
             removeNode(form);
@@ -3972,17 +3945,6 @@
           document.body.appendChild(form);
           form.submit();
         });
-      }
-
-      function getBridgeReturnUrl() {
-        try {
-          const url = new URL('bridge.html', window.location.href);
-          url.search = `?v=${Date.now()}`;
-          url.hash = '';
-          return url.href;
-        } catch (error) {
-          return '';
-        }
       }
 
       function addHiddenField(form, name, value) {
