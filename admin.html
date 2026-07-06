@@ -109,6 +109,12 @@
         color: #fff;
         text-decoration: none;
         font-weight: 800;
+        transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px rgba(67, 34, 51, 0.12);
       }
 
       .btn.secondary {
@@ -130,6 +136,8 @@
       .btn:disabled {
         opacity: 0.56;
         cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
       }
 
       .login {
@@ -393,6 +401,28 @@
         min-width: 220px;
         min-height: 70px;
         margin-top: 8px;
+      }
+
+      .follow-up-box {
+        min-width: 240px;
+        display: grid;
+        gap: 7px;
+      }
+
+      .follow-up-box label {
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .follow-up-box input,
+      .follow-up-box textarea {
+        width: 100%;
+      }
+
+      .follow-up-box textarea {
+        min-height: 64px;
       }
 
       .appointment-main {
@@ -1557,6 +1587,7 @@
                   <th>Total</th>
                   <th>Estado</th>
                   <th>Notas internas</th>
+                  <th>Seguimiento</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -1589,6 +1620,15 @@
                       <button class="btn secondary mini" data-note-row="${item.rowNumber}" type="button">Guardar nota</button>
                     </td>
                     <td>
+                      <div class="follow-up-box">
+                        <label for="retouchDate${item.rowNumber}">Retocar aprox.</label>
+                        <input id="retouchDate${item.rowNumber}" type="date" data-follow-date="${item.rowNumber}" value="${escapeHtml(item.retouchDate || '')}">
+                        <label for="followUpNotes${item.rowNumber}">Nota visible para clienta</label>
+                        <textarea id="followUpNotes${item.rowNumber}" data-follow-note="${item.rowNumber}" placeholder="Ej. Recomendado retocarse en 2-3 semanas">${escapeHtml(item.followUpNotes || '')}</textarea>
+                        <button class="btn secondary mini" data-follow-row="${item.rowNumber}" type="button">Guardar seguimiento</button>
+                      </div>
+                    </td>
+                    <td>
                       <div class="row-actions">
                         <button class="btn soft mini" data-status-row="${item.rowNumber}" data-status="Confirmada" type="button">Confirmar</button>
                         <button class="btn danger mini" data-status-row="${item.rowNumber}" data-status="Cancelada" type="button">Cancelar</button>
@@ -1611,6 +1651,9 @@
         });
         $$('[data-note-row]').forEach(button => {
           button.addEventListener('click', () => saveReservationNote(button.dataset.noteRow));
+        });
+        $$('[data-follow-row]').forEach(button => {
+          button.addEventListener('click', () => saveReservationFollowUp(button.dataset.followRow));
         });
         $$('[data-delete-reservation]').forEach(button => {
           button.addEventListener('click', () => deleteReservation(button.dataset.deleteReservation));
@@ -1823,6 +1866,7 @@
                 <span class="muted">${escapeHtml(item.email || '')}</span><br>
                 <span>${item.count} citas - ${formatMoney(item.total)}</span><br>
                 <span class="muted">Ultima: ${escapeHtml(item.lastDate || '')}</span>
+                ${item.nextRetouchDateLabel ? `<br><span class="muted">Retocar aprox.: ${escapeHtml(item.nextRetouchDateLabel)}</span>` : ''}
               </article>
             `).join('')}
           </div>
@@ -2281,6 +2325,25 @@
         try {
           state.data = await gas('saveAdminReservationNote', state.secret, rowNumber, input.value);
           showToast('Nota interna guardada.');
+          renderAll();
+        } catch (error) {
+          showToast(error.message || String(error));
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      async function saveReservationFollowUp(rowNumber) {
+        const dateInput = document.querySelector(`[data-follow-date="${rowNumber}"]`);
+        const noteInput = document.querySelector(`[data-follow-note="${rowNumber}"]`);
+        if (!dateInput || !noteInput) return;
+        setBusy(true);
+        try {
+          state.data = await gas('saveAdminFollowUp', state.secret, rowNumber, {
+            retouchDate: dateInput.value,
+            followUpNotes: noteInput.value
+          });
+          showToast('Seguimiento guardado.');
           renderAll();
         } catch (error) {
           showToast(error.message || String(error));

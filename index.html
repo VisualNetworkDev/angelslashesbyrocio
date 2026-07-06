@@ -64,6 +64,10 @@
         overflow: hidden;
       }
 
+      body.section-modal-open {
+        overflow: hidden;
+      }
+
       button,
       input,
       select,
@@ -256,32 +260,6 @@
         }
       }
 
-      .nav {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        overflow-x: auto;
-        scrollbar-width: none;
-      }
-
-      .nav::-webkit-scrollbar {
-        display: none;
-      }
-
-      .nav a {
-        color: var(--muted);
-        text-decoration: none;
-        border-radius: 999px;
-        padding: 10px 13px;
-        font-size: 14px;
-        white-space: nowrap;
-      }
-
-      .nav a:hover {
-        background: rgba(183, 110, 121, 0.12);
-        color: var(--rose-dark);
-      }
-
       .language-switch {
         display: inline-flex;
         align-items: center;
@@ -371,8 +349,8 @@
 
       .hero-layout {
         display: grid;
-        grid-template-columns: minmax(0, 1.02fr) minmax(320px, 430px);
-        gap: 40px;
+        grid-template-columns: minmax(0, 0.98fr) minmax(320px, 520px);
+        gap: clamp(28px, 5vw, 64px);
         align-items: center;
       }
 
@@ -422,16 +400,12 @@
         font-weight: 700;
       }
 
-      .quick-book {
+      .main-menu {
         position: relative;
         z-index: 6;
-        border: 1px solid rgba(255, 255, 255, 0.36);
-        border-radius: var(--radius);
-        background: rgba(255, 250, 247, 0.9);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(20px);
-        padding: 18px;
-        transform: translateZ(0);
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
       }
 
       @keyframes heroLogoFloat {
@@ -443,10 +417,50 @@
         }
       }
 
-      .quick-book h2 {
-        margin: 0 0 14px;
+      .main-menu-card {
+        min-height: 126px;
+        border: 1px solid rgba(255, 255, 255, 0.34);
+        border-radius: var(--radius);
+        display: grid;
+        align-content: space-between;
+        gap: 14px;
+        padding: 16px;
         color: var(--plum);
+        background: rgba(255, 250, 247, 0.9);
+        box-shadow: 0 18px 44px rgba(67, 34, 51, 0.16);
+        text-decoration: none;
+        backdrop-filter: blur(18px);
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      }
+
+      .main-menu-card:hover {
+        border-color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 24px 58px rgba(67, 34, 51, 0.2);
+        transform: translateY(-3px);
+      }
+
+      .main-menu-card.primary {
+        grid-column: 1 / -1;
+        min-height: 148px;
+        color: #fff;
+        background: linear-gradient(135deg, rgba(67, 34, 51, 0.98), rgba(183, 110, 121, 0.88));
+      }
+
+      .main-menu-card i {
+        width: 28px;
+        height: 28px;
+      }
+
+      .main-menu-card strong {
+        display: block;
         font-size: 18px;
+      }
+
+      .main-menu-card span {
+        color: inherit;
+        font-size: 13px;
+        line-height: 1.45;
+        opacity: 0.78;
       }
 
       .field {
@@ -623,10 +637,12 @@
         font-weight: 800;
         text-decoration: none;
         box-shadow: 0 14px 30px rgba(120, 54, 75, 0.24);
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
       }
 
       .btn:hover {
         transform: translateY(-1px);
+        box-shadow: 0 18px 36px rgba(120, 54, 75, 0.28);
       }
 
       .btn:disabled {
@@ -640,6 +656,11 @@
         background: #fff;
         border: 1px solid var(--line);
         box-shadow: none;
+      }
+
+      .btn.secondary:hover {
+        border-color: rgba(183, 110, 121, 0.36);
+        box-shadow: 0 12px 28px rgba(67, 34, 51, 0.08);
       }
 
       .btn.ghost {
@@ -762,7 +783,6 @@
       }
 
       .category-section::before,
-      .instagram-section::before,
       .policy-section::before {
         content: "";
         position: absolute;
@@ -779,7 +799,6 @@
       }
 
       .category-section > .shell,
-      .instagram-section > .shell,
       .policy-section > .shell {
         position: relative;
         z-index: 1;
@@ -1088,6 +1107,13 @@
         flex-direction: column;
         gap: 14px;
         box-shadow: 0 12px 30px rgba(67, 34, 51, 0.08);
+        transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+      }
+
+      .service-card:hover {
+        border-color: rgba(183, 110, 121, 0.32);
+        box-shadow: 0 18px 42px rgba(67, 34, 51, 0.12);
+        transform: translateY(-3px);
       }
 
       .service-card h3 {
@@ -1190,6 +1216,113 @@
 
       .modal.open {
         display: flex;
+      }
+
+      .section-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 70;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        background:
+          radial-gradient(circle at 82% 18%, rgba(244, 216, 191, 0.34), transparent 28%),
+          rgba(43, 34, 38, 0.64);
+        backdrop-filter: blur(14px);
+      }
+
+      .section-modal.open {
+        display: flex;
+      }
+
+      .section-dialog {
+        width: min(1120px, 100%);
+        height: min(92vh, 980px);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.46);
+        border-radius: var(--radius);
+        background: linear-gradient(180deg, rgba(255, 250, 247, 0.98), rgba(255, 244, 241, 0.96));
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28);
+      }
+
+      .section-dialog-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 250, 247, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .section-dialog-head h2 {
+        margin: 3px 0 0;
+        color: var(--plum);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 0.95;
+      }
+
+      .section-dialog-kicker {
+        color: var(--rose-dark);
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .section-dialog-body {
+        flex: 1;
+        overflow: auto;
+        padding: 22px;
+      }
+
+      .section-panel[hidden] {
+        display: none;
+      }
+
+      .section-dialog-body .shell {
+        width: 100%;
+      }
+
+      .section-dialog-body .discounts,
+      .section-dialog-body .section,
+      .section-dialog-body .contact-section {
+        padding: 0;
+      }
+
+      .section-dialog-body .category-section,
+      .section-dialog-body .policy-section,
+      .section-dialog-body .contact-section {
+        border-top: 0;
+        background: transparent;
+      }
+
+      .section-dialog-body .category-section::before,
+      .section-dialog-body .policy-section::before {
+        display: none;
+      }
+
+      .section-dialog-body .category-section + .category-section,
+      .section-dialog-body #beforeAfterSection {
+        margin-top: 28px;
+      }
+
+      .section-dialog-body .contact-card {
+        box-shadow: 0 16px 42px rgba(67, 34, 51, 0.1);
+      }
+
+      .section-dialog-empty {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 22px;
+        background: #fff;
+        color: var(--muted);
+        line-height: 1.6;
       }
 
       .image-lightbox {
@@ -1447,185 +1580,6 @@
         border-top: 1px solid var(--line);
         padding: 54px 0 70px;
         background: #fff;
-      }
-
-      .instagram-section {
-        border-top: 1px solid var(--line);
-        background:
-          radial-gradient(circle at 12% 18%, rgba(183, 110, 121, 0.15), transparent 26%),
-          linear-gradient(135deg, #fffaf7, #fff4f1);
-      }
-
-      .instagram-showcase {
-        display: grid;
-        grid-template-columns: minmax(280px, 0.88fr) minmax(0, 1.12fr);
-        gap: 24px;
-        align-items: stretch;
-      }
-
-      .ig-phone {
-        position: relative;
-        min-height: 500px;
-        border: 1px solid rgba(67, 34, 51, 0.16);
-        border-radius: 32px;
-        overflow: hidden;
-        background: var(--plum);
-        box-shadow: 0 26px 70px rgba(67, 34, 51, 0.18);
-      }
-
-      .ig-phone img {
-        width: 100%;
-        height: 100%;
-        min-height: 500px;
-        object-fit: cover;
-        opacity: 0.95;
-        transform: scale(1.02);
-        transition: opacity 300ms ease, transform 650ms ease;
-      }
-
-      .ig-phone.switching img {
-        opacity: 0.58;
-        transform: scale(1.08);
-      }
-
-      .ig-topbar {
-        position: absolute;
-        inset: 14px 14px auto;
-        z-index: 2;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        border-radius: 20px;
-        padding: 10px 12px;
-        color: #fff;
-        background: rgba(43, 34, 38, 0.45);
-        backdrop-filter: blur(14px);
-      }
-
-      .ig-account {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        font-weight: 900;
-      }
-
-      .ig-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        overflow: hidden;
-        background: #fff;
-      }
-
-      .ig-live-chip {
-        position: absolute;
-        left: 16px;
-        bottom: 16px;
-        z-index: 2;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 999px;
-        padding: 8px 11px;
-        color: #fff;
-        background: rgba(67, 34, 51, 0.62);
-        font-size: 12px;
-        font-weight: 900;
-        backdrop-filter: blur(12px);
-      }
-
-      .ig-copy-card {
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        display: grid;
-        align-content: center;
-        gap: 16px;
-        padding: clamp(20px, 4vw, 36px);
-        background: rgba(255, 255, 255, 0.74);
-        box-shadow: 0 18px 44px rgba(67, 34, 51, 0.1);
-      }
-
-      .ig-mini-row {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .ig-mini-row button,
-      .ig-post-grid button {
-        padding: 0;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        overflow: hidden;
-        background: #fff;
-        box-shadow: none;
-      }
-
-      .ig-mini-row img,
-      .ig-post-grid img {
-        width: 100%;
-        aspect-ratio: 1;
-        object-fit: cover;
-      }
-
-      .ig-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
-      .ig-dialog {
-        width: min(1040px, 100%);
-      }
-
-      .ig-modal-layout {
-        display: grid;
-        grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.08fr);
-        gap: 18px;
-      }
-
-      .ig-modal-main {
-        position: relative;
-        min-height: min(620px, 68vh);
-        border-radius: var(--radius);
-        overflow: hidden;
-        background: var(--plum);
-      }
-
-      .ig-modal-main img {
-        width: 100%;
-        height: 100%;
-        min-height: inherit;
-        object-fit: cover;
-      }
-
-      .ig-modal-badge {
-        position: absolute;
-        top: 14px;
-        right: 14px;
-        z-index: 2;
-        border-radius: 999px;
-        padding: 8px 10px;
-        color: #fff;
-        background: rgba(67, 34, 51, 0.68);
-        font-size: 12px;
-        font-weight: 900;
-      }
-
-      .ig-modal-side {
-        display: grid;
-        align-content: start;
-        gap: 14px;
-      }
-
-      .ig-post-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .ig-post-grid button.active {
-        outline: 3px solid rgba(183, 110, 121, 0.34);
       }
 
       .before-after-grid {
@@ -1927,12 +1881,54 @@
       }
 
       .policy-panel {
-        border-left: 5px solid var(--rose);
-        padding: 22px;
-        background: #fff;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .policy-card {
+        border: 1px solid rgba(183, 110, 121, 0.2);
         border-radius: var(--radius);
+        padding: 20px;
+        background: #fff;
         color: var(--muted);
         line-height: 1.7;
+        box-shadow: 0 14px 34px rgba(67, 34, 51, 0.08);
+      }
+
+      .policy-card i {
+        color: var(--rose-dark);
+        margin-bottom: 12px;
+      }
+
+      .policy-card h3 {
+        margin: 0 0 8px;
+        color: var(--plum);
+      }
+
+      .policy-card p {
+        margin: 0;
+      }
+
+      .site-footer {
+        border-top: 1px solid var(--line);
+        padding: 18px 0;
+        background: #fff;
+      }
+
+      .site-footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 750;
+      }
+
+      .site-footer a {
+        color: var(--rose-dark);
+        text-decoration: none;
       }
 
       .receipt-success {
@@ -2033,23 +2029,13 @@
         transform: translateY(0) scale(1);
       }
 
-      @media (min-width: 861px) {
-        html {
-          scroll-snap-type: y proximity;
-        }
-
-        .hero,
-        .category-section,
-        .instagram-section,
-        .policy-section,
-        .contact-section {
-          scroll-snap-align: start;
-        }
+      .service-card.reveal.visible:hover {
+        transform: translateY(-3px) scale(1);
       }
 
       @media (max-width: 860px) {
-        html {
-          scroll-snap-type: none;
+        body {
+          overflow: hidden;
         }
 
         body::before {
@@ -2059,20 +2045,124 @@
         }
 
         .topbar-inner {
-          align-items: flex-start;
-          flex-direction: column;
-          padding: 14px 0;
+          min-height: 64px;
+          align-items: center;
+          flex-direction: row;
+          padding: 10px 0;
         }
 
         .hero {
-          padding: 42px 0 76px;
+          height: calc(100svh - 64px);
+          min-height: calc(100svh - 64px);
+          align-items: start;
+          overflow: auto;
+          padding: 18px 0 66px;
         }
 
         .hero-layout,
-        .category-layout,
-        .instagram-showcase,
-        .ig-modal-layout {
+        .category-layout {
           grid-template-columns: 1fr;
+        }
+
+        .hero-layout {
+          gap: 14px;
+        }
+
+        .hero-copy {
+          padding: 0;
+        }
+
+        .hero-logo,
+        .eyebrow,
+        .hero-subtitle {
+          display: none;
+        }
+
+        .hero h1 {
+          max-width: 100%;
+          font-size: 34px;
+          line-height: 0.95;
+        }
+
+        .hero p {
+          margin-top: 10px;
+          max-width: 100%;
+          font-size: 15px;
+          line-height: 1.45;
+        }
+
+        .main-menu {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        .main-menu-card,
+        .main-menu-card.primary {
+          min-height: 112px;
+          gap: 8px;
+          padding: 13px;
+        }
+
+        .main-menu-card.primary {
+          grid-column: 1 / -1;
+          min-height: 92px;
+        }
+
+        .main-menu-card i {
+          width: 22px;
+          height: 22px;
+        }
+
+        .main-menu-card strong {
+          font-size: 15px;
+          line-height: 1.15;
+        }
+
+        .main-menu-card span {
+          font-size: 11px;
+          line-height: 1.35;
+        }
+
+        .trust-band {
+          display: none;
+        }
+
+        .site-footer {
+          position: fixed;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          z-index: 22;
+          padding: 8px 0;
+          background: rgba(255, 250, 247, 0.9);
+          backdrop-filter: blur(14px);
+        }
+
+        .site-footer-inner {
+          justify-content: center;
+          font-size: 11px;
+        }
+
+        .site-footer-inner span:first-child {
+          display: none;
+        }
+
+        .section-modal {
+          padding: 0;
+        }
+
+        .section-dialog {
+          width: 100%;
+          height: 100%;
+          border-radius: 0;
+        }
+
+        .section-dialog-head {
+          padding: 14px 16px;
+        }
+
+        .section-dialog-body {
+          padding: 16px;
         }
 
         .hero-media-mark {
@@ -2094,7 +2184,8 @@
         .form-grid,
         .trust-grid,
         .receipt-summary,
-        .receipt-qr {
+        .receipt-qr,
+        .policy-panel {
           grid-template-columns: 1fr;
         }
 
@@ -2109,7 +2200,53 @@
         }
 
         .hero h1 {
-          font-size: 43px;
+          font-size: 30px;
+        }
+
+        .brand-mark {
+          width: 32px;
+          height: 32px;
+        }
+
+        .brand {
+          gap: 9px;
+          min-width: 0;
+        }
+
+        .brand-text {
+          max-width: 190px;
+        }
+
+        #brandName {
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .language-switch button {
+          padding: 7px 9px;
+        }
+
+        .hero {
+          padding-top: 14px;
+        }
+
+        .hero p {
+          font-size: 14px;
+        }
+
+        .main-menu-card,
+        .main-menu-card.primary {
+          min-height: 104px;
+          padding: 12px;
+        }
+
+        .main-menu-card span {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
 
         .section-head {
@@ -2130,13 +2267,13 @@
           justify-content: flex-start;
         }
 
-        .photo-grid {
-          grid-template-columns: 1fr;
+        .site-footer-inner {
+          align-items: center;
+          flex-direction: row;
         }
 
-        .ig-phone,
-        .ig-phone img {
-          min-height: 380px;
+        .photo-grid {
+          grid-template-columns: 1fr;
         }
 
         .photo-frame:first-child {
@@ -2198,7 +2335,6 @@
             <span class="brand-subtitle"><span id="brandSubtitle">By Rocio Rivero</span><span class="brand-heart">&hearts;</span></span>
           </span>
         </a>
-        <nav id="nav" class="nav" aria-label="Secciones" data-i18n-aria="sections"></nav>
         <div class="language-switch" aria-label="Language" data-i18n-aria="languageLabel">
           <button type="button" data-lang="es" class="active">ES</button>
           <button type="button" data-lang="en">EN</button>
@@ -2222,21 +2358,33 @@
             <p data-i18n="heroCopy">Servicios de belleza con un acabado delicado, moderno y pensado para resaltar tu estilo natural.</p>
           </div>
 
-          <form id="quickBook" class="quick-book reveal">
-            <h2 data-i18n="quickBook">Reserva rápida</h2>
-            <div class="field">
-              <label for="quickCategory" data-i18n="category">Categoría</label>
-              <select id="quickCategory" required></select>
-            </div>
-            <div class="field">
-              <label for="quickService" data-i18n="service">Servicio</label>
-              <select id="quickService" required></select>
-            </div>
-            <button class="btn" type="submit">
-              <i data-lucide="calendar-plus" aria-hidden="true"></i>
-              <span data-i18n="book">Reservar</span>
-            </button>
-          </form>
+          <div class="main-menu reveal" aria-label="Menu principal">
+            <a class="main-menu-card primary" href="#servicios" data-open-section="services">
+              <i data-lucide="calendar-heart" aria-hidden="true"></i>
+              <strong data-i18n="menuBook">Reservar servicio</strong>
+              <span data-i18n="menuBookCopy">Elige el servicio y completa tu cita desde la seccion de servicios.</span>
+            </a>
+            <a class="main-menu-card" href="#promos" data-open-section="promos">
+              <i data-lucide="badge-percent" aria-hidden="true"></i>
+              <strong data-i18n="menuPromos">Promos activas</strong>
+              <span data-i18n="menuPromosCopy">Consulta beneficios disponibles antes de reservar.</span>
+            </a>
+            <a class="main-menu-card" href="seguimiento.html">
+              <i data-lucide="clipboard-check" aria-hidden="true"></i>
+              <strong data-i18n="menuFollowUp">Seguimiento de cita</strong>
+              <span data-i18n="menuFollowUpCopy">Revisa tu historial, proxima cita y retoque recomendado.</span>
+            </a>
+            <a class="main-menu-card" href="#politicas" data-open-section="policies">
+              <i data-lucide="shield-check" aria-hidden="true"></i>
+              <strong data-i18n="menuPolicies">Politicas</strong>
+              <span data-i18n="menuPoliciesCopy">Citas, pagos y privacidad en un solo lugar.</span>
+            </a>
+            <a class="main-menu-card" href="#contactSection" data-open-section="contact">
+              <i data-lucide="messages-square" aria-hidden="true"></i>
+              <strong data-i18n="menuContact">Contacto</strong>
+              <span data-i18n="menuContactCopy">Encuentra telefono, email e Instagram oficial.</span>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -2265,18 +2413,6 @@
         </div>
       </section>
 
-      <section id="discountSection" class="discounts shell" hidden>
-        <div class="section-head">
-          <div>
-            <h2 class="section-title" data-i18n="activePromos">Promos activas</h2>
-            <p class="section-copy" data-i18n="promosCopy">Cupones disponibles para reservas elegibles.</p>
-          </div>
-        </div>
-        <div id="discountTrack" class="discount-track"></div>
-      </section>
-
-      <div id="content" class="loading" data-i18n="loadingServices">Cargando servicios...</div>
-
       <section id="browserNotice" class="browser-notice shell" hidden>
         <div class="browser-notice-card">
           <div>
@@ -2290,68 +2426,80 @@
         </div>
       </section>
 
-      <section id="beforeAfterSection" class="section category-section" hidden>
-        <div class="shell">
-          <div class="section-head reveal">
-            <div>
-              <h2 class="section-title" data-i18n="beforeAfterTitle">Antes y despues</h2>
-              <p class="section-copy" data-i18n="beforeAfterCopy">Resultados reales compartidos desde el estudio.</p>
-            </div>
-          </div>
-          <div id="beforeAfterGrid" class="before-after-grid"></div>
-        </div>
-      </section>
-
-      <section id="instagramPreviewSection" class="section instagram-section" hidden>
-        <div class="shell instagram-showcase">
-          <div class="ig-phone reveal" id="instagramPhone">
-            <img id="instagramMainImage" src="assets/angels-lashes-logo.jpeg?v=20260623-2" alt="Instagram preview">
-            <div class="ig-topbar">
-              <span class="ig-account">
-                <span class="ig-avatar"><img src="assets/angels-lashes-logo-square.png?v=20260623-2" alt=""></span>
-                <span id="instagramUser">@angelslashes</span>
-              </span>
-              <i data-lucide="heart" aria-hidden="true"></i>
-            </div>
-            <span class="ig-live-chip" data-i18n="instagramChip">Vista Instagram</span>
-          </div>
-          <div class="ig-copy-card reveal">
-            <div class="eyebrow"><i data-lucide="camera" aria-hidden="true"></i><span data-i18n="instagramEyebrow">Inspiracion del estudio</span></div>
-            <h2 class="section-title" data-i18n="instagramTitle">Ultimos trabajos</h2>
-            <p class="section-copy" data-i18n="instagramCopy">Un vistazo visual a estilos, resultados y detalles de Angel's Lashes, integrado sin depender de aplicaciones externas.</p>
-            <div id="instagramMiniRow" class="ig-mini-row"></div>
-            <div class="ig-actions">
-              <button id="openInstagramPreview" class="btn" type="button"><i data-lucide="maximize-2" aria-hidden="true"></i><span data-i18n="instagramOpenPreview">Ver preview</span></button>
-              <a id="openInstagramProfile" class="btn secondary" href="#" target="_blank" rel="noopener"><i data-lucide="camera" aria-hidden="true"></i><span data-i18n="instagramVisit">Abrir Instagram</span></a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section policy-section">
-        <div class="shell">
-          <div class="section-head reveal">
-            <div>
-              <h2 class="section-title" data-i18n="policyTitle">Politica de citas</h2>
-            </div>
-          </div>
-          <div id="policyPanel" class="policy-panel reveal"></div>
-        </div>
-      </section>
-
-      <section id="contactSection" class="contact-section" hidden>
-        <div class="shell contact-card">
-          <div>
-            <h2 class="section-title" data-i18n="contactTitle">Contactame</h2>
-            <p class="section-copy" data-i18n="contactCopy">Para preguntas o ayuda con tu cita.</p>
-          </div>
-          <div class="contact-links">
-            <a id="phoneLink" class="btn secondary" href="#"><i data-lucide="phone" aria-hidden="true"></i><span id="contactPhoneText"></span></a>
-            <a id="emailLink" class="btn secondary" href="#"><i data-lucide="mail" aria-hidden="true"></i><span id="contactEmailText"></span></a>
-          </div>
-        </div>
-      </section>
     </main>
+
+    <footer class="site-footer">
+      <div class="shell site-footer-inner">
+        <span>Angel's Lashes By Rocio Rivero</span>
+        <span>Powered by <a href="https://visualnetworkdev.github.io" target="_blank" rel="noopener">VisualNetworkDev</a></span>
+      </div>
+    </footer>
+
+    <section id="sectionModal" class="section-modal" aria-hidden="true">
+      <div class="section-dialog" role="dialog" aria-modal="true" aria-labelledby="sectionModalTitle">
+        <div class="section-dialog-head">
+          <div>
+            <span id="sectionModalKicker" class="section-dialog-kicker">Angel's Lashes</span>
+            <h2 id="sectionModalTitle">Servicios</h2>
+          </div>
+          <button class="btn secondary icon" type="button" id="closeSectionModal" aria-label="Cerrar" data-i18n-aria="close">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="section-dialog-body">
+          <section id="discountSection" class="section-panel discounts" hidden>
+            <div class="section-head">
+              <div>
+                <h2 class="section-title" data-i18n="activePromos">Promos activas</h2>
+                <p class="section-copy" data-i18n="promosCopy">Cupones disponibles para reservas elegibles.</p>
+              </div>
+            </div>
+            <div id="discountTrack" class="discount-track"></div>
+          </section>
+
+          <section id="servicios" class="section-panel services-index" hidden>
+            <div id="content" class="loading" data-i18n="loadingServices">Cargando servicios...</div>
+            <section id="beforeAfterSection" class="section category-section" hidden>
+              <div class="shell">
+                <div class="section-head reveal">
+                  <div>
+                    <h2 class="section-title" data-i18n="beforeAfterTitle">Antes y despues</h2>
+                    <p class="section-copy" data-i18n="beforeAfterCopy">Resultados reales compartidos desde el estudio.</p>
+                  </div>
+                </div>
+                <div id="beforeAfterGrid" class="before-after-grid"></div>
+              </div>
+            </section>
+          </section>
+
+          <section id="politicas" class="section-panel section policy-section" hidden>
+            <div class="shell">
+              <div class="section-head reveal">
+                <div>
+                  <h2 class="section-title" data-i18n="policyTitle">Politicas</h2>
+                </div>
+              </div>
+              <div id="policyPanel" class="policy-panel reveal"></div>
+            </div>
+          </section>
+
+          <section id="contactSection" class="section-panel contact-section" hidden>
+            <div class="shell contact-card">
+              <div>
+                <h2 class="section-title" data-i18n="contactTitle">Contactame</h2>
+                <p class="section-copy" data-i18n="contactCopy">Para preguntas o ayuda con tu cita.</p>
+              </div>
+              <div class="contact-links">
+                <a id="phoneLink" class="btn secondary" href="#"><i data-lucide="phone" aria-hidden="true"></i><span id="contactPhoneText"></span></a>
+                <a id="emailLink" class="btn secondary" href="#"><i data-lucide="mail" aria-hidden="true"></i><span id="contactEmailText"></span></a>
+                <a id="instagramLink" class="btn secondary" href="#" target="_blank" rel="noopener"><i data-lucide="instagram" aria-hidden="true"></i><span>Instagram</span></a>
+              </div>
+              <p id="contactEmpty" class="section-dialog-empty" hidden data-i18n="contactEmpty">La informacion de contacto estara disponible pronto.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
 
     <section id="imageLightbox" class="image-lightbox" aria-hidden="true">
       <button id="closeImageLightbox" class="btn secondary icon image-lightbox-close" type="button" aria-label="Cerrar" data-i18n-aria="close">
@@ -2444,33 +2592,6 @@
       </div>
     </section>
 
-    <section id="instagramPreviewModal" class="modal" aria-hidden="true">
-      <div class="dialog ig-dialog" role="dialog" aria-modal="true" aria-labelledby="instagramPreviewTitle">
-        <div class="dialog-head">
-          <h2 id="instagramPreviewTitle" class="dialog-title" data-i18n="instagramModalTitle">Instagram Preview</h2>
-          <button class="btn secondary icon" type="button" id="closeInstagramPreview" aria-label="Cerrar" data-i18n-aria="close">
-            <i data-lucide="x" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div class="dialog-body ig-modal-layout">
-          <div class="ig-modal-main">
-            <img id="instagramModalImage" src="assets/angels-lashes-logo.jpeg?v=20260623-2" alt="Instagram preview">
-            <span id="instagramModalType" class="ig-modal-badge">POST</span>
-          </div>
-          <div class="ig-modal-side">
-            <div class="eyebrow"><i data-lucide="camera" aria-hidden="true"></i><span id="instagramModalUser">@angelslashes</span></div>
-            <h3 id="instagramModalCaption" class="section-title">Angel's Lashes</h3>
-            <p class="section-copy" data-i18n="instagramModalCopy">Feed conectado directamente al Instagram del estudio.</p>
-            <div id="instagramPostGrid" class="ig-post-grid"></div>
-            <div class="ig-actions">
-              <button id="nextInstagramPreview" class="btn" type="button"><i data-lucide="arrow-right" aria-hidden="true"></i><span data-i18n="instagramNext">Siguiente foto</span></button>
-              <a id="modalInstagramProfile" class="btn secondary" href="#" target="_blank" rel="noopener"><i data-lucide="camera" aria-hidden="true"></i><span data-i18n="instagramVisit">Abrir Instagram</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section id="receiptModal" class="modal" aria-hidden="true">
       <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
         <div class="dialog-head">
@@ -2489,7 +2610,7 @@
 
     <script>
       const $ = selector => document.querySelector(selector);
-      const CUSTOM_SELECT_SELECTOR = '#quickCategory, #quickService, #modalCategory, #modalService';
+      const CUSTOM_SELECT_SELECTOR = '#modalCategory, #modalService';
 
       if (window.NodeList && !NodeList.prototype.forEach) {
         NodeList.prototype.forEach = Array.prototype.forEach;
@@ -2539,9 +2660,8 @@
         language: storageGet('localStorage', 'lumina_language', 'es'),
         calendarDate: new Date(),
         backgroundRefreshRunning: false,
-        apiOffline: false,
-        instagramIndex: 0,
-        instagramTimer: null
+        activeSection: '',
+        apiOffline: false
       };
 
       const I18N = {
@@ -2549,12 +2669,27 @@
           introLoading: 'Preparando tu experiencia de belleza...',
           eyebrow: 'Cejas, pestañas y maquillaje',
           heroCopy: 'Servicios de belleza con un acabado delicado, moderno y pensado para resaltar tu estilo natural.',
-          quickBook: 'Reserva rápida',
           category: 'Categoría',
           service: 'Servicio',
           book: 'Reservar',
+          servicesNav: 'Servicios',
+          promosNav: 'Promos',
+          appointmentFollowUpNav: 'Seguimiento',
+          policiesNav: 'Politicas',
+          contactNav: 'Contacto',
+          menuBook: 'Reservar servicio',
+          menuBookCopy: 'Elige el servicio y completa tu cita desde la seccion de servicios.',
+          menuPromos: 'Promos activas',
+          menuPromosCopy: 'Consulta beneficios disponibles antes de reservar.',
+          menuFollowUp: 'Seguimiento de cita',
+          menuFollowUpCopy: 'Revisa tu historial, proxima cita y retoque recomendado.',
+          menuPolicies: 'Politicas',
+          menuPoliciesCopy: 'Citas, pagos y privacidad en un solo lugar.',
+          menuContact: 'Contacto',
+          menuContactCopy: 'Encuentra telefono, email e Instagram oficial.',
           activePromos: 'Promos activas',
           promosCopy: 'Cupones disponibles para reservas elegibles.',
+          noPromos: 'No hay promociones activas en este momento.',
           loadingServices: 'Cargando servicios...',
           newBooking: 'Nueva reserva',
           close: 'Cerrar',
@@ -2579,6 +2714,7 @@
           languageLabel: 'Idioma',
           contactTitle: 'Contactame',
           contactCopy: 'Para preguntas o ayuda con tu cita.',
+          contactEmpty: 'La informacion de contacto estara disponible pronto.',
           trustPersonal: 'Atencion personalizada',
           trustPersonalCopy: 'Cada servicio se adapta a tu estilo y rasgos naturales.',
           trustAppointment: 'Servicios por cita',
@@ -2589,21 +2725,18 @@
           trustNaturalCopy: 'Acabados femeninos, elegantes y pensados para ti.',
           beforeAfterTitle: 'Antes y despues',
           beforeAfterCopy: 'Resultados reales compartidos desde el estudio.',
-          policyTitle: 'Politica de citas',
+          policyTitle: 'Politicas',
           before: 'Antes',
           after: 'Despues',
           beforeAfterHint: 'Desliza para comparar',
           beforeAfterAria: 'Comparar antes y despues',
           viewImage: 'Ver imagen',
-          instagramChip: 'Vista Instagram',
-          instagramEyebrow: 'Inspiracion del estudio',
-          instagramTitle: 'Ultimos trabajos',
-          instagramCopy: "Posts reales del Instagram del estudio, mostrados dentro de la pagina sin widgets externos.",
-          instagramOpenPreview: 'Ver preview',
-          instagramVisit: 'Abrir Instagram',
-          instagramModalTitle: 'Instagram Preview',
-          instagramModalCopy: 'Feed conectado directamente al Instagram del estudio.',
-          instagramNext: 'Siguiente foto',
+          appointmentPolicyTitle: 'Politica de citas',
+          appointmentPolicyCopy: 'Las citas se reservan por disponibilidad y quedan sujetas a confirmacion del estudio. Para cancelar o reprogramar sin penalidad, comunicate con al menos 24 horas de anticipacion.',
+          paymentPolicyTitle: 'Politica de pagos',
+          paymentPolicyCopy: 'Los precios publicados pueden variar si se agregan servicios, extras o ajustes durante la cita. El total final se confirma antes de completar el servicio y puede registrarse para control administrativo y recibos.',
+          privacyPolicyTitle: 'Politica de privacidad',
+          privacyPolicyCopy: 'La informacion personal que compartes, como nombre, telefono, email, historial de citas, firmas y notas relevantes del servicio, se utiliza solo para gestionar reservas, confirmar citas, emitir recibos, dar seguimiento profesional y mejorar la atencion. No se vende ni se comparte con terceros ajenos al servicio, salvo cuando sea necesario para operar herramientas seguras como correo, almacenamiento o sistemas administrativos del negocio.',
           qrArrivalTitle: 'QR de llegada',
           qrArrivalCopy: 'Presenta este QR al llegar para que el estudio confirme tu cita y agregue servicios extras si aplica.',
           browserNoticeTitle: 'Reserva segura',
@@ -2659,12 +2792,27 @@
           introLoading: 'Preparing your beauty experience...',
           eyebrow: 'Brows, lashes and makeup',
           heroCopy: 'Beauty services with a delicate, modern finish designed to enhance your natural style.',
-          quickBook: 'Quick booking',
           category: 'Category',
           service: 'Service',
           book: 'Book',
+          servicesNav: 'Services',
+          promosNav: 'Promos',
+          appointmentFollowUpNav: 'Follow-up',
+          policiesNav: 'Policies',
+          contactNav: 'Contact',
+          menuBook: 'Book service',
+          menuBookCopy: 'Choose a service and complete your appointment from the services section.',
+          menuPromos: 'Active promos',
+          menuPromosCopy: 'Review available benefits before booking.',
+          menuFollowUp: 'Appointment follow-up',
+          menuFollowUpCopy: 'Review your history, next appointment and recommended touch-up.',
+          menuPolicies: 'Policies',
+          menuPoliciesCopy: 'Appointments, payments and privacy in one place.',
+          menuContact: 'Contact',
+          menuContactCopy: 'Find phone, email and the official Instagram link.',
           activePromos: 'Active promos',
           promosCopy: 'Coupons available for eligible bookings.',
+          noPromos: 'There are no active promos at this time.',
           loadingServices: 'Loading services...',
           newBooking: 'New booking',
           close: 'Close',
@@ -2689,6 +2837,7 @@
           languageLabel: 'Language',
           contactTitle: 'Contact me',
           contactCopy: 'For questions or help with your appointment.',
+          contactEmpty: 'Contact information will be available soon.',
           trustPersonal: 'Personalized care',
           trustPersonalCopy: 'Each service is adapted to your style and natural features.',
           trustAppointment: 'Appointment based',
@@ -2699,19 +2848,16 @@
           trustNaturalCopy: 'Feminine, elegant finishes designed for you.',
           beforeAfterTitle: 'Before and after',
           beforeAfterCopy: 'Real results shared from the studio.',
-          policyTitle: 'Appointment policy',
+          policyTitle: 'Policies',
           beforeAfterHint: 'Slide to compare',
           beforeAfterAria: 'Compare before and after',
           viewImage: 'View image',
-          instagramChip: 'Instagram view',
-          instagramEyebrow: 'Studio inspiration',
-          instagramTitle: 'Latest work',
-          instagramCopy: "Real posts from the studio Instagram, displayed inside the page without external widgets.",
-          instagramOpenPreview: 'View preview',
-          instagramVisit: 'Open Instagram',
-          instagramModalTitle: 'Instagram Preview',
-          instagramModalCopy: 'Feed connected directly to the studio Instagram.',
-          instagramNext: 'Next photo',
+          appointmentPolicyTitle: 'Appointment policy',
+          appointmentPolicyCopy: 'Appointments are scheduled by availability and remain subject to studio confirmation. To cancel or reschedule without penalty, contact the studio at least 24 hours in advance.',
+          paymentPolicyTitle: 'Payment policy',
+          paymentPolicyCopy: 'Published prices may change if services, extras or adjustments are added during the appointment. The final total is confirmed before the service is completed and may be recorded for administrative tracking and receipts.',
+          privacyPolicyTitle: 'Privacy policy',
+          privacyPolicyCopy: 'Personal information you share, including name, phone, email, appointment history, signatures and service-related notes, is used only to manage bookings, confirm appointments, issue receipts, provide professional follow-up and improve service. It is not sold or shared with unrelated third parties except when needed to operate secure business tools such as email, storage or administrative systems.',
           qrArrivalTitle: 'Arrival QR',
           qrArrivalCopy: 'Show this QR when you arrive so the studio can confirm your appointment and add extra services if needed.',
           browserNoticeTitle: 'Secure booking',
@@ -2856,8 +3002,6 @@
         data.hours = data.hours && typeof data.hours === 'object' ? data.hours : {};
         data.blockedDates = Array.isArray(data.blockedDates) ? data.blockedDates : [];
         data.beforeAfter = Array.isArray(data.beforeAfter) ? data.beforeAfter : [];
-        data.instagramFeed = data.instagramFeed && typeof data.instagramFeed === 'object' ? data.instagramFeed : {};
-        data.instagramFeed.items = Array.isArray(data.instagramFeed.items) ? data.instagramFeed.items : [];
         data.policyText = data.policyText && typeof data.policyText === 'object' ? data.policyText : {};
         data.categories = Array.isArray(data.categories) ? data.categories : [];
         data.categoryTranslations = data.categoryTranslations && typeof data.categoryTranslations === 'object' ? data.categoryTranslations : {};
@@ -2971,11 +3115,6 @@
       }
 
       function bindEvents() {
-        $('#quickBook').addEventListener('submit', event => {
-          event.preventDefault();
-          openBooking(getSelectedQuickService());
-        });
-        $('#quickCategory').addEventListener('change', () => fillServiceSelect($('#quickService'), $('#quickCategory').value));
         $('#modalCategory').addEventListener('change', () => {
           fillServiceSelect($('#modalService'), $('#modalCategory').value);
           loadSlots();
@@ -2989,17 +3128,15 @@
         $('#closeBooking').addEventListener('click', closeBooking);
         $('#cancelBooking').addEventListener('click', closeBooking);
         $('#closeReceipt').addEventListener('click', closeReceipt);
+        $('#closeSectionModal').addEventListener('click', closeSectionModal);
+        $('#sectionModal').addEventListener('click', event => {
+          if (event.target === $('#sectionModal')) closeSectionModal();
+        });
         $('#clearSignature').addEventListener('click', clearSignature);
         $('#copyPageLink').addEventListener('click', copyCurrentPageLink);
         $('#closeImageLightbox').addEventListener('click', closeImageLightbox);
-        $('#openInstagramPreview').addEventListener('click', openInstagramPreview);
-        $('#closeInstagramPreview').addEventListener('click', closeInstagramPreview);
-        $('#nextInstagramPreview').addEventListener('click', nextInstagramPreview);
         $('#imageLightbox').addEventListener('click', event => {
           if (event.target === $('#imageLightbox')) closeImageLightbox();
-        });
-        $('#instagramPreviewModal').addEventListener('click', event => {
-          if (event.target === $('#instagramPreviewModal')) closeInstagramPreview();
         });
         document.addEventListener('click', handleInternalNav);
         document.addEventListener('input', handleComparisonInput);
@@ -3007,9 +3144,9 @@
           if (event.key === 'Escape') {
             closeCustomSelects();
             closeImageLightbox();
-            closeInstagramPreview();
             closeReceipt();
             closeBooking();
+            closeSectionModal();
           }
         });
         document.querySelectorAll('[data-lang]').forEach(button => {
@@ -3026,11 +3163,67 @@
         if (!link || link === document) return;
 
         const targetId = link.getAttribute('href').slice(1);
+        const sectionKey = link.dataset.openSection || sectionKeyFromTarget(targetId);
+        if (sectionKey) {
+          event.preventDefault();
+          openSectionModal(sectionKey);
+          return;
+        }
+
         const target = document.getElementById(targetId);
         if (!target) return;
 
         event.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function sectionKeyFromTarget(targetId) {
+        const map = {
+          servicios: 'services',
+          promos: 'promos',
+          politicas: 'policies',
+          contactSection: 'contact'
+        };
+        return map[targetId] || '';
+      }
+
+      function openSectionModal(sectionKey) {
+        const panelMap = {
+          services: { id: 'servicios', title: 'servicesNav', kicker: 'menuBook' },
+          promos: { id: 'discountSection', title: 'activePromos', kicker: 'menuPromos' },
+          policies: { id: 'politicas', title: 'policyTitle', kicker: 'menuPolicies' },
+          contact: { id: 'contactSection', title: 'contactTitle', kicker: 'menuContact' }
+        };
+        const config = panelMap[sectionKey];
+        if (!config) return;
+        const panel = document.getElementById(config.id);
+        if (!panel) return;
+
+        hideSectionPanels();
+        state.activeSection = sectionKey;
+        panel.hidden = false;
+        $('#sectionModalTitle').textContent = t(config.title);
+        $('#sectionModalKicker').textContent = t(config.kicker);
+        $('#sectionModal').classList.add('open');
+        $('#sectionModal').setAttribute('aria-hidden', 'false');
+        document.body.classList.add('section-modal-open');
+        const body = document.querySelector('.section-dialog-body');
+        if (body) body.scrollTop = 0;
+        refreshIcons();
+      }
+
+      function hideSectionPanels() {
+        document.querySelectorAll('.section-panel').forEach(panel => {
+          panel.hidden = true;
+        });
+      }
+
+      function closeSectionModal() {
+        $('#sectionModal').classList.remove('open');
+        $('#sectionModal').setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('section-modal-open');
+        state.activeSection = '';
+        hideSectionPanels();
       }
 
       function handleComparisonInput(event) {
@@ -3056,7 +3249,6 @@
           return;
         }
         document.body.classList.remove('maintenance-mode');
-        $('#quickBook').hidden = false;
         const trustBand = document.querySelector('.trust-band');
         const policySection = document.querySelector('.policy-section');
         if (trustBand) trustBand.hidden = false;
@@ -3065,19 +3257,21 @@
 
         renderNav();
         setupCustomSelects();
-        fillCategorySelect($('#quickCategory'));
-        fillServiceSelect($('#quickService'), $('#quickCategory').value);
         fillCategorySelect($('#modalCategory'));
         fillServiceSelect($('#modalService'), $('#modalCategory').value);
         renderDiscounts();
         renderSections();
         renderBeforeAfter();
-        renderInstagramPreview();
         renderPolicy();
         renderContact();
         renderBrowserNotice();
         renderCalendar();
         refreshIcons();
+        if ($('#sectionModal').classList.contains('open') && state.activeSection) {
+          openSectionModal(state.activeSection);
+        } else {
+          hideSectionPanels();
+        }
       }
 
       function setBrandImages() {
@@ -3087,8 +3281,7 @@
           ['#brandLogo', logoUrl],
           ['#heroLogo', logoUrl],
           ['#heroLogoBackdrop', logoFullUrl],
-          ['.intro-logo img', logoUrl],
-          ['.ig-avatar img', logoUrl]
+          ['.intro-logo img', logoUrl]
         ];
         imageTargets.forEach(([selector, url]) => {
           const element = document.querySelector(selector);
@@ -3098,10 +3291,8 @@
 
       function renderMaintenanceMode() {
         document.body.classList.add('maintenance-mode');
-        $('#quickBook').hidden = true;
         $('#discountSection').hidden = true;
         $('#beforeAfterSection').hidden = true;
-        $('#instagramPreviewSection').hidden = true;
         $('#contactSection').hidden = true;
         $('#browserNotice').hidden = true;
         const trustBand = document.querySelector('.trust-band');
@@ -3162,26 +3353,47 @@
         const contact = state.data.contact || {};
         const phoneHref = normalizePhoneHref(contact.phone);
         const emailHref = normalizeEmailHref(contact.email);
-        const showSection = Boolean(contact.showContact && (phoneHref || emailHref));
-        $('#contactSection').hidden = !showSection;
-        if (!showSection) return;
-
+        const instagramHref = normalizeInstagramUrl(contact.instagramUrl);
+        const showInstagram = Boolean(contact.showInstagram && instagramHref);
+        const showSection = Boolean(contact.showContact && (phoneHref || emailHref || showInstagram));
         $('#contactPhoneText').textContent = contact.phone || '';
         $('#contactEmailText').textContent = contact.email || '';
         $('#phoneLink').href = phoneHref || '#';
         $('#emailLink').href = emailHref || '#';
+        $('#instagramLink').href = instagramHref || '#';
         $('#phoneLink').hidden = !phoneHref || !contact.showContact;
         $('#emailLink').hidden = !emailHref || !contact.showContact;
+        $('#instagramLink').hidden = !showInstagram;
+        $('#contactEmpty').hidden = showSection;
       }
 
       function renderPolicy() {
         const policyText = state.data && state.data.policyText ? state.data.policyText : {};
-        const text = policyText[state.language] || '';
-        $('#policyPanel').textContent = text;
+        const appointmentText = policyText[state.language] || t('appointmentPolicyCopy');
+        $('#policyPanel').innerHTML = `
+          <article class="policy-card reveal">
+            <i data-lucide="calendar-check" aria-hidden="true"></i>
+            <h3>${escapeHtml(t('appointmentPolicyTitle'))}</h3>
+            <p>${escapeHtml(appointmentText)}</p>
+          </article>
+          <article class="policy-card reveal">
+            <i data-lucide="credit-card" aria-hidden="true"></i>
+            <h3>${escapeHtml(t('paymentPolicyTitle'))}</h3>
+            <p>${escapeHtml(t('paymentPolicyCopy'))}</p>
+          </article>
+          <article class="policy-card reveal">
+            <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+            <h3>${escapeHtml(t('privacyPolicyTitle'))}</h3>
+            <p>${escapeHtml(t('privacyPolicyCopy'))}</p>
+          </article>
+        `;
+        setupReveal();
       }
 
       function renderBeforeAfter() {
-        const pairs = state.data.beforeAfter || [];
+        const pairs = (state.data.beforeAfter || []).filter(pair => (
+          normalizeSafeImageUrl(pair.beforeImageUrl) && normalizeSafeImageUrl(pair.afterImageUrl)
+        ));
         $('#beforeAfterSection').hidden = !pairs.length;
         if (!pairs.length) return;
         $('#beforeAfterGrid').innerHTML = pairs.map(pair => {
@@ -3220,139 +3432,6 @@
 
       function setupComparisonSliders() {
         document.querySelectorAll('[data-comparison-range]').forEach(updateComparisonSlider);
-      }
-
-      function instagramMediaPool() {
-        if (!state.data) return [];
-        const feed = state.data.instagramFeed || {};
-        return (feed.items || []).map(item => {
-          const safeUrl = normalizeSafeImageUrl(item.imageUrl || item.mediaUrl || item.thumbnailUrl);
-          if (!safeUrl) return null;
-          return {
-            url: safeUrl,
-            caption: item.caption || state.data.appName || "Angel's Lashes",
-            type: item.mediaType || 'POST',
-            permalink: normalizeInstagramUrl(item.permalink) || item.permalink || '',
-            timestamp: item.timestamp || ''
-          };
-        }).filter(Boolean).slice(0, 12);
-      }
-
-      function renderInstagramPreview() {
-        const section = $('#instagramPreviewSection');
-        const media = instagramMediaPool();
-        section.hidden = !media.length;
-        if (!media.length) return;
-
-        state.instagramIndex = Math.min(state.instagramIndex, Math.max(media.length - 1, 0));
-        const feed = state.data.instagramFeed || {};
-        const contact = state.data.contact || {};
-        const instagramUrl = normalizeInstagramUrl(feed.profileUrl || contact.instagramUrl);
-        const username = feed.username || instagramUsernameFromUrl(instagramUrl) || '@angelslashes';
-        const current = media[state.instagramIndex % media.length];
-
-        $('#instagramUser').textContent = username;
-        $('#instagramMainImage').alt = current.caption;
-        setInstagramImage('#instagramMainImage', current.url);
-        $('#instagramMiniRow').innerHTML = media.slice(0, 4).map((item, index) => `
-          <button type="button" onclick="selectInstagramPreview(${index})" aria-label="${escapeHtml(item.caption)}">
-            <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-          </button>
-        `).join('');
-
-        const profileLinks = ['#openInstagramProfile', '#modalInstagramProfile'];
-        profileLinks.forEach(selector => {
-          const link = $(selector);
-          if (!link) return;
-          link.href = instagramUrl || '#';
-          link.hidden = !instagramUrl;
-        });
-
-        startInstagramPreviewSlideshow();
-        setupReveal();
-      }
-
-      function setInstagramImage(selector, url) {
-        const image = $(selector);
-        if (!image || !url) return;
-        const frame = image.closest('.ig-phone');
-        if (frame) frame.classList.add('switching');
-        window.setTimeout(() => {
-          image.src = url;
-          if (frame) frame.classList.remove('switching');
-        }, frame ? 120 : 0);
-      }
-
-      function startInstagramPreviewSlideshow() {
-        if (state.instagramTimer) window.clearInterval(state.instagramTimer);
-        const media = instagramMediaPool();
-        if (media.length < 2) return;
-        state.instagramTimer = window.setInterval(() => {
-          state.instagramIndex = (state.instagramIndex + 1) % media.length;
-          renderInstagramPreview();
-          if ($('#instagramPreviewModal').classList.contains('open')) renderInstagramModal();
-        }, 5200);
-      }
-
-      window.selectInstagramPreview = index => {
-        const media = instagramMediaPool();
-        if (!media.length) return;
-        state.instagramIndex = Math.max(0, Math.min(index, media.length - 1));
-        renderInstagramPreview();
-        if ($('#instagramPreviewModal').classList.contains('open')) renderInstagramModal();
-      };
-
-      function openInstagramPreview() {
-        renderInstagramModal();
-        $('#instagramPreviewModal').classList.add('open');
-        $('#instagramPreviewModal').setAttribute('aria-hidden', 'false');
-        refreshIcons();
-      }
-
-      function closeInstagramPreview() {
-        const modal = $('#instagramPreviewModal');
-        if (!modal || !modal.classList.contains('open')) return;
-        modal.classList.remove('open');
-        modal.setAttribute('aria-hidden', 'true');
-      }
-
-      function nextInstagramPreview() {
-        const media = instagramMediaPool();
-        if (!media.length) return;
-        state.instagramIndex = (state.instagramIndex + 1) % media.length;
-        renderInstagramPreview();
-        renderInstagramModal();
-      }
-
-      function renderInstagramModal() {
-        const media = instagramMediaPool();
-        if (!media.length) return;
-        const current = media[state.instagramIndex % media.length];
-        const feed = state.data.instagramFeed || {};
-        const contact = state.data.contact || {};
-        const instagramUrl = normalizeInstagramUrl(feed.profileUrl || contact.instagramUrl);
-        const username = feed.username || instagramUsernameFromUrl(instagramUrl) || '@angelslashes';
-        $('#instagramModalImage').src = current.url;
-        $('#instagramModalImage').alt = current.caption;
-        $('#instagramModalType').textContent = current.type;
-        $('#instagramModalUser').textContent = username;
-        $('#instagramModalCaption').textContent = current.caption;
-        $('#instagramPostGrid').innerHTML = media.slice(0, 9).map((item, index) => `
-          <button class="${index === state.instagramIndex % media.length ? 'active' : ''}" type="button" onclick="selectInstagramPreview(${index})" aria-label="${escapeHtml(item.caption)}">
-            <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-          </button>
-        `).join('');
-        refreshIcons();
-      }
-
-      function instagramUsernameFromUrl(url) {
-        try {
-          const parsed = new URL(url);
-          const firstPath = parsed.pathname.split('/').filter(Boolean)[0];
-          return firstPath ? `@${firstPath}` : '';
-        } catch (error) {
-          return '';
-        }
       }
 
       function setLanguage(language) {
@@ -3397,19 +3476,16 @@
       }
 
       function renderNav() {
-        const links = state.data.categories.map(category => (
-          `<a href="#${slug(category)}">${escapeHtml(categoryLabel(category))}</a>`
-        ));
-        links.unshift(`<a href="#inicio">${escapeHtml(t('home'))}</a>`);
-        if (instagramMediaPool().length) links.push(`<a href="#instagramPreviewSection">${escapeHtml(t('instagramTitle'))}</a>`);
-        $('#nav').innerHTML = links.join('');
+        return;
       }
 
       function renderDiscounts() {
         const discounts = state.data.publicDiscounts || [];
         $('#discountTrack').innerHTML = '';
-        $('#discountSection').hidden = !discounts.length;
-        if (!discounts.length) return;
+        if (!discounts.length) {
+          $('#discountTrack').innerHTML = `<div class="section-dialog-empty">${escapeHtml(t('noPromos'))}</div>`;
+          return;
+        }
 
         $('#discountTrack').innerHTML = discounts.map(discount => `
           <article class="discount reveal">
@@ -3671,12 +3747,6 @@
           const trigger = wrapper.querySelector('.custom-select-trigger');
           if (trigger) trigger.setAttribute('aria-expanded', 'false');
         });
-      }
-
-      function getSelectedQuickService() {
-        return state.data.services.find(service =>
-          service.category === $('#quickCategory').value && service.name === $('#quickService').value
-        );
       }
 
       window.openBookingById = serviceId => {
@@ -4128,7 +4198,7 @@
       async function gas(functionName, ...args) {
         if (APP_CONFIG.apiBaseUrl) {
           try {
-            const isPublicRead = functionName === 'getAppData' || functionName === 'getAvailableSlots';
+            const isPublicRead = functionName === 'getAppData' || functionName === 'getAvailableSlots' || functionName === 'getClientFollowUp';
             const result = isPublicRead
               ? await callReadBackend(functionName, args, { preferJsonp: isLikelyInAppBrowser() })
               : await callBackend(functionName, args);

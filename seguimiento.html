@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de cita | Angel's Lashes</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png?v=20260623-2">
+    <link rel="apple-touch-icon" href="assets/angels-lashes-logo-square.png?v=20260623-2">
+    <link rel="preconnect" href="https://script.google.com">
+    <script src="assets/site-data.js?v=20260623-2"></script>
+    <script defer src="assets/lucide.min.js?v=20260623-2"></script>
+    <style>
+      :root {
+        --ink: #2b2226;
+        --muted: #7c6b70;
+        --rose: #b76e79;
+        --rose-dark: #78364b;
+        --plum: #432233;
+        --blush: #fff4f1;
+        --cream: #fffaf7;
+        --line: rgba(67, 34, 51, 0.14);
+        --shadow: 0 18px 50px rgba(67, 34, 51, 0.14);
+        --radius: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 84% 12%, rgba(183, 110, 121, 0.18), transparent 30%),
+          linear-gradient(180deg, var(--cream), var(--blush) 54%, var(--cream));
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      .shell {
+        width: min(1040px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.56);
+        background: rgba(255, 250, 247, 0.88);
+        backdrop-filter: blur(18px);
+      }
+
+      .topbar-inner {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--plum);
+        text-decoration: none;
+        font-weight: 850;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border: 1px solid rgba(183, 110, 121, 0.28);
+        border-radius: 50%;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 10px 28px rgba(183, 110, 121, 0.28);
+      }
+
+      .brand-mark img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .language-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.74);
+      }
+
+      .language-switch button {
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+        padding: 8px 10px;
+      }
+
+      .language-switch button.active {
+        background: var(--plum);
+        color: #fff;
+      }
+
+      main {
+        padding: clamp(36px, 7vw, 74px) 0 46px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 0.92fr) minmax(320px, 1.08fr);
+        gap: clamp(18px, 4vw, 40px);
+        align-items: start;
+      }
+
+      .hero-copy {
+        padding-top: 20px;
+      }
+
+      .hero-logo {
+        width: 88px;
+        height: 88px;
+        margin-bottom: 20px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 18px 44px rgba(43, 34, 38, 0.16);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--rose-dark);
+        font-size: 13px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 14px 0 0;
+        color: var(--plum);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(42px, 7vw, 76px);
+        line-height: 0.95;
+      }
+
+      .hero-copy p {
+        max-width: 560px;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.7;
+      }
+
+      .panel {
+        border: 1px solid rgba(183, 110, 121, 0.22);
+        border-radius: var(--radius);
+        padding: clamp(18px, 3vw, 26px);
+        background: rgba(255, 255, 255, 0.86);
+        box-shadow: var(--shadow);
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .field {
+        display: grid;
+        gap: 7px;
+      }
+
+      label {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      input {
+        width: 100%;
+        min-height: 46px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.88);
+        color: var(--ink);
+        padding: 12px 13px;
+        outline: none;
+      }
+
+      input:focus {
+        border-color: rgba(183, 110, 121, 0.75);
+        box-shadow: 0 0 0 4px rgba(183, 110, 121, 0.14);
+      }
+
+      .btn {
+        min-height: 46px;
+        border: 0;
+        border-radius: var(--radius);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 12px 16px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--rose-dark), var(--rose));
+        font-weight: 850;
+        text-decoration: none;
+        box-shadow: 0 14px 30px rgba(120, 54, 75, 0.24);
+        transition: transform 180ms ease, box-shadow 180ms ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 36px rgba(120, 54, 75, 0.28);
+      }
+
+      .btn.secondary {
+        color: var(--plum);
+        background: #fff;
+        border: 1px solid var(--line);
+        box-shadow: none;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+
+      .results {
+        margin-top: 18px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .card,
+      .empty {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 15px;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(67, 34, 51, 0.08);
+      }
+
+      .card strong {
+        color: var(--plum);
+      }
+
+      .card span,
+      .card p,
+      .empty {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .section-label {
+        margin: 18px 0 8px;
+        color: var(--plum);
+      }
+
+      .retouch-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+        border-radius: 999px;
+        padding: 7px 10px;
+        color: var(--rose-dark);
+        background: rgba(183, 110, 121, 0.12);
+        font-weight: 850;
+        font-size: 13px;
+      }
+
+      .site-footer {
+        border-top: 1px solid var(--line);
+        padding: 18px 0;
+        background: #fff;
+      }
+
+      .site-footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 750;
+      }
+
+      .site-footer a {
+        color: var(--rose-dark);
+        text-decoration: none;
+      }
+
+      .toast {
+        position: fixed;
+        z-index: 40;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%) translateY(140%);
+        max-width: min(520px, calc(100% - 24px));
+        border-radius: var(--radius);
+        background: var(--plum);
+        color: #fff;
+        padding: 13px 16px;
+        box-shadow: var(--shadow);
+        transition: transform 240ms ease;
+      }
+
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @media (max-width: 760px) {
+        .topbar-inner,
+        .site-footer-inner {
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 12px 0;
+        }
+
+        .layout,
+        .form-grid,
+        .result-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a href="index.html" class="brand" aria-label="Angel's Lashes">
+          <span class="brand-mark"><img src="assets/angels-lashes-logo-square.png?v=20260623-2" alt=""></span>
+          <span>Angel's Lashes</span>
+        </a>
+        <div class="language-switch" aria-label="Language">
+          <button type="button" data-lang="es" class="active">ES</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="shell layout">
+        <section class="hero-copy">
+          <div class="hero-logo">
+            <img src="assets/angels-lashes-logo-square.png?v=20260623-2" alt="">
+          </div>
+          <div class="eyebrow"><i data-lucide="clipboard-check" aria-hidden="true"></i><span data-i18n="eyebrow">Seguimiento privado</span></div>
+          <h1 data-i18n="title">Seguimiento de cita</h1>
+          <p data-i18n="copy">Consulta tus servicios anteriores, proxima cita y fecha aproximada recomendada para retoque usando el telefono o email de tu reserva.</p>
+          <div class="actions">
+            <a class="btn secondary" href="index.html"><i data-lucide="arrow-left" aria-hidden="true"></i><span data-i18n="back">Volver al menu</span></a>
+          </div>
+        </section>
+
+        <section class="panel">
+          <form id="followUpForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="phone" data-i18n="phone">Telefono</label>
+                <input id="phone" autocomplete="tel" inputmode="tel">
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" autocomplete="email" placeholder="Opcional" data-i18n-placeholder="optional">
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn" type="submit" id="searchButton">
+                <i data-lucide="search" aria-hidden="true"></i>
+                <span data-i18n="search">Buscar seguimiento</span>
+              </button>
+            </div>
+          </form>
+          <div id="result" class="results"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell site-footer-inner">
+        <span>Angel's Lashes By Rocio Rivero</span>
+        <span>Powered by <a href="https://visualnetworkdev.github.io" target="_blank" rel="noopener">VisualNetworkDev</a></span>
+      </div>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const $ = selector => document.querySelector(selector);
+      const APP_CONFIG = Object.assign({
+        apiBaseUrl: '',
+        dataUrl: 'data/site-data.json'
+      }, window.ANGELS_SITE_DATA || {});
+
+      const I18N = {
+        es: {
+          eyebrow: 'Seguimiento privado',
+          title: 'Seguimiento de cita',
+          copy: 'Consulta tus servicios anteriores, proxima cita y fecha aproximada recomendada para retoque usando el telefono o email de tu reserva.',
+          back: 'Volver al menu',
+          phone: 'Telefono',
+          optional: 'Opcional',
+          search: 'Buscar seguimiento',
+          missing: 'Escribe el telefono o email usado en tu cita.',
+          loading: 'Buscando tu seguimiento...',
+          empty: 'No encontramos citas con esos datos. Verifica el telefono o email usado al reservar.',
+          next: 'Proxima cita',
+          history: 'Servicios anteriores',
+          retouch: 'Retoque recomendado',
+          status: 'Estado'
+        },
+        en: {
+          eyebrow: 'Private follow-up',
+          title: 'Appointment follow-up',
+          copy: 'Check your previous services, next appointment and recommended touch-up date using the phone or email from your booking.',
+          back: 'Back to menu',
+          phone: 'Phone',
+          optional: 'Optional',
+          search: 'Search follow-up',
+          missing: 'Enter the phone or email used for your appointment.',
+          loading: 'Finding your follow-up...',
+          empty: 'No appointments were found with those details. Check the phone or email used when booking.',
+          next: 'Next appointment',
+          history: 'Previous services',
+          retouch: 'Recommended touch-up',
+          status: 'Status'
+        }
+      };
+
+      let language = localStorage.getItem('lumina_language') || 'es';
+      document.addEventListener('DOMContentLoaded', init);
+
+      function init() {
+        applyTranslations();
+        $('#followUpForm').addEventListener('submit', submitFollowUp);
+        document.querySelectorAll('[data-lang]').forEach(button => {
+          button.addEventListener('click', () => {
+            language = button.dataset.lang === 'en' ? 'en' : 'es';
+            localStorage.setItem('lumina_language', language);
+            applyTranslations();
+          });
+        });
+        refreshIcons();
+      }
+
+      function applyTranslations() {
+        document.documentElement.lang = language;
+        document.querySelectorAll('[data-lang]').forEach(button => {
+          button.classList.toggle('active', button.dataset.lang === language);
+        });
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+          element.textContent = t(element.dataset.i18n);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+          element.placeholder = t(element.dataset.i18nPlaceholder);
+        });
+      }
+
+      function t(key) {
+        return (I18N[language] && I18N[language][key]) || I18N.es[key] || key;
+      }
+
+      async function submitFollowUp(event) {
+        event.preventDefault();
+        const phone = $('#phone').value.trim();
+        const email = $('#email').value.trim();
+        if (!phone && !email) {
+          showToast(t('missing'));
+          return;
+        }
+
+        $('#result').innerHTML = `<div class="empty">${escapeHtml(t('loading'))}</div>`;
+        $('#searchButton').disabled = true;
+        try {
+          const data = await callBackendJsonp('getClientFollowUp', [{ phone, email }]);
+          renderResults(data || {});
+        } catch (error) {
+          $('#result').innerHTML = `<div class="empty">${escapeHtml(error.message || error)}</div>`;
+        } finally {
+          $('#searchButton').disabled = false;
+          refreshIcons();
+        }
+      }
+
+      function renderResults(data) {
+        const previous = Array.isArray(data.previous) ? data.previous : [];
+        const upcoming = Array.isArray(data.upcoming) ? data.upcoming : [];
+        const recommendations = Array.isArray(data.recommendations) ? data.recommendations : [];
+        const nextAppointment = data.nextAppointment || upcoming[0] || null;
+        if (!previous.length && !upcoming.length && !recommendations.length) {
+          $('#result').innerHTML = `<div class="empty">${escapeHtml(t('empty'))}</div>`;
+          return;
+        }
+
+        const blocks = [];
+        if (nextAppointment) {
+          blocks.push(`
+            <h2 class="section-label">${escapeHtml(t('next'))}</h2>
+            <div class="result-grid">${renderItem(nextAppointment)}</div>
+          `);
+        }
+        if (recommendations.length) {
+          blocks.push(`
+            <h2 class="section-label">${escapeHtml(t('retouch'))}</h2>
+            <div class="result-grid">${recommendations.slice(0, 4).map(renderItem).join('')}</div>
+          `);
+        }
+        if (previous.length) {
+          blocks.push(`
+            <h2 class="section-label">${escapeHtml(t('history'))}</h2>
+            <div class="result-grid">${previous.slice(0, 8).map(renderItem).join('')}</div>
+          `);
+        }
+        $('#result').innerHTML = blocks.join('');
+      }
+
+      function renderItem(item) {
+        return `
+          <article class="card">
+            <strong>${escapeHtml(serviceLabel(item))}</strong><br>
+            <span>${escapeHtml(dateTimeLabel(item))}</span><br>
+            <span>${escapeHtml(t('status'))}: ${escapeHtml(item.status || '')}</span>
+            ${retouchInfo(item)}
+          </article>
+        `;
+      }
+
+      function serviceLabel(item) {
+        return [item.category, item.service].filter(Boolean).join(' - ');
+      }
+
+      function dateTimeLabel(item) {
+        return [item.dateLabel || item.date || '', item.time || ''].filter(Boolean).join(' - ');
+      }
+
+      function retouchInfo(item) {
+        if (!item || !item.retouchDateLabel) return '';
+        const note = item.followUpNotes ? `<p>${escapeHtml(item.followUpNotes)}</p>` : '';
+        return `
+          <span class="retouch-chip"><i data-lucide="sparkles" aria-hidden="true"></i>${escapeHtml(item.retouchDateLabel)}</span>
+          ${note}
+        `;
+      }
+
+      function callBackendJsonp(functionName, args) {
+        const endpoint = normalizeSafeUrl(APP_CONFIG.apiBaseUrl, ['https:']);
+        if (!endpoint) return Promise.reject(new Error('La conexion de seguimiento todavia no esta configurada.'));
+
+        return new Promise((resolve, reject) => {
+          const requestId = `follow_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+          const callbackName = `__angelsFollowUp_${requestId}`;
+          const script = document.createElement('script');
+          const timeout = setTimeout(() => finish(null, new Error('La conexion esta tardando mas de lo normal.')), 45000);
+          const url = new URL(endpoint);
+
+          url.searchParams.set('requestId', requestId);
+          url.searchParams.set('fn', functionName);
+          url.searchParams.set('args', JSON.stringify(args || []));
+          url.searchParams.set('callback', callbackName);
+          url.searchParams.set('origin', window.location.origin || 'null');
+
+          window[callbackName] = message => {
+            if (!message || !message.angelsApi || message.requestId !== requestId) return;
+            if (message.ok) finish(message.data);
+            else finish(null, new Error(message.error || 'No se pudo completar la solicitud.'));
+          };
+
+          script.src = url.href;
+          script.async = true;
+          script.onerror = () => finish(null, new Error('No se pudo cargar la informacion desde Apps Script.'));
+
+          function finish(data, error) {
+            clearTimeout(timeout);
+            try { delete window[callbackName]; } catch (deleteError) { window[callbackName] = undefined; }
+            if (script.parentNode) script.parentNode.removeChild(script);
+            if (error) reject(error);
+            else resolve(data);
+          }
+
+          document.head.appendChild(script);
+        });
+      }
+
+      function normalizeSafeUrl(value, protocols) {
+        const text = String(value || '').trim();
+        if (!text) return '';
+        try {
+          const url = new URL(text, window.location.href);
+          return protocols.indexOf(url.protocol) !== -1 ? url.href : '';
+        } catch (error) {
+          return '';
+        }
+      }
+
+      function escapeHtml(value) {
+        return String(value == null ? '' : value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function showToast(message) {
+        const toast = $('#toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.remove('show'), 4200);
+      }
+
+      function refreshIcons() {
+        if (window.lucide) lucide.createIcons();
+      }
+    </script>
+  </body>
+</html>

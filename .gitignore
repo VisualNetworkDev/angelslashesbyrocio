@@ -1,0 +1,22 @@
+node_modules/
+**/node_modules/
+
+.env
+.env.*
+*.local
+
+# Backend / Apps Script local files
+code.gs
+appsscript.json
+
+# Desktop admin app and private build artifacts
+PC Admin Aplication/
+*.key
+*.password
+*.sig
+*.exe
+
+work/
+tmp/
+download
+*.log
